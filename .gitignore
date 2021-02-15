@@ -1,0 +1,12 @@
+# Gradle
+.gradle
+gen
+bin
+out
+build
+
+# IntelliJ IDEA
+.idea/workspace.xml
+.idea/libraries
+.idea/misc.xml
+.idea/checkstyle-idea.xml
