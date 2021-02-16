@@ -1,8 +1,8 @@
-package de.igorakkerman.demo.device.persistence
+package de.igorakkerman.demo.deviceconfig.persistence
 
-import de.igorakkerman.demo.device.application.Computer
-import de.igorakkerman.demo.device.application.Device
-import de.igorakkerman.demo.device.application.DeviceId
+import de.igorakkerman.demo.deviceconfig.application.Computer
+import de.igorakkerman.demo.deviceconfig.application.Device
+import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id

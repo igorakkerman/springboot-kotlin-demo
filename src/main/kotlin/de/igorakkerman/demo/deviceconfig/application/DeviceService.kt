@@ -1,5 +1,5 @@
-import de.igorakkerman.demo.device.application.Device
-import de.igorakkerman.demo.device.application.DeviceId
+import de.igorakkerman.demo.deviceconfig.application.Device
+import de.igorakkerman.demo.deviceconfig.application.DeviceId
 
 class DeviceService(private val dataStore: DataStore) {
     fun createDevice(device: Device) = dataStore.createDevice(device)

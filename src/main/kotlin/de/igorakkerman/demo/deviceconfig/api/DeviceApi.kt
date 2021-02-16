@@ -1,8 +1,8 @@
-package de.igorakkerman.demo.device.api
+package de.igorakkerman.demo.deviceconfig.api
 
 import DeviceService
-import de.igorakkerman.demo.device.application.Device
-import de.igorakkerman.demo.device.application.DeviceId
+import de.igorakkerman.demo.deviceconfig.application.Device
+import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping

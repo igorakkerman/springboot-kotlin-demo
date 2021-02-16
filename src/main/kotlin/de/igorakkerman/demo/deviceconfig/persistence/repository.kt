@@ -1,8 +1,8 @@
-package de.igorakkerman.demo.device.persistence
+package de.igorakkerman.demo.deviceconfig.persistence
 
 import DataStore
-import de.igorakkerman.demo.device.application.Device
-import de.igorakkerman.demo.device.application.DeviceId
+import de.igorakkerman.demo.deviceconfig.application.Device
+import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository

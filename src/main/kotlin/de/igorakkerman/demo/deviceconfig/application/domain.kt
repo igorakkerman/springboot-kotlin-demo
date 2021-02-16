@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.device.application
+package de.igorakkerman.demo.deviceconfig.application
 
 typealias DeviceId = String
 
