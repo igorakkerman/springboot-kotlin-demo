@@ -14,3 +14,11 @@ data class Computer(
         val password: String,
         val ipAddress: String
 ) : Device()
+
+data class Display(
+        override val id: DeviceId,
+        override val name: String,
+        val resolution: Resolution
+):Device()
+
+enum class Resolution { HD, QHD, UHD }
