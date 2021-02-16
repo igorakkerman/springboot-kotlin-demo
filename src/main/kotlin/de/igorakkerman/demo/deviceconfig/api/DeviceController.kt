@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/devices")
-class DeviceApi(
+class DeviceController(
         private val deviceService: DeviceService
 ) {
-    @GetMapping("/\${deviceId}")
+    @GetMapping("/{deviceId}")
     fun findDeviceById(deviceId: DeviceId): Device? {
         return deviceService.findDeviceById(deviceId)
     }
@@ -29,7 +29,7 @@ class DeviceApi(
         return deviceService.createDevice(device)
     }
 
-    @PutMapping
+    @PutMapping // FIXME: ("/{deviceId}")
     fun updateDevice(device: Device) {
         return deviceService.updateDevice(device)
     }
