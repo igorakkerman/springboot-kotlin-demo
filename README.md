@@ -33,7 +33,7 @@ That is, the periphery components (persistence and API) reference the applicatio
 while the logic is self-contained.
 
 The logic in this CRU(D) application is trivial.
-Nevertheless, the component was included in order to present the general development style.
+Nevertheless, this approach was chosen in order to present the general development style.
 
 ### Data model
 Every device type, such as `Computer` is represented by its own class, extending the abstract `Device` class.
