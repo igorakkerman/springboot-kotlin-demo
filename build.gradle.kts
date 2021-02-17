@@ -18,10 +18,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    implementation("org.hibernate:hibernate-validator:5.4.3.Final")
     testRuntimeOnly("com.h2database:h2:1.4.200")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
