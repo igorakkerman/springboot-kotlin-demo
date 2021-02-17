@@ -42,7 +42,6 @@ class RepositoryTest(
     fun `create two Devices, findDeviceById should find the right one`() {
 
         // given
-
         dataStore.createDevice(computer)
         dataStore.createDevice(display)
 
