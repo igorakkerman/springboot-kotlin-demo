@@ -1,12 +1,11 @@
-package de.igorakkerman.demo.deviceconfig.persistence
+package de.igorakkerman.demo.deviceconfig.application
 
-import DataStore
+import DeviceService
 import ItemAreadyExistsException
 import NoSuchItemException
-import de.igorakkerman.demo.deviceconfig.application.Computer
-import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution.HD
 import de.igorakkerman.demo.deviceconfig.application.Resolution.UHD
+import de.igorakkerman.demo.deviceconfig.persistence.JpaConfiguration
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactlyInAnyOrder
@@ -18,10 +17,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ContextConfiguration
 
 @DataJpaTest
-@ContextConfiguration(classes = [JpaConfiguration::class])
-class RepositoryTest(
+@ContextConfiguration(classes = [DeviceService::class, JpaConfiguration::class])
+class DeviceServiceTest(
         @Autowired
-        val dataStore: DataStore
+        val deviceService: DeviceService
 ) {
 
     val computer = Computer(
@@ -42,11 +41,11 @@ class RepositoryTest(
     fun `create two Devices, findDeviceById should find the right one`() {
 
         // given
-        dataStore.createDevice(computer)
-        dataStore.createDevice(display)
+        deviceService.createDevice(computer)
+        deviceService.createDevice(display)
 
         // when
-        val foundDevice = dataStore.findDeviceById(display.id)
+        val foundDevice = deviceService.findDeviceById(display.id)
 
         // then
         foundDevice shouldBe display
@@ -56,10 +55,10 @@ class RepositoryTest(
     fun `create Device, findDeviceById should not find by unknown id`() {
 
         // given
-        dataStore.createDevice(computer)
+        deviceService.createDevice(computer)
 
         // when
-        val foundDevice = dataStore.findDeviceById(display.id)
+        val foundDevice = deviceService.findDeviceById(display.id)
 
         // then
         foundDevice shouldBe null
@@ -69,11 +68,11 @@ class RepositoryTest(
     fun `creating two Devices with the same id should throw Exception`() {
 
         // given
-        dataStore.createDevice(computer)
+        deviceService.createDevice(computer)
 
         // when/then
         shouldThrow<ItemAreadyExistsException> {
-            dataStore.createDevice(
+            deviceService.createDevice(
                     Display(
                             id = computer.id,
                             name = display.name,
@@ -89,7 +88,7 @@ class RepositoryTest(
     fun `create, then update Device, findDeviceById should return updated values`() {
 
         // given
-        dataStore.createDevice(display)
+        deviceService.createDevice(display)
 
         val newDisplay = Display(
                 id = display.id,
@@ -98,8 +97,8 @@ class RepositoryTest(
         )
 
         // when
-        dataStore.updateDevice(newDisplay)
-        val foundDevice = dataStore.findDeviceById(display.id)
+        deviceService.updateDevice(newDisplay)
+        val foundDevice = deviceService.findDeviceById(display.id)
 
         // then
         foundDevice shouldBe newDisplay
@@ -113,7 +112,7 @@ class RepositoryTest(
 
         // when/then
         shouldThrow<NoSuchItemException> {
-            dataStore.updateDevice(display)
+            deviceService.updateDevice(display)
         }
     }
 
@@ -121,11 +120,11 @@ class RepositoryTest(
     fun `create two Devices, findAllDevices should find both Devices`() {
 
         // given
-        dataStore.createDevice(computer)
-        dataStore.createDevice(display)
+        deviceService.createDevice(computer)
+        deviceService.createDevice(display)
 
         // when
-        val foundDevices = dataStore.findAllDevices()
+        val foundDevices = deviceService.findAllDevices()
 
         // then
         foundDevices should containExactlyInAnyOrder(computer, display)
@@ -138,7 +137,7 @@ class RepositoryTest(
         // empty database
 
         // when
-        val foundDevices = dataStore.findAllDevices()
+        val foundDevices = deviceService.findAllDevices()
 
         // then
         foundDevices should beEmpty()
