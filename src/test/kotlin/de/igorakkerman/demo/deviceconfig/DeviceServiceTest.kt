@@ -11,12 +11,16 @@ import de.igorakkerman.demo.deviceconfig.persistence.JpaConfiguration
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactlyInAnyOrder
+import io.kotest.matchers.sequences.shouldExist
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.transaction.annotation.Propagation.SUPPORTS
+import org.springframework.transaction.annotation.Transactional
+import javax.validation.ConstraintViolationException
 
 @DataJpaTest
 @ContextConfiguration(classes = [DeviceService::class, JpaConfiguration::class])
@@ -140,5 +144,29 @@ class DeviceServiceTest(
 
         // then
         foundDevices should beEmpty()
+    }
+
+    @Test
+    // allow to catch TransactionException from repository transaction
+    // alternative: run non-transactional, that is, outside a @DataJpaTest or @Transactional-annotated class
+    @Transactional(propagation = SUPPORTS)
+    fun `ip address should have IPv4 format`() {
+        // A bad ip address should not even make it to the application layer (or the persistence layer).
+        // This test makes sure that if for some reason the prior level checks fail,
+        // the item is not persisted and the persistence layer responds with some kind of Exception,
+        // that has, at some point down the cause stack, a ConstraintViolationException.
+        // The actual Exception type or the level of exceptions are implementation details and not part of the test.
+
+        // given
+        val newComputer = computer.copy(
+                ipAddress = "::1"
+        )
+
+        // when/then
+        val thrown: Throwable = shouldThrow<Exception> {
+            deviceService.createDevice(newComputer)
+        }
+
+        generateSequence(thrown) { it.cause } shouldExist { it is ConstraintViolationException }
     }
 }

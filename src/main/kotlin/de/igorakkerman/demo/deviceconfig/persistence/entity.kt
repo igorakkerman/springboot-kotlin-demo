@@ -35,14 +35,17 @@ data class ComputerEntity(
         override val name: String,
 
         @Column(nullable = false)
-        private val username: String,
+        val username: String,
 
         @Column(nullable = false)
-        private val password: String,
+        val password: String,
 
         @Column(nullable = false)
-        @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
-        private val ipAddress: String,
+        @field:Pattern(
+                regexp = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$",
+                message = "field: IPv4 address has invalid format",
+        )
+        val ipAddress: String,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Computer(
             id = id,
@@ -62,7 +65,7 @@ data class DisplayEntity(
 
         @Column(nullable = false)
         @Enumerated(EnumType.STRING)
-        private val resolution: Resolution,
+        val resolution: Resolution,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Display(
             id = id,
