@@ -24,7 +24,7 @@ import javax.validation.ConstraintViolationException
 
 @DataJpaTest
 @ContextConfiguration(classes = [DeviceService::class, JpaConfiguration::class])
-class DeviceServiceTest(
+class DeviceServiceIntegrationTest(
         @Autowired
         val deviceService: DeviceService
 ) {
