@@ -8,3 +8,6 @@ interface DataStore {
     fun updateDevice(device: Device)
     fun findAllDevices(): List<Device>
 }
+
+class NoSuchItemException(deviceId: DeviceId): RuntimeException(deviceId)
+class ItemAreadyExistsException(deviceId: DeviceId): RuntimeException(deviceId)

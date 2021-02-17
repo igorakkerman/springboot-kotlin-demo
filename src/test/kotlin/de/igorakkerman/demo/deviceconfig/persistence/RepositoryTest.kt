@@ -1,11 +1,14 @@
 package de.igorakkerman.demo.deviceconfig.persistence
 
 import DataStore
+import ItemAreadyExistsException
+import NoSuchItemException
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution.HD
 import de.igorakkerman.demo.deviceconfig.application.Resolution.UHD
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactlyInAnyOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -13,7 +16,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ContextConfiguration
-import javax.persistence.EntityExistsException
 
 @DataJpaTest
 @ContextConfiguration(classes = [JpaConfiguration::class])
@@ -71,7 +73,7 @@ class RepositoryTest(
         dataStore.createDevice(computer)
 
         // when/then
-        val thrown = shouldThrow<EntityExistsException> {
+        shouldThrow<ItemAreadyExistsException> {
             dataStore.createDevice(
                     Display(
                             id = computer.id,
@@ -105,6 +107,18 @@ class RepositoryTest(
     }
 
     @Test
+    fun `update unknown device should throw Exception`() {
+
+        // given
+        // empty database
+
+        // when/then
+        shouldThrow<NoSuchItemException> {
+            dataStore.updateDevice(display)
+        }
+    }
+
+    @Test
     fun `create two Devices, findAllDevices should find both Devices`() {
 
         // given
@@ -116,5 +130,18 @@ class RepositoryTest(
 
         // then
         foundDevices should containExactlyInAnyOrder(computer, display)
+    }
+
+    @Test
+    fun `in empty database, findAllDevices should return empty list`() {
+
+        // given
+        // empty database
+
+        // when
+        val foundDevices = dataStore.findAllDevices()
+
+        // then
+        foundDevices should beEmpty()
     }
 }

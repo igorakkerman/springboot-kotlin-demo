@@ -1,6 +1,8 @@
 package de.igorakkerman.demo.deviceconfig.persistence
 
 import DataStore
+import ItemAreadyExistsException
+import NoSuchItemException
 import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import org.springframework.boot.autoconfigure.domain.EntityScan
@@ -12,6 +14,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.transaction.annotation.Transactional
+import javax.persistence.EntityExistsException
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -35,14 +38,21 @@ class JpaDatabase(
 ) : DataStore {
     @Transactional
     override fun createDevice(device: Device) {
-        entityManager.persist(device.toEntity())
+        try {
+            entityManager.persist(device.toEntity())
+        } catch (exception: EntityExistsException) {
+            throw ItemAreadyExistsException(device.id)
+        }
     }
 
     override fun findDeviceById(deviceId: DeviceId): Device? {
         return deviceRepository.findByIdOrNull(deviceId)?.toDevice()
     }
 
+    @Transactional
     override fun updateDevice(device: Device) {
+        if (!deviceRepository.existsById(device.id))
+            throw NoSuchItemException(device.id)
         deviceRepository.save(device.toEntity())
     }
 
