@@ -1,10 +1,10 @@
-package de.igorakkerman.demo.deviceconfig.start
+package de.igorakkerman.demo.deviceconfig
 
-import io.kotest.matchers.shouldBe
+import de.igorakkerman.demo.deviceconfig.start.DeviceConfigApplication
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
+@SpringBootTest(classes = [DeviceConfigApplication::class])
 class DeviceConfigApplicationTest {
 
     @Test

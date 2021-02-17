@@ -1,8 +1,10 @@
-package de.igorakkerman.demo.deviceconfig.application
+package de.igorakkerman.demo.deviceconfig
 
 import DeviceService
 import ItemAreadyExistsException
 import NoSuchItemException
+import de.igorakkerman.demo.deviceconfig.application.Computer
+import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution.HD
 import de.igorakkerman.demo.deviceconfig.application.Resolution.UHD
 import de.igorakkerman.demo.deviceconfig.persistence.JpaConfiguration
