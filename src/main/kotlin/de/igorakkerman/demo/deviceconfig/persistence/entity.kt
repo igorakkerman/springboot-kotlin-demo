@@ -7,6 +7,8 @@ import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Inheritance
 import javax.persistence.InheritanceType.TABLE_PER_CLASS
@@ -19,7 +21,7 @@ sealed class DeviceEntity(
         @Id
         open val id: DeviceId,
 
-        @Column(name = "name")
+        @Column(nullable = false)
         open val name: String,
 ) {
     abstract fun toDevice(): Device
@@ -32,13 +34,13 @@ data class ComputerEntity(
 
         override val name: String,
 
-        @Column
+        @Column(nullable = false)
         private val username: String,
 
-        @Column
+        @Column(nullable = false)
         private val password: String,
 
-        @Column
+        @Column(nullable = false)
         @Pattern(regexp = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")
         private val ipAddress: String,
 ) : DeviceEntity(id, name) {
@@ -58,7 +60,8 @@ data class DisplayEntity(
 
         override val name: String,
 
-        @Column
+        @Column(nullable = false)
+        @Enumerated(EnumType.STRING)
         private val resolution: Resolution,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Display(
