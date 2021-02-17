@@ -74,12 +74,9 @@ class DeviceServiceTest(
 
         // when/then
         shouldThrow<ItemAreadyExistsException> {
-            deviceService.createDevice(
-                    Display(
-                            id = computer.id,
-                            name = display.name,
-                            resolution = display.resolution,
-                    ))
+            deviceService.createDevice(display.copy(
+                    id = computer.id
+            ))
         }
 
         // then
