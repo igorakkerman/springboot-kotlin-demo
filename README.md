@@ -65,7 +65,9 @@ The application's persistence layer leverages JPA/Hibernate as the ORM, together
 To represent the data model in the relational database,
 out of JPA's four common inheritance mapping strategies, _table per class_ has been chosen.
 Each concrete device type, such as _computer_, has its own database table,
-avoiding nullable columns for values only available for that device type.
+avoiding nullable columns for values only available for that device type
+and also name clashes for semantically different values.
+
 No _join_ will be required for the queries, 
 while the polymorphic retrieval of all devices is supported through a _union_ query.
 The inheritance hierarchy of the entities at the persistence layer mirrors the data model.
