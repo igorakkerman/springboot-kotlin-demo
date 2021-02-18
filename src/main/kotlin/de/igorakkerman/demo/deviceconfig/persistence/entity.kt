@@ -80,7 +80,7 @@ fun Device.toEntity(): DeviceEntity =
             is Display -> this.toEntity()
         }
 
-fun Computer.toEntity(): ComputerEntity = ComputerEntity(
+fun Computer.toEntity() = ComputerEntity(
         id = this.id,
         name = this.name,
         username = this.username,
@@ -88,7 +88,7 @@ fun Computer.toEntity(): ComputerEntity = ComputerEntity(
         ipAddress = this.ipAddress,
 )
 
-fun Display.toEntity(): DisplayEntity = DisplayEntity(
+fun Display.toEntity() = DisplayEntity(
         id = this.id,
         name = this.name,
         resolution = this.resolution
