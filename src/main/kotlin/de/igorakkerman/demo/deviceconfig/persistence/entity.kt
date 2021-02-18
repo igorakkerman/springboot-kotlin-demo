@@ -7,7 +7,7 @@ import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.EnumType
+import javax.persistence.EnumType.STRING
 import javax.persistence.Enumerated
 import javax.persistence.Id
 import javax.persistence.Inheritance
@@ -64,7 +64,7 @@ data class DisplayEntity(
         override val name: String,
 
         @Column(nullable = false)
-        @Enumerated(EnumType.STRING)
+        @Enumerated(STRING)
         val resolution: Resolution,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Display(
