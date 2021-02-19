@@ -37,6 +37,7 @@ It provides an API endpoint that allows clients to:
 The solution follows the hexagonal architecture concepts.
 That is, the periphery components (persistence and API) reference the application logic,
 while the logic is self-contained.
+Wherever possible, objects are kept immutable.
 
 The logic in this CRU(D) application is trivial.
 Nevertheless, this approach was chosen in order to present the general development style.
