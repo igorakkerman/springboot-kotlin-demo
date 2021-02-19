@@ -4,3 +4,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+logging:
+  level:
+#    org.hibernate: DEBUG
+    org.hibernate.type: TRACE
+#    org.springframework.transaction: TRACE
