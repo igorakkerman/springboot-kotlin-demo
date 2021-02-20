@@ -2,7 +2,7 @@ package de.igorakkerman.demo.deviceconfig.persistence
 
 import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
-import de.igorakkerman.demo.deviceconfig.application.DeviceStore
+import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.DeviceUpdate
 import de.igorakkerman.demo.deviceconfig.application.ItemAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
@@ -14,7 +14,6 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
 @Configuration
@@ -23,15 +22,15 @@ import javax.persistence.PersistenceContext
 class JpaConfiguration {
     @Bean
     @PersistenceContext
-    fun deviceStore(deviceRepository: DeviceRepository) = DeviceJpaDatabase(deviceRepository)
+    fun deviceRepository(backingRepository: BackingRepository) = JpaDeviceRepository(backingRepository)
 }
 
-interface DeviceRepository : CrudRepository<DeviceEntity, DeviceId>
+interface BackingRepository : CrudRepository<DeviceEntity, DeviceId>
 
 @Repository
-class DeviceJpaDatabase(
-        private val repo: DeviceRepository,
-) : DeviceStore {
+class JpaDeviceRepository(
+        private val repo: BackingRepository,
+) : DeviceRepository {
 
     @Transactional
     override fun <Result> transactional(function: () -> Result): Result = function()
