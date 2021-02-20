@@ -85,6 +85,17 @@ The application provides a REST API to its clients with the following endpoints:
 - `GET /devices` lists the configurations of all devices
 
 ## Challenges and proposed solutions
+### Hexagonal Architecture
+Should Spring Boot annotations be allowed in core application package?
+
+Current solution: 
+The application package is fully framework-agnostic.
+Instead of having the `@Service` annotation on the service classes,
+the service beans are created through a `@Configuration` in the boot package.
+
+The annotation `@Transaction` would make sense on the service classes as well.
+However, it is put on the method ´transactional` in the JPA implementation
+of the `DeviceRepository` interface.
 ### JPA mapping strategy for polymorphic types
 ### REST PATCH: polymorphic types
 Goal: Allowing to update devices through a REST PATCH query, such as:
@@ -97,7 +108,7 @@ with a body as follows:
 }
 ```
 ideas:
-- required `type` argument, either in payload or in URL '
+- required `type` argument, either in payload or in URL
 - working with key/value maps
 questions:
 - who's responsibility is it to know how to update?
