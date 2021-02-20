@@ -1,13 +1,15 @@
 package de.igorakkerman.demo.deviceconfig
 
-import DeviceService
-import ItemAreadyExistsException
-import NoSuchItemException
 import de.igorakkerman.demo.deviceconfig.application.Computer
+import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
+import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
+import de.igorakkerman.demo.deviceconfig.application.ItemAreadyExistsException
+import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
 import de.igorakkerman.demo.deviceconfig.application.Resolution.HD
 import de.igorakkerman.demo.deviceconfig.application.Resolution.UHD
 import de.igorakkerman.demo.deviceconfig.persistence.JpaConfiguration
+import de.igorakkerman.demo.deviceconfig.boot.ServiceConfiguration
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactlyInAnyOrder
@@ -20,13 +22,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Propagation.SUPPORTS
 import org.springframework.transaction.annotation.Transactional
+import javax.persistence.EntityManager
 import javax.validation.ConstraintViolationException
 
 @DataJpaTest
 @ContextConfiguration(classes = [ServiceConfiguration::class, JpaConfiguration::class])
 class DeviceServiceIntegrationTest(
         @Autowired
-        val deviceService: DeviceService
+        val deviceService: DeviceService,
+
+        @Autowired
+        val entityManager: EntityManager
 ) {
 
     val computer = Computer(
@@ -49,6 +55,7 @@ class DeviceServiceIntegrationTest(
         // given
         deviceService.createDevice(computer)
         deviceService.createDevice(display)
+        flushAndClear()
 
         // when
         val foundDevice = deviceService.findDeviceById(display.id)
@@ -62,6 +69,7 @@ class DeviceServiceIntegrationTest(
 
         // given
         deviceService.createDevice(computer)
+        flushAndClear()
 
         // when
         val foundDevice = deviceService.findDeviceById(display.id)
@@ -71,20 +79,37 @@ class DeviceServiceIntegrationTest(
     }
 
     @Test
-    fun `creating two Devices with the same id should throw Exception`() {
+    fun `creating two Devices of same type with the same id should throw Exception`() {
 
         // given
         deviceService.createDevice(computer)
+        flushAndClear()
+
+        // when/then
+        shouldThrow<ItemAreadyExistsException> {
+            deviceService.createDevice(computer.copy(
+                    id = computer.id,
+                    name = "different name",
+                    username = "different username"
+            ))
+            flushAndClear()
+        }
+    }
+
+    @Test
+    fun `creating two Devices of different type with the same id should throw Exception`() {
+
+        // given
+        deviceService.createDevice(computer)
+        flushAndClear()
 
         // when/then
         shouldThrow<ItemAreadyExistsException> {
             deviceService.createDevice(display.copy(
                     id = computer.id
             ))
+            flushAndClear()
         }
-
-        // then
-        // exception thrown
     }
 
     @Test
@@ -92,19 +117,24 @@ class DeviceServiceIntegrationTest(
 
         // given
         deviceService.createDevice(display)
+        flushAndClear()
 
-        val newDisplay = Display(
-                id = display.id,
+        val displayUpdate = DisplayUpdate(
                 name = "deskscreen-0815",
                 resolution = HD
         )
 
         // when
-        deviceService.updateDevice(newDisplay)
-        val foundDevice = deviceService.findDeviceById(display.id)
+        deviceService.updateDevice(display.id, displayUpdate)
+        flushAndClear()
 
         // then
-        foundDevice shouldBe newDisplay
+        val foundDevice = deviceService.findDeviceById(display.id)
+        foundDevice shouldBe Display(
+                id = display.id,
+                name = displayUpdate.name!!,
+                resolution = displayUpdate.resolution!!
+        )
     }
 
     @Test
@@ -115,7 +145,7 @@ class DeviceServiceIntegrationTest(
 
         // when/then
         shouldThrow<NoSuchItemException> {
-            deviceService.updateDevice(display)
+            deviceService.updateDevice("unknown-id", DisplayUpdate())
         }
     }
 
@@ -125,6 +155,7 @@ class DeviceServiceIntegrationTest(
         // given
         deviceService.createDevice(computer)
         deviceService.createDevice(display)
+        flushAndClear()
 
         // when
         val foundDevices = deviceService.findAllDevices()
@@ -168,5 +199,10 @@ class DeviceServiceIntegrationTest(
         }
 
         generateSequence(thrown) { it.cause } shouldExist { it is ConstraintViolationException }
+    }
+
+    private fun flushAndClear() {
+        entityManager.flush()
+        entityManager.clear()
     }
 }

@@ -1,9 +1,12 @@
 package de.igorakkerman.demo.deviceconfig.persistence
 
 import de.igorakkerman.demo.deviceconfig.application.Computer
+import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
 import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
+import de.igorakkerman.demo.deviceconfig.application.DeviceUpdate
 import de.igorakkerman.demo.deviceconfig.application.Display
+import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -22,7 +25,7 @@ sealed class DeviceEntity(
         open val id: DeviceId,
 
         @Column(nullable = false)
-        open val name: String,
+        open var name: String,
 ) {
     abstract fun toDevice(): Device
 }
@@ -32,20 +35,20 @@ sealed class DeviceEntity(
 data class ComputerEntity(
         override val id: DeviceId,
 
-        override val name: String,
+        override var name: String,
 
         @Column(nullable = false)
-        val username: String,
+        var username: String,
 
         @Column(nullable = false)
-        val password: String,
+        var password: String,
 
         @Column(nullable = false)
         @field:Pattern(
                 regexp = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$",
                 message = "field: IPv4 address has invalid format",
         )
-        val ipAddress: String,
+        var ipAddress: String,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Computer(
             id = id,
@@ -61,11 +64,11 @@ data class ComputerEntity(
 data class DisplayEntity(
         override val id: DeviceId,
 
-        override val name: String,
+        override var name: String,
 
         @Column(nullable = false)
         @Enumerated(STRING)
-        val resolution: Resolution,
+        var resolution: Resolution,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Display(
             id = id,
@@ -93,3 +96,21 @@ fun Display.toEntity() = DisplayEntity(
         name = this.name,
         resolution = this.resolution
 )
+
+fun DeviceUpdate.updateEntity(entity: DeviceEntity) =
+        when (this) {
+            is ComputerUpdate -> this.updateEntity(entity as ComputerEntity)
+            is DisplayUpdate -> this.updateEntity(entity as DisplayEntity)
+        }
+
+fun ComputerUpdate.updateEntity(entity: ComputerEntity) {
+    if (name != null) entity.name = name
+    if (username != null) entity.username = username
+    if (password != null) entity.password = password
+    if (ipAddress != null) entity.ipAddress = ipAddress
+}
+
+fun DisplayUpdate.updateEntity(entity: DisplayEntity) {
+    if (name != null) entity.name = name
+    if (resolution != null) entity.resolution = resolution
+}
