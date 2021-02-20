@@ -26,7 +26,7 @@ import javax.validation.ConstraintViolationException
 
 @DataJpaTest
 @ContextConfiguration(classes = [JpaConfiguration::class])
-class DeviceRepositoryIntegrationTest(
+class DeviceRepositoryIntegrationTestBase(
         @Autowired
         val deviceRepository: DeviceRepository,
 
