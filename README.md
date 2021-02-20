@@ -84,3 +84,26 @@ The application provides a REST API to its clients with the following endpoints:
 - `GET /devices/<device id>` retrieves a single device configuration by the device id
 - `GET /devices` lists the configurations of all devices
 
+## Challenges and proposed solutions
+### JPA mapping strategy for polymorphic types
+### REST PATCH: polymorphic types
+Goal: Allowing to update devices through a REST PATCH query, such as:
+`PATCH /devices/lenovo-XR1823`
+with a body as follows:
+```json 
+{
+    "name": "pc-123",
+    "ipAddress": "1.1.1.1",
+}
+```
+ideas:
+- required `type` argument, either in payload or in URL '
+- working with key/value maps
+questions:
+- who's responsibility is it to know how to update?
+  - should the REST controller request the original data for the item
+    and replace the specified items?
+  - should the application logic be responsible for doing this?
+  - should this be left to the persistence layer that might perform an optimized database update?
+  The decision went for the latter option, so depending on the underlying 
+### REST PATCH: nullable fields 
