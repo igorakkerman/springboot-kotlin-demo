@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional
 import javax.validation.ConstraintViolationException
 
 @DataJpaTest
-@ContextConfiguration(classes = [DeviceService::class, JpaConfiguration::class])
+@ContextConfiguration(classes = [ServiceConfiguration::class, JpaConfiguration::class])
 class DeviceServiceIntegrationTest(
         @Autowired
         val deviceService: DeviceService
