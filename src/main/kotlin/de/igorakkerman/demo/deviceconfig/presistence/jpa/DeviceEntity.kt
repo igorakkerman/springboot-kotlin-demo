@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.deviceconfig.persistence
+package de.igorakkerman.demo.deviceconfig.presistence.jpa
 
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate

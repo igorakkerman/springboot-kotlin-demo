@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.deviceconfig
+package de.igorakkerman.demo.deviceconfig.persistence
 
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
@@ -6,9 +6,7 @@ import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.ItemAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
-import de.igorakkerman.demo.deviceconfig.application.Resolution.HD
-import de.igorakkerman.demo.deviceconfig.application.Resolution.UHD
-import de.igorakkerman.demo.deviceconfig.persistence.JpaConfiguration
+import de.igorakkerman.demo.deviceconfig.application.Resolution
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.containExactlyInAnyOrder
@@ -16,25 +14,16 @@ import io.kotest.matchers.sequences.shouldExist
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.transaction.annotation.Propagation.SUPPORTS
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
-import javax.persistence.EntityManager
 import javax.validation.ConstraintViolationException
 
-@DataJpaTest
-@ContextConfiguration(classes = [JpaConfiguration::class])
-class DeviceRepositoryIntegrationTestBase(
-        @Autowired
-        val deviceRepository: DeviceRepository,
-
-        @Autowired
-        val entityManager: EntityManager
+@Transactional
+abstract class DeviceRepositoryIntegrationTestBase(
+        private val deviceRepository: DeviceRepository,
 ) {
 
-    val computer = Computer(
+    private val computer = Computer(
             id = "pc-win10-0815",
             name = "workpc-0815",
             username = "root",
@@ -42,10 +31,10 @@ class DeviceRepositoryIntegrationTestBase(
             ipAddress = "127.0.0.1",
     )
 
-    val display = Display(
+    private val display = Display(
             id = "screen-samsung4k-4711",
             name = "workscreen-4711",
-            resolution = UHD
+            resolution = Resolution.UHD
     )
 
     @Test
@@ -120,7 +109,7 @@ class DeviceRepositoryIntegrationTestBase(
 
         val displayUpdate = DisplayUpdate(
                 name = "deskscreen-0815",
-                resolution = HD
+                resolution = Resolution.HD
         )
 
         // when
@@ -179,7 +168,7 @@ class DeviceRepositoryIntegrationTestBase(
     @Test
     // allow to catch TransactionException from repository transaction
     // alternative: run non-transactional, that is, outside a @DataJpaTest or @Transactional-annotated class
-    @Transactional(propagation = SUPPORTS)
+    @Transactional(propagation = Propagation.SUPPORTS)
     fun `ip address should have IPv4 format`() {
         // A bad ip address should not even make it to the application layer (or the persistence layer).
         // This test makes sure that if for some reason the prior level checks fail,
@@ -200,8 +189,5 @@ class DeviceRepositoryIntegrationTestBase(
         generateSequence(thrown) { it.cause } shouldExist { it is ConstraintViolationException }
     }
 
-    private fun flushAndClear() {
-        entityManager.flush()
-        entityManager.clear()
-    }
+    protected abstract fun flushAndClear()
 }
