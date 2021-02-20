@@ -17,10 +17,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
+
     testRuntimeOnly("com.h2database:h2:1.4.200")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
