@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.deviceconfig.api
+package de.igorakkerman.demo.deviceconfig.api.springmvc
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type

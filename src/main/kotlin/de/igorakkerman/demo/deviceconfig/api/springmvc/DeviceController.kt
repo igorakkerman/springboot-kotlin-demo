@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.deviceconfig.api
+package de.igorakkerman.demo.deviceconfig.api.springmvc
 
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
