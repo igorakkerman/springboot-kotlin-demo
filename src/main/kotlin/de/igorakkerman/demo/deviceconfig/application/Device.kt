@@ -19,6 +19,6 @@ data class Display(
         override val id: DeviceId,
         override val name: String,
         val resolution: Resolution
-):Device()
+) : Device()
 
 enum class Resolution { HD, QHD, UHD }
