@@ -5,10 +5,10 @@ sealed class DeviceUpdate(
 )
 
 data class ComputerUpdate(
-        override val name: String?,
-        val username: String?,
-        val password: String?,
-        val ipAddress: String?,
+        override val name: String? = null,
+        val username: String? = null,
+        val password: String? = null,
+        val ipAddress: String? = null,
 ) : DeviceUpdate(name)
 
 data class DisplayUpdate(
