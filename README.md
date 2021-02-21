@@ -29,7 +29,7 @@ It provides an API endpoint that allows clients to:
   In both cases, they would be stored in a separate part of the database with stricter access control
   and also have dedicated, additionally protected endpoints. 
 - Access control to the API and other security concerns are outside the scope.
-- No concurrency control on API level is required. 
+- Concurrency control on API level is not required. 
   When updating device information, a client may rely on previously requested data 
   that may have become stale by the time it sends an update.
 
