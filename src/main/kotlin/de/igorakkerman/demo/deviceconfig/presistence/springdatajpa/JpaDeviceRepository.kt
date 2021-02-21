@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.deviceconfig.presistence.jpa
+package de.igorakkerman.demo.deviceconfig.presistence.springdatajpa
 
 import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
