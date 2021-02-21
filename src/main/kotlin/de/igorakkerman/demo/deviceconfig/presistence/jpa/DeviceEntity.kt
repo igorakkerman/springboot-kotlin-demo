@@ -21,11 +21,11 @@ import javax.validation.constraints.Pattern
 @Entity
 @Inheritance(strategy = TABLE_PER_CLASS)
 sealed class DeviceEntity(
-        @Id
-        open val id: DeviceId,
+    @Id
+    open val id: DeviceId,
 
-        @Column(nullable = false)
-        open var name: String,
+    @Column(nullable = false)
+    open var name: String,
 ) {
     abstract fun toDevice(): Device
 }
@@ -33,75 +33,75 @@ sealed class DeviceEntity(
 @Entity
 @Table(name = "computer")
 data class ComputerEntity(
-        override val id: DeviceId,
+    override val id: DeviceId,
 
-        override var name: String,
+    override var name: String,
 
-        @Column(nullable = false)
-        var username: String,
+    @Column(nullable = false)
+    var username: String,
 
-        @Column(nullable = false)
-        var password: String,
+    @Column(nullable = false)
+    var password: String,
 
-        @Column(nullable = false)
-        @field:Pattern(
-                regexp = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$",
-                message = "field: IPv4 address has invalid format",
-        )
-        var ipAddress: String,
+    @Column(nullable = false)
+    @field:Pattern(
+        regexp = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$",
+        message = "field: IPv4 address has invalid format",
+    )
+    var ipAddress: String,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Computer(
-            id = id,
-            name = name,
-            username = username,
-            password = password,
-            ipAddress = ipAddress
+        id = id,
+        name = name,
+        username = username,
+        password = password,
+        ipAddress = ipAddress
     )
 }
 
 @Entity
 @Table(name = "display")
 data class DisplayEntity(
-        override val id: DeviceId,
+    override val id: DeviceId,
 
-        override var name: String,
+    override var name: String,
 
-        @Column(nullable = false)
-        @Enumerated(STRING)
-        var resolution: Resolution,
+    @Column(nullable = false)
+    @Enumerated(STRING)
+    var resolution: Resolution,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Display(
-            id = id,
-            name = name,
-            resolution = resolution,
+        id = id,
+        name = name,
+        resolution = resolution,
     )
 }
 
 fun Device.toEntity(): DeviceEntity =
-        when (this) {
-            is Computer -> this.toEntity()
-            is Display -> this.toEntity()
-        }
+    when (this) {
+        is Computer -> this.toEntity()
+        is Display -> this.toEntity()
+    }
 
 fun Computer.toEntity() = ComputerEntity(
-        id = this.id,
-        name = this.name,
-        username = this.username,
-        password = this.password,
-        ipAddress = this.ipAddress,
+    id = this.id,
+    name = this.name,
+    username = this.username,
+    password = this.password,
+    ipAddress = this.ipAddress,
 )
 
 fun Display.toEntity() = DisplayEntity(
-        id = this.id,
-        name = this.name,
-        resolution = this.resolution
+    id = this.id,
+    name = this.name,
+    resolution = this.resolution
 )
 
 fun DeviceUpdate.updateEntity(entity: DeviceEntity) =
-        when (this) {
-            is ComputerUpdate -> this.updateEntity(entity as ComputerEntity)
-            is DisplayUpdate -> this.updateEntity(entity as DisplayEntity)
-        }
+    when (this) {
+        is ComputerUpdate -> this.updateEntity(entity as ComputerEntity)
+        is DisplayUpdate -> this.updateEntity(entity as DisplayEntity)
+    }
 
 fun ComputerUpdate.updateEntity(entity: ComputerEntity) {
     if (name != null) entity.name = name

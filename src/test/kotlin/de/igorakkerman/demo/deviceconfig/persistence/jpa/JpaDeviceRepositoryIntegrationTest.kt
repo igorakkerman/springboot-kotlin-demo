@@ -11,12 +11,12 @@ import javax.persistence.EntityManager
 @DataJpaTest
 @ContextConfiguration(classes = [JpaConfiguration::class])
 class JpaDeviceRepositoryIntegrationTest(
-        @Autowired
-        private val deviceRepository: DeviceRepository,
+    @Autowired
+    private val deviceRepository: DeviceRepository,
 
-        @Autowired
-        private val entityManager: EntityManager
-): DeviceRepositoryTestBase(deviceRepository) {
+    @Autowired
+    private val entityManager: EntityManager
+) : DeviceRepositoryTestBase(deviceRepository) {
 
     override fun flushAndClear() {
         entityManager.flush()

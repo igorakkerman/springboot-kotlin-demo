@@ -20,21 +20,21 @@ import javax.validation.ConstraintViolationException
 
 @Transactional
 abstract class DeviceRepositoryTestBase(
-        private val deviceRepository: DeviceRepository,
+    private val deviceRepository: DeviceRepository,
 ) {
 
     private val computer = Computer(
-            id = "pc-win10-0815",
-            name = "workpc-0815",
-            username = "root",
-            password = "secret",
-            ipAddress = "127.0.0.1",
+        id = "pc-win10-0815",
+        name = "workpc-0815",
+        username = "root",
+        password = "secret",
+        ipAddress = "127.0.0.1",
     )
 
     private val display = Display(
-            id = "screen-samsung4k-4711",
-            name = "workscreen-4711",
-            resolution = Resolution.UHD
+        id = "screen-samsung4k-4711",
+        name = "workscreen-4711",
+        resolution = Resolution.UHD
     )
 
     @Test
@@ -75,11 +75,13 @@ abstract class DeviceRepositoryTestBase(
 
         // when/then
         shouldThrow<ItemAreadyExistsException> {
-            deviceRepository.createDevice(computer.copy(
+            deviceRepository.createDevice(
+                computer.copy(
                     id = computer.id,
                     name = "different name",
                     username = "different username"
-            ))
+                )
+            )
             flushAndClear()
         }
     }
@@ -93,9 +95,11 @@ abstract class DeviceRepositoryTestBase(
 
         // when/then
         shouldThrow<ItemAreadyExistsException> {
-            deviceRepository.createDevice(display.copy(
+            deviceRepository.createDevice(
+                display.copy(
                     id = computer.id
-            ))
+                )
+            )
             flushAndClear()
         }
     }
@@ -108,8 +112,8 @@ abstract class DeviceRepositoryTestBase(
         flushAndClear()
 
         val displayUpdate = DisplayUpdate(
-                name = "deskscreen-0815",
-                resolution = Resolution.HD
+            name = "deskscreen-0815",
+            resolution = Resolution.HD
         )
 
         // when
@@ -119,9 +123,9 @@ abstract class DeviceRepositoryTestBase(
         // then
         val foundDevice = deviceRepository.findDeviceById(display.id)
         foundDevice shouldBe Display(
-                id = display.id,
-                name = displayUpdate.name!!,
-                resolution = displayUpdate.resolution!!
+            id = display.id,
+            name = displayUpdate.name!!,
+            resolution = displayUpdate.resolution!!
         )
     }
 
@@ -178,7 +182,7 @@ abstract class DeviceRepositoryTestBase(
 
         // given
         val newComputer = computer.copy(
-                ipAddress = "::1"
+            ipAddress = "::1"
         )
 
         // when/then

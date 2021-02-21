@@ -1,13 +1,13 @@
 package de.igorakkerman.demo.deviceconfig.api.springmvc
 
-import de.igorakkerman.demo.deviceconfig.application.DeviceService
-import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
+import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
+import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,7 +19,7 @@ import javax.websocket.server.PathParam
 @RestController
 @RequestMapping("/devices")
 class DeviceController(
-        private val deviceService: DeviceService
+    private val deviceService: DeviceService
 ) {
     @GetMapping("/{deviceId}")
     fun findDeviceById(deviceId: DeviceId): Device? {
@@ -42,7 +42,7 @@ class DeviceController(
         val mapper = jacksonObjectMapper()
         val device = deviceService.findDeviceById(deviceId) ?: throw NoSuchItemException(deviceId)
 
-        val deviceUpdateMessage = when(device) {
+        val deviceUpdateMessage = when (device) {
             is Computer -> mapper.readValue<ComputerUpdateMessage>(requestBody)
             is Display -> mapper.readValue<DisplayUpdateMessage>(requestBody)
         }

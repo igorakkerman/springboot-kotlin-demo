@@ -1,7 +1,7 @@
 package de.igorakkerman.demo.deviceconfig.boot
 
-import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
+import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean

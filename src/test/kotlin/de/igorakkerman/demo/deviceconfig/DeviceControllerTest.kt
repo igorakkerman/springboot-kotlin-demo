@@ -4,7 +4,6 @@ import de.igorakkerman.demo.deviceconfig.api.springmvc.DeviceController
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.boot.Application
-import de.igorakkerman.demo.deviceconfig.boot.ServiceConfiguration
 import com.ninjasquad.springmockk.MockkBean
 import io.kotest.matchers.shouldBe
 import io.mockk.every

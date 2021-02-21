@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest(classes = [Application::class, ServiceConfiguration::class])
 class ApplicationConfigTest(
-        @Autowired
-        private val deviceController: DeviceController
+    @Autowired
+    private val deviceController: DeviceController
 ) {
     @Test
     fun contextLoads() {

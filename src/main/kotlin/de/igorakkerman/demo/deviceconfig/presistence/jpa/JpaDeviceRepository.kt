@@ -29,7 +29,7 @@ interface BackingRepository : CrudRepository<DeviceEntity, DeviceId>
 
 @Repository
 class JpaDeviceRepository(
-        private val repo: BackingRepository,
+    private val repo: BackingRepository,
 ) : DeviceRepository {
 
     @Transactional
@@ -42,7 +42,7 @@ class JpaDeviceRepository(
     }
 
     override fun findDeviceById(deviceId: DeviceId): Device? =
-            repo.findByIdOrNull(deviceId)?.toDevice()
+        repo.findByIdOrNull(deviceId)?.toDevice()
 
     override fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) {
         val deviceEntity = repo.findByIdOrNull(deviceId) ?: throw NoSuchItemException(deviceId)
@@ -50,5 +50,5 @@ class JpaDeviceRepository(
     }
 
     override fun findAllDevices(): List<Device> =
-            repo.findAll().map { it.toDevice() }
+        repo.findAll().map { it.toDevice() }
 }

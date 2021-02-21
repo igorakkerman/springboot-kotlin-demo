@@ -8,17 +8,17 @@ sealed class Device {
 }
 
 data class Computer(
-        override val id: DeviceId,
-        override val name: String,
-        val username: String,
-        val password: String,
-        val ipAddress: String
+    override val id: DeviceId,
+    override val name: String,
+    val username: String,
+    val password: String,
+    val ipAddress: String
 ) : Device()
 
 data class Display(
-        override val id: DeviceId,
-        override val name: String,
-        val resolution: Resolution
+    override val id: DeviceId,
+    override val name: String,
+    val resolution: Resolution
 ) : Device()
 
 enum class Resolution { HD, QHD, UHD }
