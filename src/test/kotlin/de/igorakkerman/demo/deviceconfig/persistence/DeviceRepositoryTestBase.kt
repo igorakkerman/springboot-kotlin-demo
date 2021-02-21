@@ -1,6 +1,7 @@
 package de.igorakkerman.demo.deviceconfig.persistence
 
 import de.igorakkerman.demo.deviceconfig.application.Computer
+import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
@@ -105,7 +106,31 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `create, then update Device, findDeviceById should return updated values`() {
+    fun `create, then update Computer, findDeviceById should return updated values`() {
+
+        // given
+        deviceRepository.createDevice(computer)
+        flushAndClear()
+
+        val computerUpdate = ComputerUpdate(
+            name = "deskscreen-0815",
+            ipAddress = "192.168.178.111"
+        )
+
+        // when
+        deviceRepository.updateDevice(computer.id, computerUpdate)
+        flushAndClear()
+
+        // then
+        val foundDevice = deviceRepository.findDeviceById(computer.id)
+        foundDevice shouldBe computer.copy(
+            name = computerUpdate.name!!,
+            ipAddress = computerUpdate.ipAddress!!
+        )
+    }
+
+    @Test
+    fun `create, then update Display, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(display)
@@ -122,8 +147,7 @@ abstract class DeviceRepositoryTestBase(
 
         // then
         val foundDevice = deviceRepository.findDeviceById(display.id)
-        foundDevice shouldBe Display(
-            id = display.id,
+        foundDevice shouldBe display.copy(
             name = displayUpdate.name!!,
             resolution = displayUpdate.resolution!!
         )
