@@ -8,13 +8,15 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
+import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import javax.websocket.server.PathParam
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/devices")
@@ -22,8 +24,9 @@ class DeviceController(
     private val deviceService: DeviceService
 ) {
     @GetMapping("/{deviceId}")
-    fun findDeviceById(deviceId: DeviceId): Device? {
+    fun findDeviceById(@PathVariable deviceId: DeviceId): Device? {
         return deviceService.findDeviceById(deviceId)
+            ?: throw ResponseStatusException(NOT_FOUND, "Device not found. deviceId=$deviceId")
     }
 
     @GetMapping
@@ -38,7 +41,7 @@ class DeviceController(
     }
 
     @PatchMapping("/{deviceId}")
-    fun updateDevice(@PathParam("deviceId") deviceId: String, @RequestBody requestBody: String) {
+    fun updateDevice(@PathVariable deviceId: String, @RequestBody requestBody: String) {
         val mapper = jacksonObjectMapper()
         val device = deviceService.findDeviceById(deviceId) ?: throw NoSuchItemException(deviceId)
 
