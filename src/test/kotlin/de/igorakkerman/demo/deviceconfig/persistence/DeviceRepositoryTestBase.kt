@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 import javax.validation.ConstraintViolationException
 
 @Transactional
-abstract class DeviceRepositoryIntegrationTestBase(
+abstract class DeviceRepositoryTestBase(
         private val deviceRepository: DeviceRepository,
 ) {
 
