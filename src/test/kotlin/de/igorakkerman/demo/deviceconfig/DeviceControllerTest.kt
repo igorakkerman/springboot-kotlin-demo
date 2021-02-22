@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
 @WebMvcTest(controllers = [DeviceController::class])
-//@AutoConfigureMockMvc
 @ContextConfiguration(classes = [Application::class, ServiceConfiguration::class])
 class DeviceControllerTest(
     @Autowired
@@ -65,6 +64,18 @@ class DeviceControllerTest(
             accept = APPLICATION_JSON
         }.andExpect {
             status { isNotFound() }
+        }
+    }
+
+    @Test
+    fun `request with wrong method should lead to 405 method not allowed`() {
+        val deviceId = "amiga2000-007"
+        every { deviceService.findDeviceById(deviceId) } returns null
+
+        mockMvc.post("/devices/$deviceId") {
+            accept = APPLICATION_JSON
+        }.andExpect {
+            status { isMethodNotAllowed() }
         }
     }
 }
