@@ -35,9 +35,9 @@ class DeviceController(
     }
 
     @PostMapping
-    fun createDevice(DeviceMessage: DeviceMessage) {
+    fun createDevice(deviceMessage: ComputerMessage) {
 
-        return deviceService.createDevice(DeviceMessage.toDevice())
+        return deviceService.createDevice(deviceMessage.toDevice())
     }
 
     @PatchMapping("/{deviceId}")
