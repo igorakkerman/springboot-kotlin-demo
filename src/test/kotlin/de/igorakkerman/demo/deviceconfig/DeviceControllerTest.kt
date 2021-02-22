@@ -3,6 +3,8 @@ package de.igorakkerman.demo.deviceconfig
 import de.igorakkerman.demo.deviceconfig.api.rest.springmvc.DeviceController
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
+import de.igorakkerman.demo.deviceconfig.application.Display
+import de.igorakkerman.demo.deviceconfig.application.Resolution
 import de.igorakkerman.demo.deviceconfig.boot.Application
 import de.igorakkerman.demo.deviceconfig.boot.ServiceConfiguration
 import com.ninjasquad.springmockk.MockkBean
@@ -28,9 +30,11 @@ class DeviceControllerTest(
 
     private val computerId = "macpro-m1-95014"
     private val computer = Computer(computerId, "best mac", "timapple", "0n3m0r3th1ng", "192.168.178.1")
+    private val displayId = "samsung-screen-88276"
+    private val display = Display(displayId, "favorite screen", Resolution.UHD)
 
     @Test
-    fun `device found by id should lead to response 200 with device data`() {
+    fun `computer found by id should lead to response 200 with device data`() {
         // given
 
         every { deviceService.findDeviceById(computerId) } returns computer
@@ -52,6 +56,33 @@ class DeviceControllerTest(
                             "ipAddress":"${computer.ipAddress}"
                         }
                      """, strict = true
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `display found by id should lead to response 200 with device data`() {
+
+        // given
+
+        every { deviceService.findDeviceById(displayId) } returns display
+
+        // when
+        mockMvc.get("/devices/$displayId") {
+            accept = APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+            content { APPLICATION_JSON }
+            content {
+                json(
+                    """
+                        {
+                            "id":"${display.id}",
+                            "name":"${display.name}",
+                            "resolution":"${display.resolution.name}"
+                        }
+                    """, strict = true
                 )
             }
         }
