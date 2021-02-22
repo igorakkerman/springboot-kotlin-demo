@@ -9,7 +9,6 @@ import de.igorakkerman.demo.deviceconfig.boot.Application
 import de.igorakkerman.demo.deviceconfig.boot.ServiceConfiguration
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -101,7 +100,7 @@ class DeviceControllerTest(
     }
 
     @Test
-    fun `request with wrong method should lead to 405 method not allowed`() {
+    fun `request with wrong method should lead to reponse 405 method not allowed`() {
         mockMvc.post("/devices/$computerId") {
             accept = APPLICATION_JSON
         }.andExpect {
