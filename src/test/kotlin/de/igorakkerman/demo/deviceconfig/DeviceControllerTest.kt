@@ -51,7 +51,7 @@ class DeviceControllerTest(
                             "password":"${computer.password}",
                             "ipAddress":"${computer.ipAddress}"
                         }
-                        """, strict = true
+                     """, strict = true
                 )
             }
         }
