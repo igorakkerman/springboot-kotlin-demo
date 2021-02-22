@@ -9,7 +9,6 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 
-
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
