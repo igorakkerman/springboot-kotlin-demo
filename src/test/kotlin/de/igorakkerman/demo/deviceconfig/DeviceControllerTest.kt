@@ -7,6 +7,7 @@ import de.igorakkerman.demo.deviceconfig.boot.Application
 import de.igorakkerman.demo.deviceconfig.boot.ServiceConfiguration
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -25,16 +26,17 @@ class DeviceControllerTest(
     @MockkBean
     private lateinit var deviceService: DeviceService
 
+    private val computerId = "macpro-m1-95014"
+    private val computer = Computer(computerId, "best mac", "timapple", "0n3m0r3th1ng", "192.168.178.1")
+
     @Test
     fun `device found by id should lead to response 200 with device data`() {
         // given
-        val deviceId = "macpro-m1-95014"
-        val computer = Computer(deviceId, "best mac", "timapple", "0n3m0r3th1ng", "192.168.178.1")
 
-        every { deviceService.findDeviceById(deviceId) } returns computer
+        every { deviceService.findDeviceById(computerId) } returns computer
 
         // when
-        mockMvc.get("/devices/$deviceId") {
+        mockMvc.get("/devices/$computerId") {
             accept = APPLICATION_JSON
         }.andExpect {
             status { isOk() }
@@ -69,10 +71,7 @@ class DeviceControllerTest(
 
     @Test
     fun `request with wrong method should lead to 405 method not allowed`() {
-        val deviceId = "amiga2000-007"
-        every { deviceService.findDeviceById(deviceId) } returns null
-
-        mockMvc.post("/devices/$deviceId") {
+        mockMvc.post("/devices/$computerId") {
             accept = APPLICATION_JSON
         }.andExpect {
             status { isMethodNotAllowed() }
