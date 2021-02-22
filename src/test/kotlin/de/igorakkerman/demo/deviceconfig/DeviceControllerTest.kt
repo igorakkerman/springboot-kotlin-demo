@@ -14,6 +14,7 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 
 @WebMvcTest(controllers = [DeviceController::class])
 //@AutoConfigureMockMvc
@@ -26,7 +27,7 @@ class DeviceControllerTest(
     private lateinit var deviceService: DeviceService
 
     @Test
-    fun `device found by id should be returned with 200`() {
+    fun `device found by id should lead to response 200 with device data`() {
         // given
         val deviceId = "macpro-m1-95014"
         val computer = Computer(deviceId, "best mac", "timapple", "0n3m0r3th1ng", "192.168.178.1")
@@ -56,7 +57,7 @@ class DeviceControllerTest(
     }
 
     @Test
-    fun `device not found by id should return null with 404`() {
+    fun `device not found by id should lead to response 404 not found`() {
         val deviceId = "amiga2000-007"
         every { deviceService.findDeviceById(deviceId) } returns null
 
