@@ -5,8 +5,8 @@ import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
-import de.igorakkerman.demo.deviceconfig.application.ItemAreadyExistsException
-import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
+import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
+import de.igorakkerman.demo.deviceconfig.application.NoSuchDeviceException
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.beEmpty
@@ -75,7 +75,7 @@ abstract class DeviceRepositoryTestBase(
         flushAndClear()
 
         // when/then
-        shouldThrow<ItemAreadyExistsException> {
+        shouldThrow<DeviceAreadyExistsException> {
             deviceRepository.createDevice(
                 computer.copy(
                     id = computer.id,
@@ -95,7 +95,7 @@ abstract class DeviceRepositoryTestBase(
         flushAndClear()
 
         // when/then
-        shouldThrow<ItemAreadyExistsException> {
+        shouldThrow<DeviceAreadyExistsException> {
             deviceRepository.createDevice(
                 display.copy(
                     id = computer.id
@@ -160,7 +160,7 @@ abstract class DeviceRepositoryTestBase(
         // empty database
 
         // when/then
-        shouldThrow<NoSuchItemException> {
+        shouldThrow<NoSuchDeviceException> {
             deviceRepository.updateDevice("unknown-id", DisplayUpdate())
         }
     }

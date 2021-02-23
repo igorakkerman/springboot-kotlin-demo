@@ -4,8 +4,8 @@ import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.DeviceUpdate
-import de.igorakkerman.demo.deviceconfig.application.ItemAreadyExistsException
-import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
+import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
+import de.igorakkerman.demo.deviceconfig.application.NoSuchDeviceException
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -37,7 +37,7 @@ class JpaDeviceRepository(
 
     override fun createDevice(device: Device) {
         if (repo.existsById(device.id))
-            throw ItemAreadyExistsException(device.id)
+            throw DeviceAreadyExistsException(device.id)
         repo.save(device.toEntity())
     }
 
@@ -45,7 +45,7 @@ class JpaDeviceRepository(
         repo.findByIdOrNull(deviceId)?.toDevice()
 
     override fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) {
-        val deviceEntity = repo.findByIdOrNull(deviceId) ?: throw NoSuchItemException(deviceId)
+        val deviceEntity = repo.findByIdOrNull(deviceId) ?: throw NoSuchDeviceException(deviceId)
         deviceUpdate.updateEntity(deviceEntity)
     }
 

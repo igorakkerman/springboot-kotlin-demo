@@ -7,7 +7,7 @@ import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
-import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
+import de.igorakkerman.demo.deviceconfig.application.NoSuchDeviceException
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.web.bind.annotation.GetMapping
@@ -47,7 +47,7 @@ class DeviceController(
     @PatchMapping("/{deviceId}")
     fun updateDevice(@PathVariable deviceId: String, @RequestBody requestBody: String) {
         val mapper = jacksonObjectMapper()
-        val device = deviceService.findDeviceById(deviceId) ?: throw NoSuchItemException(deviceId)
+        val device = deviceService.findDeviceById(deviceId) ?: throw NoSuchDeviceException(deviceId)
 
         val deviceUpdateMessage = when (device) {
             is Computer -> mapper.readValue<ComputerUpdateMessage>(requestBody)
