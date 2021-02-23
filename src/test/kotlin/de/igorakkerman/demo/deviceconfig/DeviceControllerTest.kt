@@ -47,14 +47,16 @@ class DeviceControllerTest(
             content {
                 json(
                     """
-                        {
-                            "id":"${computer.id}",
-                            "name":"${computer.name}",
-                            "username":"${computer.username}",
-                            "password":"${computer.password}",
-                            "ipAddress":"${computer.ipAddress}"
-                        }
-                     """, strict = true
+                            {
+                                "type": "computer",
+                                "id": "${computer.id}",
+                                "name": "${computer.name}",
+                                "username": "${computer.username}",
+                                "password": "${computer.password}",
+                                "ipAddress": "${computer.ipAddress}"
+                            }
+                    """,
+                    strict = true
                 )
             }
         }
@@ -77,11 +79,13 @@ class DeviceControllerTest(
                 json(
                     """
                         {
-                            "id":"${display.id}",
-                            "name":"${display.name}",
-                            "resolution":"${display.resolution.name}"
+                            "type": "display",
+                            "id": "${display.id}",
+                            "name": "${display.name}",
+                            "resolution": "${display.resolution.name}"
                         }
-                    """, strict = true
+                    """,
+                    strict = true
                 )
             }
         }
@@ -106,5 +110,40 @@ class DeviceControllerTest(
         }.andExpect {
             status { isMethodNotAllowed() }
         }
+    }
+
+    @Test
+    fun `POST create computer with valid data should lead to response 201 created`() {
+        // given
+        // deviceService.createDevice(computer) is relaxed
+
+        // when
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_JSON
+            content = """
+                {
+                    "type": "computer",
+                    "id": "${computer.id}",
+                    "name": "${computer.name}",
+                    "username": "${computer.username}",
+                    "password": "${computer.password}",
+                    "ipAddress": "${computer.ipAddress}"
+                }
+            """
+        }.andExpect {
+            status { isCreated() }
+        }
+    }
+
+    @Test
+    @Disabled
+    fun `POST create computer with missing body should lead to response 409 conflict`() {
+        // given
+
+        // when
+        mockMvc.post("/devices")
+            .andExpect {
+                status { isBadRequest() }
+            }
     }
 }
