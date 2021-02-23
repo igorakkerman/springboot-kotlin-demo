@@ -3,7 +3,6 @@ package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.igorakkerman.demo.deviceconfig.application.Computer
-import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
@@ -29,8 +28,8 @@ class DeviceController(
     private val deviceService: DeviceService
 ) {
     @GetMapping("/{deviceId}")
-    fun findDeviceById(@PathVariable deviceId: DeviceId): Device? {
-        return deviceService.findDeviceById(deviceId)
+    fun findDeviceById(@PathVariable deviceId: DeviceId): DeviceDocument {
+        return deviceService.findDeviceById(deviceId)?.toDocument()
             ?: throw ResponseStatusException(NOT_FOUND, "Device not found. deviceId=$deviceId")
     }
 
@@ -48,7 +47,7 @@ class DeviceController(
     }
 
     @PatchMapping("/{deviceId}")
-    fun updateDevice(@PathVariable deviceId: String, @RequestBody requestBody: String) {
+    fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody requestBody: String) {
         val mapper = jacksonObjectMapper()
         val device = deviceService.findDeviceById(deviceId) ?: throw NoSuchDeviceException(deviceId)
 
