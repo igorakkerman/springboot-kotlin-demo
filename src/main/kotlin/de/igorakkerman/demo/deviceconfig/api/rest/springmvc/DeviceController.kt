@@ -35,14 +35,14 @@ class DeviceController(
     }
 
     @GetMapping
-    fun findAllDevices(): List<DeviceMessage> {
-        return deviceService.findAllDevices().map { it.toMessage() }
+    fun findAllDevices(): List<DeviceDocument> {
+        return deviceService.findAllDevices().map { it.toDocument() }
     }
 
     @PostMapping
     @ResponseStatus(CREATED)
-    fun createDevice(@RequestBody deviceMessage: DeviceMessage) {
-        deviceService.createDevice(deviceMessage.toDevice())
+    fun createDevice(@RequestBody deviceDocument: DeviceDocument) {
+        deviceService.createDevice(deviceDocument.toDevice())
 
         // TODO: return ID of/URL to resource in header/body
     }
@@ -52,12 +52,12 @@ class DeviceController(
         val mapper = jacksonObjectMapper()
         val device = deviceService.findDeviceById(deviceId) ?: throw NoSuchDeviceException(deviceId)
 
-        val deviceUpdateMessage = when (device) {
-            is Computer -> mapper.readValue<ComputerUpdateMessage>(requestBody)
-            is Display -> mapper.readValue<DisplayUpdateMessage>(requestBody)
+        val deviceUpdateDocument = when (device) {
+            is Computer -> mapper.readValue<ComputerUpdateDocument>(requestBody)
+            is Display -> mapper.readValue<DisplayUpdateDocument>(requestBody)
         }
 
-        return deviceService.updateDevice(deviceId, deviceUpdateMessage.toUpdate())
+        return deviceService.updateDevice(deviceId, deviceUpdateDocument.toUpdate())
     }
 
     @ExceptionHandler(DeviceAreadyExistsException::class)

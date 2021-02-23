@@ -13,21 +13,21 @@ import de.igorakkerman.demo.deviceconfig.application.Resolution
     property = "type",
 )
 @JsonSubTypes(
-    JsonSubTypes.Type(value = ComputerUpdateMessage::class, name = "computer"),
-    JsonSubTypes.Type(value = DisplayUpdateMessage::class, name = "display"),
+    JsonSubTypes.Type(value = ComputerUpdateDocument::class, name = "computer"),
+    JsonSubTypes.Type(value = DisplayUpdateDocument::class, name = "display"),
 )
-sealed class DeviceUpdateMessage(
+sealed class DeviceUpdateDocument(
     open var name: String?,
 ) {
     abstract fun toUpdate(): DeviceUpdate
 }
 
-data class ComputerUpdateMessage(
+data class ComputerUpdateDocument(
     override var name: String? = null,
     var username: String? = null,
     var password: String? = null,
     var ipAddress: String? = null,
-) : DeviceUpdateMessage(name) {
+) : DeviceUpdateDocument(name) {
     override fun toUpdate() = ComputerUpdate(
         name = name,
         username = username,
@@ -36,10 +36,10 @@ data class ComputerUpdateMessage(
     )
 }
 
-data class DisplayUpdateMessage(
+data class DisplayUpdateDocument(
     override var name: String? = null,
     val resolution: Resolution? = null,
-) : DeviceUpdateMessage(name) {
+) : DeviceUpdateDocument(name) {
     override fun toUpdate() = DisplayUpdate(
         name = name,
         resolution = resolution,

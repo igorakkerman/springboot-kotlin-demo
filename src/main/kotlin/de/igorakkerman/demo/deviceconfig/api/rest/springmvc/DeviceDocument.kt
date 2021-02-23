@@ -15,23 +15,23 @@ import de.igorakkerman.demo.deviceconfig.application.Resolution
     property = "type",
 )
 @JsonSubTypes(
-    Type(value = ComputerMessage::class, name = "computer"),
-    Type(value = DisplayMessage::class, name = "display"),
+    Type(value = ComputerDocument::class, name = "computer"),
+    Type(value = DisplayDocument::class, name = "display"),
 )
-sealed class DeviceMessage(
+sealed class DeviceDocument(
     open val id: DeviceId,
     open val name: String,
 ) {
     abstract fun toDevice(): Device
 }
 
-data class ComputerMessage(
+data class ComputerDocument(
     override val id: DeviceId,
     override val name: String,
     val username: String,
     val password: String,
     val ipAddress: String,
-) : DeviceMessage(id, name) {
+) : DeviceDocument(id, name) {
     override fun toDevice() = Computer(
         id = id,
         name = name,
@@ -41,11 +41,11 @@ data class ComputerMessage(
     )
 }
 
-data class DisplayMessage(
+data class DisplayDocument(
     override val id: DeviceId,
     override val name: String,
     val resolution: Resolution,
-) : DeviceMessage(id, name) {
+) : DeviceDocument(id, name) {
     override fun toDevice() = Display(
         id = id,
         name = name,
@@ -53,13 +53,13 @@ data class DisplayMessage(
     )
 }
 
-fun Device.toMessage(): DeviceMessage =
+fun Device.toDocument(): DeviceDocument =
     when (this) {
-        is Computer -> this.toMessage()
-        is Display -> this.toMessage()
+        is Computer -> this.toDocument()
+        is Display -> this.toDocument()
     }
 
-fun Computer.toMessage() = ComputerMessage(
+fun Computer.toDocument() = ComputerDocument(
     id = this.id,
     name = this.name,
     username = this.username,
@@ -67,7 +67,7 @@ fun Computer.toMessage() = ComputerMessage(
     ipAddress = this.ipAddress,
 )
 
-fun Display.toMessage(): DisplayMessage = DisplayMessage(
+fun Display.toDocument(): DisplayDocument = DisplayDocument(
     id = this.id,
     name = this.name,
     resolution = this.resolution
