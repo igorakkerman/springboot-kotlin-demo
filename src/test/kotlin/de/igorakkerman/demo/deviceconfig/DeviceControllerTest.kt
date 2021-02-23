@@ -33,7 +33,7 @@ class DeviceControllerTest(
     private val display = Display(displayId, "favorite screen", Resolution.UHD)
 
     @Test
-    fun `computer found by id should lead to response 200 with device data`() {
+    fun `GET computer found by id should lead to response 200 with device data`() {
         // given
 
         every { deviceService.findDeviceById(computerId) } returns computer
@@ -61,7 +61,7 @@ class DeviceControllerTest(
     }
 
     @Test
-    fun `display found by id should lead to response 200 with device data`() {
+    fun `GET display found by id should lead to response 200 with device data`() {
 
         // given
 
@@ -88,7 +88,7 @@ class DeviceControllerTest(
     }
 
     @Test
-    fun `device not found by id should lead to response 404 not found`() {
+    fun `GET device not found by id should lead to response 404 not found`() {
         val deviceId = "amiga2000-007"
         every { deviceService.findDeviceById(deviceId) } returns null
 
@@ -100,7 +100,7 @@ class DeviceControllerTest(
     }
 
     @Test
-    fun `request with wrong method should lead to reponse 405 method not allowed`() {
+    fun `find device by id request with wrong method should lead to reponse 405 method not allowed`() {
         mockMvc.post("/devices/$computerId") {
             accept = APPLICATION_JSON
         }.andExpect {
