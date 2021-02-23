@@ -131,9 +131,10 @@ class DeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
-        }.andExpect {
-            status { isCreated() }
         }
+            .andExpect {
+                status { isCreated() }
+            }
     }
 
     @Test
