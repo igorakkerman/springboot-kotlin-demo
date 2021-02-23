@@ -53,22 +53,3 @@ class DeviceController(
         return deviceService.updateDevice(deviceId, deviceUpdateMessage.toUpdate())
     }
 }
-
-/*
-{
-    "devices" = [
-        {
-            "type": "computer"
-            "name": "...",
-            "ipAddress": "1.1.1.1",
-            ...
-        },
-        {
-            "type": "display",
-            "name": "...",
-            "resolution: "HD"
-        },
-        ...
-    ]
-}
-*/
