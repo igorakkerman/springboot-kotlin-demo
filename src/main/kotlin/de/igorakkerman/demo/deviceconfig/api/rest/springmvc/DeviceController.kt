@@ -4,12 +4,15 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.Device
+import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.NoSuchDeviceException
+import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -56,4 +59,9 @@ class DeviceController(
 
         return deviceService.updateDevice(deviceId, deviceUpdateMessage.toUpdate())
     }
+
+    @ExceptionHandler(DeviceAreadyExistsException::class)
+    @ResponseStatus(CONFLICT)
+    fun deviceAlreadyExists(exception: DeviceAreadyExistsException): ErrorResponseBody =
+        ErrorResponseBody("A device with id ${exception.deviceId} already exists.")
 }

@@ -18,5 +18,5 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
     }
 }
 
-class NoSuchDeviceException(deviceId: DeviceId) : RuntimeException(deviceId)
-class DeviceAreadyExistsException(deviceId: DeviceId) : RuntimeException(deviceId)
+class NoSuchDeviceException(deviceId: DeviceId) : RuntimeException("No such device. deviceId=$deviceId")
+class DeviceAreadyExistsException(val deviceId: DeviceId) : RuntimeException("Device already exists. deviceId=$deviceId")

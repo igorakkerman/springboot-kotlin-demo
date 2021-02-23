@@ -73,3 +73,4 @@ fun Display.toMessage(): DisplayMessage = DisplayMessage(
     resolution = this.resolution
 )
 
+data class ErrorResponseBody(val message: String)
