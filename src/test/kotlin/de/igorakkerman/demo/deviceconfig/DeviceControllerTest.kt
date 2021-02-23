@@ -117,6 +117,17 @@ class DeviceControllerTest(
     }
 
     @Test
+    fun `find device by id request with wrong 'accept' media type should lead to reponse 406 not acceptable`() {
+        every { deviceService.findDeviceById(computerId) } returns computer
+
+        mockMvc.get("/devices/$computerId") {
+            accept = APPLICATION_XML
+        }.andExpect {
+            status { isNotAcceptable() }
+        }
+    }
+
+    @Test
     fun `POST create computer with valid data should lead to response 201 created`() {
         // given
         // deviceService.createDevice(computer) is relaxed
