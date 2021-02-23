@@ -8,6 +8,7 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.NoSuchItemException
+import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
@@ -35,9 +37,11 @@ class DeviceController(
     }
 
     @PostMapping
-    fun createDevice(deviceMessage: ComputerMessage) {
+    @ResponseStatus(CREATED)
+    fun createDevice(@RequestBody deviceMessage: DeviceMessage) {
+        deviceService.createDevice(deviceMessage.toDevice())
 
-        return deviceService.createDevice(deviceMessage.toDevice())
+        // TODO: return ID of/URL to resource in header/body
     }
 
     @PatchMapping("/{deviceId}")
