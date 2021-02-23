@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.MediaType.APPLICATION_XML
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -181,14 +182,21 @@ class DeviceControllerTest(
     }
 
     @Test
-    @Disabled
-    fun `POST create computer with missing body should lead to response 409 conflict`() {
-        // given
+    fun `POST create computer with missing body should lead to response 400 bad request`() {
+        // when/then
+        mockMvc.post("/devices").andExpect {
+            status { isBadRequest() }
+        }
+    }
 
-        // when
-        mockMvc.post("/devices")
-            .andExpect {
-                status { isBadRequest() }
-            }
+    @Test
+    fun `POST create computer with non-JSON body should lead to response 415 unsupported media type`() {
+        // when/then
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_XML
+            content = """<computer id="ourgoodold386" />"""
+        }.andExpect {
+            status { isUnsupportedMediaType() }
+        }
     }
 }
