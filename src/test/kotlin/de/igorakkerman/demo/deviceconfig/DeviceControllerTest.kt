@@ -68,7 +68,6 @@ class DeviceControllerTest(
     fun `GET display found by id should lead to response 200 with device data`() {
 
         // given
-
         every { deviceService.findDeviceById(displayId) } returns display
 
         // when
@@ -95,9 +94,12 @@ class DeviceControllerTest(
 
     @Test
     fun `GET device not found by id should lead to response 404 not found`() {
+
+        // given
         val deviceId = "amiga2000-007"
         every { deviceService.findDeviceById(deviceId) } returns null
 
+        // when/then
         mockMvc.get("/devices/$deviceId") {
             accept = APPLICATION_JSON
         }.andExpect {
