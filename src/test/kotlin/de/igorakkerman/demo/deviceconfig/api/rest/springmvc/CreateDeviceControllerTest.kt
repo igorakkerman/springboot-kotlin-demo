@@ -8,7 +8,9 @@ import de.igorakkerman.demo.deviceconfig.application.Resolution
 import de.igorakkerman.demo.deviceconfig.springboot.Application
 import de.igorakkerman.demo.deviceconfig.springboot.ServiceConfiguration
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.Called
 import io.mockk.every
+import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -36,7 +38,7 @@ class CreateDeviceControllerTest(
         // given
         // deviceService.createDevice(computer) is relaxed
 
-        // when
+        // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
             content = """
@@ -49,10 +51,13 @@ class CreateDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
+        }.andExpect {
+            status { isCreated() }
         }
-            .andExpect {
-                status { isCreated() }
-            }
+
+        verify {
+            deviceService.createDevice(computer)
+        }
     }
 
     @Test
@@ -60,7 +65,7 @@ class CreateDeviceControllerTest(
         // given
         // deviceService.createDevice(computer) is relaxed
 
-        // when
+        // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
             content = """
@@ -71,10 +76,13 @@ class CreateDeviceControllerTest(
                     "resolution": "${display.resolution}"
                 }
             """
+        }.andExpect {
+            status { isCreated() }
         }
-            .andExpect {
-                status { isCreated() }
-            }
+
+        verify {
+            deviceService.createDevice(display)
+        }
     }
 
     @Test
@@ -82,7 +90,7 @@ class CreateDeviceControllerTest(
         // given
         // deviceService.createDevice(computer) is relaxed
 
-        // when
+        // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
             // mandatory password value is missing
@@ -99,6 +107,11 @@ class CreateDeviceControllerTest(
             .andExpect {
                 status { isBadRequest() }
             }
+
+        verify {
+            deviceService wasNot Called
+        }
+
     }
 
     @Test
@@ -106,7 +119,7 @@ class CreateDeviceControllerTest(
         // given
         every { deviceService.createDevice(computer) } throws DeviceAreadyExistsException(computer.id)
 
-        // when/then second request with same id
+        // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
             content = """
@@ -130,6 +143,10 @@ class CreateDeviceControllerTest(
                     """
                 )
             }
+        }
+
+        verify {
+            deviceService.createDevice(computer)
         }
     }
 }
