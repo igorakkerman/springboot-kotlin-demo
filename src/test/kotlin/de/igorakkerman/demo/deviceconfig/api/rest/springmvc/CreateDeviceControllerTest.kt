@@ -120,23 +120,4 @@ class CreateDeviceControllerTest(
             }
         }
     }
-
-    @Test
-    fun `create computer with missing body should lead to response 400 bad request`() {
-        // when/then
-        mockMvc.post("/devices").andExpect {
-            status { isBadRequest() }
-        }
-    }
-
-    @Test
-    fun `create computer with non-JSON body should lead to response 415 unsupported media type`() {
-        // when/then
-        mockMvc.post("/devices") {
-            contentType = APPLICATION_XML
-            content = """<computer id="ourgoodold386" />"""
-        }.andExpect {
-            status { isUnsupportedMediaType() }
-        }
-    }
 }

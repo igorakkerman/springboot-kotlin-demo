@@ -104,24 +104,4 @@ class FindDeviceByIdControllerTest(
             status { isNotFound() }
         }
     }
-
-    @Test
-    fun `request with wrong method should lead to reponse 405 method not allowed`() {
-        mockMvc.post("/devices/$computerId") {
-            accept = APPLICATION_JSON
-        }.andExpect {
-            status { isMethodNotAllowed() }
-        }
-    }
-
-    @Test
-    fun `request with wrong 'accept' media type should lead to reponse 406 not acceptable`() {
-        every { deviceService.findDeviceById(computerId) } returns computer
-
-        mockMvc.get("/devices/$computerId") {
-            accept = APPLICATION_XML
-        }.andExpect {
-            status { isNotAcceptable() }
-        }
-    }
 }
