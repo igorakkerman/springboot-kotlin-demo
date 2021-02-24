@@ -21,4 +21,4 @@ data class Display(
     val resolution: Resolution
 ) : Device()
 
-enum class Resolution { HD, QHD, UHD }
+enum class Resolution { HD, WQHD, UHD }
