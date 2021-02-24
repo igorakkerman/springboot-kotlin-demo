@@ -78,6 +78,30 @@ class CreateDeviceControllerTest(
     }
 
     @Test
+    fun `create computer with incomplete data should lead to response 400 bad request`() {
+        // given
+        // deviceService.createDevice(computer) is relaxed
+
+        // when
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_JSON
+            // mandatory password value is missing
+            content = """
+                {
+                    "type": "computer",
+                    "id": "${computer.id}",
+                    "name": "${computer.name}",
+                    "username": "${computer.username}",
+                    "ipAddress": "${computer.ipAddress}"
+                }
+            """
+        }
+            .andExpect {
+                status { isBadRequest() }
+            }
+    }
+
+    @Test
     fun `create computer with existing id should lead to response 409 conflict`() {
         // given
         every { deviceService.createDevice(computer) } throws DeviceAreadyExistsException(computer.id)
