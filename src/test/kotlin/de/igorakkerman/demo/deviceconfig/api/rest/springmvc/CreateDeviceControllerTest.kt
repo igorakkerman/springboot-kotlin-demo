@@ -1,6 +1,5 @@
 package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
-import de.igorakkerman.demo.deviceconfig.api.rest.springmvc.DeviceController
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType.APPLICATION_JSON
-import org.springframework.http.MediaType.APPLICATION_XML
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
@@ -82,32 +80,22 @@ class CreateDeviceControllerTest(
     @Test
     fun `create computer with existing id should lead to response 409 conflict`() {
         // given
-        every { deviceService.createDevice(computer) }
-            .returns(Unit)
-            .andThenThrows(DeviceAreadyExistsException(computer.id))
-
-        fun postCreateComputerRequest() =
-            mockMvc.post("/devices") {
-                contentType = APPLICATION_JSON
-                content = """
-                    {
-                        "type": "computer",
-                        "id": "${computer.id}",
-                        "name": "${computer.name}",
-                        "username": "${computer.username}",
-                        "password": "${computer.password}",
-                        "ipAddress": "${computer.ipAddress}"
-                    }
-                """
-            }
-
-        // when/then first request
-        postCreateComputerRequest().andExpect {
-            status { isCreated() }
-        }
+        every { deviceService.createDevice(computer) } throws DeviceAreadyExistsException(computer.id)
 
         // when/then second request with same id
-        postCreateComputerRequest().andExpect {
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_JSON
+            content = """
+                {
+                    "type": "computer",
+                    "id": "${computer.id}",
+                    "name": "${computer.name}",
+                    "username": "${computer.username}",
+                    "password": "${computer.password}",
+                    "ipAddress": "${computer.ipAddress}"
+                }
+            """
+        }.andExpect {
             status { isConflict() }
             content {
                 json(
