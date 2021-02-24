@@ -1,6 +1,5 @@
 package de.igorakkerman.demo.deviceconfig
 
-import de.igorakkerman.demo.deviceconfig.api.rest.springmvc.DeviceController
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
@@ -124,91 +123,6 @@ class FindDeviceByIdControllerTest(
             accept = APPLICATION_XML
         }.andExpect {
             status { isNotAcceptable() }
-        }
-    }
-
-    @Test
-    fun `POST create computer with valid data should lead to response 201 created`() {
-        // given
-        // deviceService.createDevice(computer) is relaxed
-
-        // when
-        mockMvc.post("/devices") {
-            contentType = APPLICATION_JSON
-            content = """
-                {
-                    "type": "computer",
-                    "id": "${computer.id}",
-                    "name": "${computer.name}",
-                    "username": "${computer.username}",
-                    "password": "${computer.password}",
-                    "ipAddress": "${computer.ipAddress}"
-                }
-            """
-        }
-            .andExpect {
-                status { isCreated() }
-            }
-    }
-
-    @Test
-    fun `POST create computer with existing id should lead to response 409 conflict`() {
-        // given
-        every { deviceService.createDevice(computer) }
-            .returns(Unit)
-            .andThenThrows(DeviceAreadyExistsException(computer.id))
-
-        fun postCreateComputerRequest() =
-            mockMvc.post("/devices") {
-                contentType = APPLICATION_JSON
-                content = """
-                    {
-                        "type": "computer",
-                        "id": "${computer.id}",
-                        "name": "${computer.name}",
-                        "username": "${computer.username}",
-                        "password": "${computer.password}",
-                        "ipAddress": "${computer.ipAddress}"
-                    }
-                """
-            }
-
-        // when/then first request
-        postCreateComputerRequest().andExpect {
-            status { isCreated() }
-        }
-
-        // when/then second request with same id
-        postCreateComputerRequest().andExpect {
-            status { isConflict() }
-            content {
-                json(
-                    """
-                            {
-                                "message": "A device with id ${computer.id} already exists."
-                            }
-                    """
-                )
-            }
-        }
-    }
-
-    @Test
-    fun `POST create computer with missing body should lead to response 400 bad request`() {
-        // when/then
-        mockMvc.post("/devices").andExpect {
-            status { isBadRequest() }
-        }
-    }
-
-    @Test
-    fun `POST create computer with non-JSON body should lead to response 415 unsupported media type`() {
-        // when/then
-        mockMvc.post("/devices") {
-            contentType = APPLICATION_XML
-            content = """<computer id="ourgoodold386" />"""
-        }.andExpect {
-            status { isUnsupportedMediaType() }
         }
     }
 }
