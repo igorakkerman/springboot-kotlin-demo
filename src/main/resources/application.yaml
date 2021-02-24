@@ -9,6 +9,7 @@ spring:
 
 logging:
   level:
+    de.igorakkerman.demo: DEBUG
 #    org.hibernate: DEBUG
     org.hibernate.type: TRACE
 #    org.springframework.transaction: TRACE

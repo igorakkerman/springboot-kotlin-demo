@@ -21,6 +21,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.4")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")

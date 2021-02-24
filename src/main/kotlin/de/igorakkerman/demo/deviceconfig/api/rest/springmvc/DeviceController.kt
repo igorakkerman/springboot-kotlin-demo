@@ -27,22 +27,29 @@ import org.springframework.web.server.ResponseStatusException
 class DeviceController(
     private val deviceService: DeviceService
 ) {
+    private val log = KotlinLogging.logger {}
+
     @GetMapping("/{deviceId}")
     fun findDeviceById(@PathVariable deviceId: DeviceId): DeviceDocument {
-        return deviceService.findDeviceById(deviceId)?.toDocument()
+        return deviceService.findDeviceById(deviceId)
+            ?.toDocument()
+            ?.also { log.info { "Device found. document: $it" } }
             ?: throw ResponseStatusException(NOT_FOUND, "Device not found. deviceId=$deviceId")
+                .also {log.info {it}}
     }
 
     @GetMapping
     fun findAllDevices(): List<DeviceDocument> {
         return deviceService.findAllDevices().map { it.toDocument() }
+            .also { log.info { "Devices found. document: $it" } }
     }
 
     @PostMapping
     @ResponseStatus(CREATED)
     fun createDevice(@RequestBody deviceDocument: DeviceDocument) {
-        deviceService.createDevice(deviceDocument.toDevice())
-
+        deviceService.createDevice(deviceDocument.toDevice()
+            .also { log.info { "Creating device. document: $it" } }
+        )
         // TODO: return ID of/URL to resource in header/body
     }
 
