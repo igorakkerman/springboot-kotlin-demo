@@ -1,13 +1,16 @@
 package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.igorakkerman.demo.deviceconfig.application.Computer
+import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
-import de.igorakkerman.demo.deviceconfig.application.NoSuchDeviceException
+import mu.KotlinLogging
+import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
+import kotlin.reflect.KClass
 
 @RestController
 @RequestMapping("/devices")
@@ -35,7 +39,7 @@ class DeviceController(
             ?.toDocument()
             ?.also { log.info { "Device found. document: $it" } }
             ?: throw ResponseStatusException(NOT_FOUND, "Device not found. deviceId=$deviceId")
-                .also {log.info {it}}
+                .also { log.info { it } }
     }
 
     @GetMapping
@@ -54,16 +58,29 @@ class DeviceController(
     }
 
     @PatchMapping("/{deviceId}")
-    fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody requestBody: String) {
-        val mapper = jacksonObjectMapper()
-        val device = deviceService.findDeviceById(deviceId) ?: throw NoSuchDeviceException(deviceId)
+    @Suppress("MoveVariableDeclarationIntoWhen")
+    fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
+        try {
+            log.info { "Updating device. deviceId: $deviceId, document: $updateDocument" }
 
-        val deviceUpdateDocument = when (device) {
-            is Computer -> mapper.readValue<ComputerUpdateDocument>(requestBody)
-            is Display -> mapper.readValue<DisplayUpdateDocument>(requestBody)
+            val mapper = jacksonObjectMapper()
+            val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
+            log.debug { "Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}" }
+
+            val deviceUpdateDocument = when (deviceType) {
+                Computer::class -> mapper.readValue<ComputerUpdateDocument>(updateDocument)
+                Display::class -> mapper.readValue<DisplayUpdateDocument>(updateDocument)
+                else -> throw IllegalStateException("Unexpected bad type!")
+            }
+
+            // TODO: return ID of/URL to resource in header/body
+            deviceService.updateDevice(deviceId, deviceUpdateDocument.toUpdate())
+
+            log.info("Device updated. deviceId: $deviceId")
+        } catch (exception: JsonProcessingException) {
+            throw ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
+                .also { log.info { it } }
         }
-
-        return deviceService.updateDevice(deviceId, deviceUpdateDocument.toUpdate())
     }
 
     @ExceptionHandler(DeviceAreadyExistsException::class)

@@ -7,15 +7,6 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceUpdate
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY,
-    property = "type",
-)
-@JsonSubTypes(
-    JsonSubTypes.Type(value = ComputerUpdateDocument::class, name = "computer"),
-    JsonSubTypes.Type(value = DisplayUpdateDocument::class, name = "display"),
-)
 sealed class DeviceUpdateDocument(
     open var name: String?,
 ) {
