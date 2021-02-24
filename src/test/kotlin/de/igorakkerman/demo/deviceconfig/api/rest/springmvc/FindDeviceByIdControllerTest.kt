@@ -1,7 +1,6 @@
-package de.igorakkerman.demo.deviceconfig
+package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
 import de.igorakkerman.demo.deviceconfig.application.Computer
-import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution

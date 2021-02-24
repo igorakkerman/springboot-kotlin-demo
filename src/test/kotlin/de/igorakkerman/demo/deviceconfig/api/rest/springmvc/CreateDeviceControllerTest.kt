@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.deviceconfig
+package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
 import de.igorakkerman.demo.deviceconfig.api.rest.springmvc.DeviceController
 import de.igorakkerman.demo.deviceconfig.application.Computer
@@ -17,7 +17,6 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.MediaType.APPLICATION_XML
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 
 @WebMvcTest(controllers = [DeviceController::class])
