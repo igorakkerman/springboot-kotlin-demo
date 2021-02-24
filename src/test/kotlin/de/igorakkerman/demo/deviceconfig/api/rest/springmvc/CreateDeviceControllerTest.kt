@@ -58,6 +58,28 @@ class CreateDeviceControllerTest(
     }
 
     @Test
+    fun `create display with valid data should lead to response 201 created`() {
+        // given
+        // deviceService.createDevice(computer) is relaxed
+
+        // when
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_JSON
+            content = """
+                {
+                    "type": "display",
+                    "id": "${display.id}",
+                    "name": "${display.name}",
+                    "resolution": "${display.resolution}"
+                }
+            """
+        }
+            .andExpect {
+                status { isCreated() }
+            }
+    }
+
+    @Test
     fun `create computer with existing id should lead to response 409 conflict`() {
         // given
         every { deviceService.createDevice(computer) }
