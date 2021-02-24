@@ -47,10 +47,12 @@ abstract class DeviceRepositoryTestBase(
         flushAndClear()
 
         // when
-        val foundDevice = deviceRepository.findDeviceById(display.id)
+        val foundComputer = deviceRepository.findDeviceById(computer.id)
+        val foundDisplay = deviceRepository.findDeviceById(display.id)
 
         // then
-        foundDevice shouldBe display
+        foundComputer shouldBe computer
+        foundDisplay shouldBe display
     }
 
     @Test
@@ -65,6 +67,23 @@ abstract class DeviceRepositoryTestBase(
 
         // then
         foundDevice shouldBe null
+    }
+
+    @Test
+    fun `create two Devices, findDeviceTypeById should find the type`() {
+
+        // given
+        deviceRepository.createDevice(computer)
+        deviceRepository.createDevice(display)
+        flushAndClear()
+
+        // when
+        val foundDisplayType = deviceRepository.findDeviceTypeById(display.id)
+        val foundComputerType = deviceRepository.findDeviceTypeById(computer.id)
+
+        // then
+        foundComputerType shouldBe Computer::class
+        foundDisplayType shouldBe Display::class
     }
 
     @Test

@@ -1,10 +1,10 @@
 package de.igorakkerman.demo.deviceconfig.presistence.springdatajpa
 
 import de.igorakkerman.demo.deviceconfig.application.Device
+import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.DeviceUpdate
-import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.NoSuchDeviceException
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Bean
@@ -15,6 +15,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.PersistenceContext
+import kotlin.reflect.KClass
 
 @Configuration
 @EnableJpaRepositories
@@ -43,6 +44,9 @@ class JpaDeviceRepository(
 
     override fun findDeviceById(deviceId: DeviceId): Device? =
         repo.findByIdOrNull(deviceId)?.toDevice()
+
+    override fun findDeviceTypeById(deviceId: DeviceId): KClass<out Device> =
+        repo.findByIdOrNull(deviceId)?.deviceType() ?: throw NoSuchDeviceException(deviceId)
 
     override fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) {
         val deviceEntity = repo.findByIdOrNull(deviceId) ?: throw NoSuchDeviceException(deviceId)

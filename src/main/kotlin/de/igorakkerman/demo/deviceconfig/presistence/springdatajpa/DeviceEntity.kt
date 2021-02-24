@@ -17,6 +17,7 @@ import javax.persistence.Inheritance
 import javax.persistence.InheritanceType.TABLE_PER_CLASS
 import javax.persistence.Table
 import javax.validation.constraints.Pattern
+import kotlin.reflect.KClass
 
 @Entity
 @Inheritance(strategy = TABLE_PER_CLASS)
@@ -28,6 +29,7 @@ sealed class DeviceEntity(
     open var name: String,
 ) {
     abstract fun toDevice(): Device
+    abstract fun deviceType(): KClass<out Device>
 }
 
 @Entity
@@ -57,6 +59,8 @@ data class ComputerEntity(
         password = password,
         ipAddress = ipAddress
     )
+
+    override fun deviceType() = Computer::class
 }
 
 @Entity
@@ -75,6 +79,8 @@ data class DisplayEntity(
         name = name,
         resolution = resolution,
     )
+
+    override fun deviceType() = Display::class
 }
 
 fun Device.toEntity(): DeviceEntity =
