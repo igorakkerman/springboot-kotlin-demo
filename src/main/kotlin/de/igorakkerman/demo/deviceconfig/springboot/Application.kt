@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.deviceconfig.boot
+package de.igorakkerman.demo.deviceconfig.springboot
 
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.DeviceService

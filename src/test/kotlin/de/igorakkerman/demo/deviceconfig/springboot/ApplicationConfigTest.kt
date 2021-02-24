@@ -1,8 +1,6 @@
-package de.igorakkerman.demo.deviceconfig
+package de.igorakkerman.demo.deviceconfig.springboot
 
 import de.igorakkerman.demo.deviceconfig.api.rest.springmvc.DeviceController
-import de.igorakkerman.demo.deviceconfig.boot.Application
-import de.igorakkerman.demo.deviceconfig.boot.ServiceConfiguration
 import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
