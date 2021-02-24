@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.post
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [Application::class, ServiceConfiguration::class])
-class DeviceControllerTest(
+class FindDeviceByIdControllerTest(
     @Autowired
     private val mockMvc: MockMvc,
 ) {
