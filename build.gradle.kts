@@ -14,25 +14,27 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+
+    testImplementation("io.kotest:kotest-assertions-core-jvm:4.4.1")
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit")
         exclude(module = "mockito-core")
     }
-    testImplementation("com.ninja-squad:springmockk:3.0.1")
-
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
 
     testRuntimeOnly("com.h2database:h2:1.4.200")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
-    testImplementation("io.kotest:kotest-assertions-core-jvm:4.4.1")
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_15
