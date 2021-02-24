@@ -34,7 +34,7 @@ class CreateDeviceControllerTest(
     private val display = Display(displayId, "favorite screen", Resolution.UHD)
 
     @Test
-    fun `POST create computer with valid data should lead to response 201 created`() {
+    fun `create computer with valid data should lead to response 201 created`() {
         // given
         // deviceService.createDevice(computer) is relaxed
 
@@ -58,7 +58,7 @@ class CreateDeviceControllerTest(
     }
 
     @Test
-    fun `POST create computer with existing id should lead to response 409 conflict`() {
+    fun `create computer with existing id should lead to response 409 conflict`() {
         // given
         every { deviceService.createDevice(computer) }
             .returns(Unit)
@@ -100,7 +100,7 @@ class CreateDeviceControllerTest(
     }
 
     @Test
-    fun `POST create computer with missing body should lead to response 400 bad request`() {
+    fun `create computer with missing body should lead to response 400 bad request`() {
         // when/then
         mockMvc.post("/devices").andExpect {
             status { isBadRequest() }
@@ -108,7 +108,7 @@ class CreateDeviceControllerTest(
     }
 
     @Test
-    fun `POST create computer with non-JSON body should lead to response 415 unsupported media type`() {
+    fun `create computer with non-JSON body should lead to response 415 unsupported media type`() {
         // when/then
         mockMvc.post("/devices") {
             contentType = APPLICATION_XML
