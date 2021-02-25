@@ -5,10 +5,7 @@ import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
-import de.igorakkerman.demo.deviceconfig.application.Resolution
 import de.igorakkerman.demo.deviceconfig.application.Resolution.WQHD
-import de.igorakkerman.demo.deviceconfig.springboot.Application
-import de.igorakkerman.demo.deviceconfig.springboot.ServiceConfiguration
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
@@ -23,7 +20,7 @@ import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 
 @WebMvcTest(controllers = [DeviceController::class])
-@ContextConfiguration(classes = [Application::class, ServiceConfiguration::class])
+@ContextConfiguration(classes = [DeviceController::class])
 class UpdateDevicePartiallyControllerTest(
     @Autowired
     private val mockMvc: MockMvc,

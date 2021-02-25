@@ -5,8 +5,6 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution
-import de.igorakkerman.demo.deviceconfig.springboot.Application
-import de.igorakkerman.demo.deviceconfig.springboot.ServiceConfiguration
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.Test
@@ -18,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 
 @WebMvcTest(controllers = [DeviceController::class])
-@ContextConfiguration(classes = [Application::class, ServiceConfiguration::class])
+@ContextConfiguration(classes = [DeviceController::class])
 class FindDeviceByIdControllerTest(
     @Autowired
     private val mockMvc: MockMvc,
