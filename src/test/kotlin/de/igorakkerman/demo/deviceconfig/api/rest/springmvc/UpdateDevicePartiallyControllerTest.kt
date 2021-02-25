@@ -95,7 +95,7 @@ class UpdateDevicePartiallyControllerTest(
             content = """
                 {
                     "id": "${displayId}",
-                    "name": "${displayUpdateFull.name}",
+                    "name": "${displayUpdateFull.name}"
                 }
             """
         }.andExpect {
