@@ -40,7 +40,7 @@ class DeviceController(
             ?.toDocument()
             ?.also { log.info { "Device found. document: $it" } }
             ?: throw ResponseStatusException(NOT_FOUND, "Device not found. deviceId=$deviceId")
-                .also { log.info { it } }
+                .also { log.info(it) {""} }
     }
 
     @GetMapping
@@ -82,8 +82,8 @@ class DeviceController(
 
             log.info("Device updated. deviceId: $deviceId")
         } catch (exception: JsonProcessingException) {
-            throw ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
-                .also { log.info { it } }
+            throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
+                .also { log.info(it) {""} })
         }
     }
 
