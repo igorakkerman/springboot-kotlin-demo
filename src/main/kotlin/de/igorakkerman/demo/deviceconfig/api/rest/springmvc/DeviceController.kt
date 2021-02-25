@@ -35,7 +35,8 @@ class DeviceController(
 
     @GetMapping("/{deviceId}")
     fun findDeviceById(@PathVariable deviceId: DeviceId): DeviceDocument {
-        return deviceService.findDeviceById(deviceId)
+        return deviceService
+            .findDeviceById(deviceId)
             ?.toDocument()
             ?.also { log.info { "Device found. document: $it" } }
             ?: throw ResponseStatusException(NOT_FOUND, "Device not found. deviceId=$deviceId")
@@ -44,16 +45,19 @@ class DeviceController(
 
     @GetMapping
     fun findAllDevices(): List<DeviceDocument> {
-        return deviceService.findAllDevices().map { it.toDocument() }
+        return deviceService
+            .findAllDevices()
+            .map { it.toDocument() }
             .also { log.info { "Devices found. document: $it" } }
     }
 
     @PostMapping
     @ResponseStatus(CREATED)
     fun createDevice(@RequestBody deviceDocument: DeviceDocument) {
-        deviceService.createDevice(deviceDocument.toDevice()
-            .also { log.info { "Creating device. document: $it" } }
-        )
+        log.info("Creating device. document: $deviceDocument")
+
+        deviceService.createDevice(deviceDocument.toDevice())
+
         // TODO: return ID of/URL to resource in header/body
     }
 
@@ -61,11 +65,11 @@ class DeviceController(
     @Suppress("MoveVariableDeclarationIntoWhen")
     fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
         try {
-            log.info { "Updating device. deviceId: $deviceId, document: $updateDocument" }
+            log.info("Updating device. deviceId: $deviceId, document: $updateDocument")
 
             val mapper = jacksonObjectMapper()
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
-            log.debug { "Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}" }
+            log.debug("Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}")
 
             val deviceUpdateDocument = when (deviceType) {
                 Computer::class -> mapper.readValue<ComputerUpdateDocument>(updateDocument)

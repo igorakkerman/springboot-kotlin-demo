@@ -1,28 +1,45 @@
 package de.igorakkerman.demo.deviceconfig.application
 
+import mu.KotlinLogging
 import kotlin.reflect.KClass
 
 class DeviceService(private val deviceRepository: DeviceRepository) {
-    fun createDevice(device: Device) = deviceRepository.transactional {
-        deviceRepository.createDevice(device)
-    }
+
+    private val log = KotlinLogging.logger {}
 
     fun findDeviceById(deviceId: DeviceId): Device? = deviceRepository.transactional {
+        log.info("Finding device. deviceId: $deviceId")
+
         deviceRepository.findDeviceById(deviceId)
+            .also { log.info("Device found. deviceId: $deviceId, device: $it") }
     }
 
     fun findDeviceTypeById(deviceId: DeviceId): KClass<out Device> = deviceRepository.transactional {
+        log.info("Finding device type. deviceId: $deviceId")
+
         deviceRepository.findDeviceTypeById(deviceId)
-    }
-
-    val c: KClass<Device> = Device::class
-
-    fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) = deviceRepository.transactional {
-        deviceRepository.updateDevice(deviceId, deviceUpdate)
+            .also { log.info("Device type found. deviceId: $deviceId, deviceType: ${it.simpleName}") }
     }
 
     fun findAllDevices(): List<Device> = deviceRepository.transactional {
+        log.info("Finding all devices.")
+
         deviceRepository.findAllDevices()
+            .also { log.info { "Devices found. devices: $it" } }
+    }
+
+    fun createDevice(device: Device) = deviceRepository.transactional {
+        log.info("Creating device.")
+
+        deviceRepository.createDevice(device)
+            .also { log.info("Device created. device: $it") }
+    }
+
+    fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) = deviceRepository.transactional {
+        log.info("Updating device. deviceId: $deviceId, deviceUpdate: $deviceUpdate")
+
+        deviceRepository.updateDevice(deviceId, deviceUpdate)
+            .also { log.info("Device updated. deviceId: $deviceId.") }
     }
 }
 
