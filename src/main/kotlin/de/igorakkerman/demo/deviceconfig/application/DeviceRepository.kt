@@ -8,6 +8,7 @@ interface DeviceRepository {
     fun createDevice(device: Device)
     fun findDeviceTypeById(deviceId: DeviceId): KClass<out Device>
     fun findDeviceById(deviceId: DeviceId): Device
+    fun updateDevice(device: Device)
     fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate)
     fun findAllDevices(): List<Device>
 }

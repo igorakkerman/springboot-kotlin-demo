@@ -35,6 +35,13 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
             .also { log.info("Device created. device: $it") }
     }
 
+    fun updateDevice(device: Device) = deviceRepository.transactional {
+        log.info("Updating device. deviceId: $device.id, device: $device")
+
+        deviceRepository.updateDevice(device)
+            .also { log.info("Device updated. deviceId: $device.id.") }
+    }
+
     fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) = deviceRepository.transactional {
         log.info("Updating device. deviceId: $deviceId, deviceUpdate: $deviceUpdate")
 

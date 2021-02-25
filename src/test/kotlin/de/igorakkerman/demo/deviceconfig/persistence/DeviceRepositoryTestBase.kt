@@ -124,7 +124,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `create, then update Computer, findDeviceById should return updated values`() {
+    fun `create, then update partially Computer, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(computer)
@@ -148,7 +148,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `create, then update Display, findDeviceById should return updated values`() {
+    fun `create, then update partially Display, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(display)
@@ -172,7 +172,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `update unknown device should throw Exception`() {
+    fun `update partial of unknown device should throw Exception`() {
 
         // given
         // empty database
@@ -180,6 +180,60 @@ abstract class DeviceRepositoryTestBase(
         // when/then
         shouldThrow<DeviceNotFoundException> {
             deviceRepository.updateDevice("unknown-id", DisplayUpdate())
+        }
+    }
+
+    @Test
+    fun `create, then update fully Computer, findDeviceById should return updated values`() {
+
+        // given
+        deviceRepository.createDevice(computer)
+        flushAndClear()
+
+        // when
+        val updatedComputer = computer.copy(
+            name = "deskpc-0815",
+            ipAddress = "34.245.198.211"
+        )
+
+        deviceRepository.updateDevice(updatedComputer)
+        flushAndClear()
+
+        // then
+        val foundDevice = deviceRepository.findDeviceById(computer.id)
+        foundDevice shouldBe updatedComputer
+    }
+
+    @Test
+    fun `create, then update fully Display, findDeviceById should return updated values`() {
+
+        // given
+        deviceRepository.createDevice(display)
+        flushAndClear()
+
+        val updatedDisplay = display.copy(
+            name = "deskscreen-0815",
+            resolution = Resolution.HD
+        )
+
+        // when
+        deviceRepository.updateDevice(updatedDisplay)
+        flushAndClear()
+
+        // then
+        val foundDevice = deviceRepository.findDeviceById(display.id)
+        foundDevice shouldBe updatedDisplay
+    }
+
+    @Test
+    fun `update full of unknown device should throw Exception`() {
+
+        // given
+        // empty database
+
+        // when/then
+        shouldThrow<DeviceNotFoundException> {
+            deviceRepository.updateDevice(display.copy(id = "unknown-id"))
         }
     }
 

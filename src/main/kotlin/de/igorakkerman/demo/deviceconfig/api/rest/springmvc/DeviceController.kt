@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
@@ -64,11 +65,38 @@ class DeviceController(
         // TODO: return ID of/URL to resource in header/body
     }
 
-    @PatchMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    @Suppress("MoveVariableDeclarationIntoWhen")
-    fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
+    @PutMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun updateDeviceFully(@PathVariable deviceId: DeviceId, @RequestBody resourceDocument: String) {
         try {
-            log.info("Updating device. deviceId: $deviceId, document: $updateDocument")
+            log.info("Updating device fully. deviceId: $deviceId, document: $resourceDocument")
+
+            val mapper = jacksonObjectMapper()
+            val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
+            log.debug("Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}")
+
+            val deviceDocument = when (deviceType) {
+                Computer::class -> mapper.readValue<ComputerDocument>(resourceDocument)
+                Display::class -> mapper.readValue<DisplayDocument>(resourceDocument)
+                else -> throw IllegalStateException("Unexpected bad type!")
+            }
+
+            if (deviceId != deviceDocument.id)
+                throw ResponseStatusException(BAD_REQUEST, "Resource ID in URL doesn't match device ID in document.")
+
+            // TODO: return ID of/URL to resource in header/body
+            deviceService.updateDevice(deviceDocument.toDevice())
+
+            log.info("Device updated fully. deviceId: $deviceId")
+        } catch (exception: JsonProcessingException) {
+            throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
+                .also { log.info(it) { "" } })
+        }
+    }
+
+    @PatchMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun updateDevicePartially(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
+        try {
+            log.info("Updating device partially. deviceId: $deviceId, document: $updateDocument")
 
             val mapper = jacksonObjectMapper()
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
@@ -83,7 +111,7 @@ class DeviceController(
             // TODO: return ID of/URL to resource in header/body
             deviceService.updateDevice(deviceId, deviceUpdateDocument.toUpdate())
 
-            log.info("Device updated. deviceId: $deviceId")
+            log.info("Device updated partially. deviceId: $deviceId")
         } catch (exception: JsonProcessingException) {
             throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
                 .also { log.info(it) { "" } })
