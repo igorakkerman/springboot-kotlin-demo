@@ -6,7 +6,7 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
-import de.igorakkerman.demo.deviceconfig.application.NoSuchDeviceException
+import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.beEmpty
@@ -62,11 +62,10 @@ abstract class DeviceRepositoryTestBase(
         deviceRepository.createDevice(computer)
         flushAndClear()
 
-        // when
-        val foundDevice = deviceRepository.findDeviceById(display.id)
-
-        // then
-        foundDevice shouldBe null
+        // when / then
+        shouldThrow<DeviceNotFoundException> {
+            deviceRepository.findDeviceById(display.id)
+        }
     }
 
     @Test
@@ -179,7 +178,7 @@ abstract class DeviceRepositoryTestBase(
         // empty database
 
         // when/then
-        shouldThrow<NoSuchDeviceException> {
+        shouldThrow<DeviceNotFoundException> {
             deviceRepository.updateDevice("unknown-id", DisplayUpdate())
         }
     }

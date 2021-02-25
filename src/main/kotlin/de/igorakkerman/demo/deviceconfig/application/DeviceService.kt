@@ -7,7 +7,7 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
 
     private val log = KotlinLogging.logger {}
 
-    fun findDeviceById(deviceId: DeviceId): Device? = deviceRepository.transactional {
+    fun findDeviceById(deviceId: DeviceId): Device = deviceRepository.transactional {
         log.info("Finding device. deviceId: $deviceId")
 
         deviceRepository.findDeviceById(deviceId)
@@ -43,5 +43,5 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
     }
 }
 
-class NoSuchDeviceException(deviceId: DeviceId) : RuntimeException("No such device. deviceId=$deviceId")
+class DeviceNotFoundException(val deviceId: DeviceId) : RuntimeException("No such device. deviceId=$deviceId")
 class DeviceAreadyExistsException(val deviceId: DeviceId) : RuntimeException("Device already exists. deviceId=$deviceId")

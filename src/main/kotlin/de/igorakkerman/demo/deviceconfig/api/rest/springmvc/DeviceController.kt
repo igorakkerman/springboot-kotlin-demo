@@ -7,6 +7,7 @@ import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
+import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import mu.KotlinLogging
@@ -37,10 +38,8 @@ class DeviceController(
     fun findDeviceById(@PathVariable deviceId: DeviceId): DeviceDocument {
         return deviceService
             .findDeviceById(deviceId)
-            ?.toDocument()
-            ?.also { log.info { "Device found. document: $it" } }
-            ?: throw ResponseStatusException(NOT_FOUND, "Device not found. deviceId=$deviceId")
-                .also { log.info(it) {""} }
+            .toDocument()
+            .also { log.info { "Device found. document: $it" } }
     }
 
     @GetMapping
@@ -83,9 +82,14 @@ class DeviceController(
             log.info("Device updated. deviceId: $deviceId")
         } catch (exception: JsonProcessingException) {
             throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
-                .also { log.info(it) {""} })
+                .also { log.info(it) { "" } })
         }
     }
+
+    @ExceptionHandler(DeviceNotFoundException::class)
+    @ResponseStatus(NOT_FOUND)
+    fun deviceAlreadyExists(exception: DeviceNotFoundException): ErrorResponseBody =
+        ErrorResponseBody("A device with id ${exception.deviceId} was not found.")
 
     @ExceptionHandler(DeviceAreadyExistsException::class)
     @ResponseStatus(CONFLICT)

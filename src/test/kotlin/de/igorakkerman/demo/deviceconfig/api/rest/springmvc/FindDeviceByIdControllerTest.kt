@@ -1,6 +1,7 @@
 package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
 import de.igorakkerman.demo.deviceconfig.application.Computer
+import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution
@@ -93,7 +94,7 @@ class FindDeviceByIdControllerTest(
 
         // given
         val deviceId = "amiga2000-007"
-        every { deviceService.findDeviceById(deviceId) } returns null
+        every { deviceService.findDeviceById(deviceId) } throws DeviceNotFoundException(deviceId)
 
         // when/then
         mockMvc.get("/devices/$deviceId") {

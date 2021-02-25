@@ -5,7 +5,7 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.DeviceUpdate
-import de.igorakkerman.demo.deviceconfig.application.NoSuchDeviceException
+import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -42,14 +42,18 @@ class JpaDeviceRepository(
         repo.save(device.toEntity())
     }
 
-    override fun findDeviceById(deviceId: DeviceId): Device? =
-        repo.findByIdOrNull(deviceId)?.toDevice()
+    override fun findDeviceById(deviceId: DeviceId): Device =
+        repo.findByIdOrNull(deviceId)
+            ?.toDevice()
+            ?: throw DeviceNotFoundException(deviceId)
 
     override fun findDeviceTypeById(deviceId: DeviceId): KClass<out Device> =
-        repo.findByIdOrNull(deviceId)?.deviceType() ?: throw NoSuchDeviceException(deviceId)
+        repo.findByIdOrNull(deviceId)?.deviceType()
+            ?: throw DeviceNotFoundException(deviceId)
 
     override fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) {
-        val deviceEntity = repo.findByIdOrNull(deviceId) ?: throw NoSuchDeviceException(deviceId)
+        val deviceEntity = repo.findByIdOrNull(deviceId)
+            ?: throw DeviceNotFoundException(deviceId)
         deviceUpdate.updateEntity(deviceEntity)
     }
 
