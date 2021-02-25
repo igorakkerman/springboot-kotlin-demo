@@ -88,7 +88,7 @@ class UpdateDevicePartiallyControllerTest(
         // when / then
         mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_JSON
-            // id is part of the URL, not a valid updatable field
+            // 'id' is not a valid updatable field, it is part of the URL
             content = """
                 {
                     "id": "${displayId}",
