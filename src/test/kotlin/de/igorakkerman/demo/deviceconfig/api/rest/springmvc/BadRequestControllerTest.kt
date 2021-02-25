@@ -36,6 +36,7 @@ class BadRequestControllerTest(
     fun `request with wrong 'accept' media type should lead to reponse 406 not acceptable`() {
         mockMvc.get("/devices/$computerId") {
             accept = APPLICATION_XML
+            // when / then
         }.andExpect {
             status { isNotAcceptable() }
         }
@@ -43,7 +44,7 @@ class BadRequestControllerTest(
 
     @Test
     fun `request with missing body should lead to response 400 bad request`() {
-        // when/then
+        // when / then
         mockMvc.post("/devices").andExpect {
             status { isBadRequest() }
         }
