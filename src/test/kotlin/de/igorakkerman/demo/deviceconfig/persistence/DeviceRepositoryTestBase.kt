@@ -2,11 +2,11 @@ package de.igorakkerman.demo.deviceconfig.persistence
 
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
+import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
+import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceRepository
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
-import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
-import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.beEmpty
