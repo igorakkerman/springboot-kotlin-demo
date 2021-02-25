@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
@@ -34,7 +36,8 @@ class DeviceController(
 ) {
     private val log = KotlinLogging.logger {}
 
-    @GetMapping("/{deviceId}")
+    @GetMapping("/{deviceId}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
     fun findDeviceById(@PathVariable deviceId: DeviceId): DeviceDocument {
         return deviceService
             .findDeviceById(deviceId)
@@ -42,7 +45,8 @@ class DeviceController(
             .also { log.info { "Device found. document: $it" } }
     }
 
-    @GetMapping
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
     fun findAllDevices(): List<DeviceDocument> {
         return deviceService
             .findAllDevices()
@@ -50,7 +54,7 @@ class DeviceController(
             .also { log.info { "Devices found. document: $it" } }
     }
 
-    @PostMapping
+    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(CREATED)
     fun createDevice(@RequestBody deviceDocument: DeviceDocument) {
         log.info("Creating device. document: $deviceDocument")
@@ -60,7 +64,7 @@ class DeviceController(
         // TODO: return ID of/URL to resource in header/body
     }
 
-    @PatchMapping("/{deviceId}")
+    @PatchMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
     @Suppress("MoveVariableDeclarationIntoWhen")
     fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
         try {

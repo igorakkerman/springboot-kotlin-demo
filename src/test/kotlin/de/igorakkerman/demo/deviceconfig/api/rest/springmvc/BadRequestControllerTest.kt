@@ -19,6 +19,7 @@ class BadRequestControllerTest(
     private val mockMvc: MockMvc,
 ) {
     @MockkBean(relaxUnitFun = true)
+    @Suppress("unused") // avoid wiring service and repository
     private lateinit var deviceService: DeviceService
 
     private val computerId = "macpro-m1-95014"
@@ -46,7 +47,7 @@ class BadRequestControllerTest(
     fun `request with missing body should lead to response 400 bad request`() {
         // when / then
         mockMvc.post("/devices").andExpect {
-            status { isBadRequest() }
+            status { isUnsupportedMediaType() }
         }
     }
 
