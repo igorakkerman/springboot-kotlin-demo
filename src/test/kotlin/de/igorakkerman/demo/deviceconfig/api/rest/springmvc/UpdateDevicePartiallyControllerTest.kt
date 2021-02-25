@@ -5,6 +5,7 @@ import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
 import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
+import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.Resolution.WQHD
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -15,11 +16,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.put
+import org.springframework.test.web.servlet.patch
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
-class UpdateDeviceFullControllerTest(
+class UpdateDevicePartiallyControllerTest(
     @Autowired
     private val mockMvc: MockMvc,
 ) {
@@ -27,9 +28,10 @@ class UpdateDeviceFullControllerTest(
     private lateinit var deviceService: DeviceService
 
     private val computerId = "macpro-m1-95014"
-    private val computer = Computer(id = computerId, name = "best mac", username = "timapple", password = "0n3m0r3th1ng", ipAddress = "192.168.178.1")
+    private val computerUpdateFull = ComputerUpdate(name = "best mac", username = "timapple", password = "0n3m0r3th1ng", ipAddress = "192.168.178.1")
+    private val computerUpdatePartial = ComputerUpdate(name = "second best mac", ipAddress = "127.0.0.1")
     private val displayId = "samsung-screen-88276"
-    private val display = Display(id = displayId, name = "second best screen", resolution = WQHD)
+    private val displayUpdateFull = DisplayUpdate("second best screen", resolution = WQHD)
 
     @Test
     fun `update computer with full valid data should lead to response 200 ok`() {
@@ -38,22 +40,21 @@ class UpdateDeviceFullControllerTest(
         // deviceService.update(deviceId, deviceUpdate) is relaxed
 
         // when / then
-        mockMvc.put("/devices/$computerId") {
+        mockMvc.patch("/devices/$computerId") {
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "name": "${computer.id}",
-                    "name": "${computer.name}",
-                    "username": "${computer.username}",
-                    "password": "${computer.password}",
-                    "ipAddress": "${computer.ipAddress}"
+                    "name": "${computerUpdateFull.name}",
+                    "username": "${computerUpdateFull.username}",
+                    "password": "${computerUpdateFull.password}",
+                    "ipAddress": "${computerUpdateFull.ipAddress}"
                 }
             """
         }.andExpect {
             status { isOk() }
         }
 
-        verify { deviceService.updateDevice(computer) }
+        verify { deviceService.updateDevice(computerId, computerUpdateFull) }
     }
 
     @Test
@@ -63,66 +64,41 @@ class UpdateDeviceFullControllerTest(
         // deviceService.update(deviceId, deviceUpdate) is relaxed
 
         // when / then
-        mockMvc.put("/devices/$displayId") {
+        mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "id": "${display.id}",
-                    "name": "${display.name}",
-                    "resolution": "${display.resolution}"
+                    "name": "${displayUpdateFull.name}",
+                    "resolution": "${displayUpdateFull.resolution}"
                 }
             """
         }.andExpect {
             status { isOk() }
         }
 
-        verify { deviceService.updateDevice(display) }
+        verify { deviceService.updateDevice(displayId, displayUpdateFull) }
     }
 
     @Test
-    fun `update computer with partial data should lead to response 400 bad request`() {
+    fun `update computer with partial valid data should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
         // deviceService.update(deviceId, deviceUpdate) is relaxed
 
         // when / then
-        mockMvc.put("/devices/$computerId") {
+        mockMvc.patch("/devices/$computerId") {
             contentType = APPLICATION_JSON
-            // id required
             content = """
                 {
-                    "name": "${computer.name}",
-                    "ipAddress": "${computer.ipAddress}"
+                    "name": "${computerUpdatePartial.name}",
+                    "ipAddress": "${computerUpdatePartial.ipAddress}"
                 }
             """
         }.andExpect {
             status { isOk() }
         }
 
-        verify { deviceService.updateDevice(computer) }
-    }
-
-    @Test
-    fun `update device with different IDs in the URL and the document should lead to response 400 bad request`() {
-        // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-
-        // when / then
-        mockMvc.put("/devices/$displayId") {
-            contentType = APPLICATION_JSON
-            // 'sizeInInch' is not a valid field
-            content = """
-                {
-                    "id": "${computerId}",
-                    "name": "${display.name}",
-                    "resolution": "${display.resolution}"
-                }
-            """
-        }.andExpect {
-            status { isBadRequest() }
-        }
-
-        verify(exactly = 0) { deviceService.updateDevice(any()) }
+        verify { deviceService.updateDevice(computerId, computerUpdatePartial) }
     }
 
     @Test
@@ -131,22 +107,20 @@ class UpdateDeviceFullControllerTest(
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
 
         // when / then
-        mockMvc.put("/devices/$displayId") {
+        mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_JSON
-            // 'sizeInInch' is not a valid field
+            // 'id' is not a valid updatable field, it is part of the URL
             content = """
                 {
                     "id": "${displayId}",
-                    "name": "${display.name}",
-                    "resolution": "${display.resolution}",
-                    "sizeInInch": "19''" 
+                    "name": "${displayUpdateFull.name}"
                 }
             """
         }.andExpect {
             status { isBadRequest() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any()) }
+        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 
     @Test
@@ -156,15 +130,14 @@ class UpdateDeviceFullControllerTest(
         // deviceService.update(deviceId, deviceUpdate) is relaxed
 
         // when / then
-        mockMvc.put("/devices/$displayId") {
+        mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "id": "${displayId}",
-                    "name": "${computer.name}",
-                    "username": "${computer.username}",
-                    "password": "${computer.password}",
-                    "ipAddress": "${computer.ipAddress}"
+                    "name": "${computerUpdateFull.name}",
+                    "username": "${computerUpdateFull.username}",
+                    "password": "${computerUpdateFull.password}",
+                    "ipAddress": "${computerUpdateFull.ipAddress}"
                 }
             """
         }.andExpect {
@@ -180,11 +153,11 @@ class UpdateDeviceFullControllerTest(
         every { deviceService.findDeviceTypeById(computerId) } throws DeviceNotFoundException(computerId)
 
         // when / then
-        mockMvc.put("/devices/$computerId") {
+        mockMvc.patch("/devices/$computerId") {
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "name": "${computer.name}",
+                    "name": "${computerUpdateFull.name}",
                 }
             """
         }.andExpect {
