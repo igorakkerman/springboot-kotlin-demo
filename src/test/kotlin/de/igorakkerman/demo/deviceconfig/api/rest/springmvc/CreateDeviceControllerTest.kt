@@ -16,6 +16,7 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
@@ -109,8 +110,33 @@ class CreateDeviceControllerTest(
         verify {
             deviceService wasNot Called
         }
-
     }
+
+    @Test
+    fun `update device with unknown fields should lead to response 400 bad request`() {
+        // given
+        // deviceService.createDevice(computer) is relaxed
+
+        // when / then
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_JSON
+            // 'sizeInInch' is not a valid field
+            content = """
+                {
+                    "id": "${displayId}",
+                    "type": "display",
+                    "name": "${display.name}",
+                    "resolution": "${display.resolution}",
+                    "sizeInInch": 19 
+                }
+            """
+        }.andExpect {
+            status { isBadRequest() }
+        }
+
+        verify { deviceService wasNot Called }
+    }
+
 
     @Test
     fun `create computer with existing id should lead to response 409 conflict`() {
