@@ -14,9 +14,15 @@ spring:
 #        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
 
+  jackson:
+    deserialization:
+      fail_on_unknown_properties: true
+
 logging:
   level:
     de.igorakkerman.demo: DEBUG
 #    org.hibernate: DEBUG
     org.hibernate.type: TRACE
 #    org.springframework.transaction: TRACE
+#    org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor: DEBUG
+#    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG

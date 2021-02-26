@@ -66,22 +66,22 @@ class DeviceController(
     }
 
     @PutMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateDeviceFully(@PathVariable deviceId: DeviceId, @RequestBody resourceDocument: String) {
+    fun updateDeviceFully(@PathVariable deviceId: DeviceId, @RequestBody deviceDocument: DeviceDocument) {
         try {
-            log.info("Updating device fully. deviceId: $deviceId, document: $resourceDocument")
+            log.info("Updating device fully. deviceId: $deviceId, document: $deviceDocument")
 
-            val mapper = jacksonObjectMapper()
+            if (deviceId != deviceDocument.id)
+                throw ResponseStatusException(BAD_REQUEST, "Resource ID in URL doesn't match device ID in document. resourceId: $deviceId, deviceId: ${deviceDocument.id}")
+                    .also { log.info(it) { "" } }
+
+            val device = deviceDocument.toDevice()
+
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
             log.debug("Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}")
 
-            val deviceDocument = when (deviceType) {
-                Computer::class -> mapper.readValue<ComputerDocument>(resourceDocument)
-                Display::class -> mapper.readValue<DisplayDocument>(resourceDocument)
-                else -> throw IllegalStateException("Unexpected bad type!")
-            }
-
-            if (deviceId != deviceDocument.id)
-                throw ResponseStatusException(BAD_REQUEST, "Resource ID in URL doesn't match device ID in document.")
+            if (device::class != deviceType)
+                throw ResponseStatusException(CONFLICT, "Type of resource with specified ID doesn't match device type in document. resourceType: $deviceType, deviceType: ${device::class}")
+                    .also { log.info(it) { "" } }
 
             // TODO: return ID of/URL to resource in header/body
             deviceService.updateDevice(deviceDocument.toDevice())

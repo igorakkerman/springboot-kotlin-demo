@@ -1,7 +1,6 @@
 package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
 import de.igorakkerman.demo.deviceconfig.application.Computer
-import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
 import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
@@ -42,7 +41,8 @@ class UpdateDeviceFullyControllerTest(
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "name": "${computer.id}",
+                    "id": "${computer.id}",
+                    "type": "computer",
                     "name": "${computer.name}",
                     "username": "${computer.username}",
                     "password": "${computer.password}",
@@ -68,6 +68,7 @@ class UpdateDeviceFullyControllerTest(
             content = """
                 {
                     "id": "${display.id}",
+                    "type": "display",
                     "name": "${display.name}",
                     "resolution": "${display.resolution}"
                 }
@@ -91,15 +92,16 @@ class UpdateDeviceFullyControllerTest(
             // id required
             content = """
                 {
+                    "type": "computer",
                     "name": "${computer.name}",
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
         }.andExpect {
-            status { isOk() }
+            status { isBadRequest() }
         }
 
-        verify { deviceService.updateDevice(computer) }
+        verify(exactly = 0) { deviceService.updateDevice(computer) }
     }
 
     @Test
@@ -114,12 +116,39 @@ class UpdateDeviceFullyControllerTest(
             content = """
                 {
                     "id": "${computerId}",
+                    "type": "display",
                     "name": "${display.name}",
                     "resolution": "${display.resolution}"
                 }
             """
         }.andExpect {
             status { isBadRequest() }
+        }
+
+        verify(exactly = 0) { deviceService.updateDevice(any()) }
+    }
+
+    @Test
+    fun `update device with the wrong type specified in the document should lead to response 409 conflict`() {
+        // given
+        every { deviceService.findDeviceTypeById(computerId) } returns Display::class
+
+        // when / then
+        mockMvc.put("/devices/$computerId") {
+            contentType = APPLICATION_JSON
+            // 'sizeInInch' is not a valid field
+            content = """
+                {
+                    "id": "${computerId}",
+                    "type": "computer",
+                    "name": "${computer.name}",
+                    "username": "${computer.username}",
+                    "password": "${computer.password}",
+                    "ipAddress": "${computer.ipAddress}"
+                }
+            """
+        }.andExpect {
+            status { isConflict() }
         }
 
         verify(exactly = 0) { deviceService.updateDevice(any()) }
@@ -137,9 +166,10 @@ class UpdateDeviceFullyControllerTest(
             content = """
                 {
                     "id": "${displayId}",
+                    "type": "display",
                     "name": "${display.name}",
                     "resolution": "${display.resolution}",
-                    "sizeInInch": "19''" 
+                    "sizeInInch": 19 
                 }
             """
         }.andExpect {
@@ -161,6 +191,7 @@ class UpdateDeviceFullyControllerTest(
             content = """
                 {
                     "id": "${displayId}",
+                    "type": "display",
                     "name": "${computer.name}",
                     "username": "${computer.username}",
                     "password": "${computer.password}",
@@ -184,7 +215,12 @@ class UpdateDeviceFullyControllerTest(
             contentType = APPLICATION_JSON
             content = """
                 {
+                    "id": "${computer.id}",
+                    "type": "computer",
                     "name": "${computer.name}",
+                    "username": "${computer.username}",
+                    "password": "${computer.password}",
+                    "ipAddress": "${computer.ipAddress}"
                 }
             """
         }.andExpect {
