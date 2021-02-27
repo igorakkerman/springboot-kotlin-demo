@@ -16,7 +16,6 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.put
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
@@ -85,7 +84,7 @@ class CreateDeviceControllerTest(
     }
 
     @Test
-    fun `create computer with incomplete data should lead to response 400 bad request`() {
+    fun `create device with incomplete data should lead to response 400 bad request`() {
         // given
         // deviceService.createDevice(computer) is relaxed
 
@@ -99,6 +98,64 @@ class CreateDeviceControllerTest(
                     "id": "${computer.id}",
                     "name": "${computer.name}",
                     "username": "${computer.username}",
+                    "ipAddress": "${computer.ipAddress}"
+                }
+            """
+        }
+            .andExpect {
+                status { isBadRequest() }
+            }
+
+        verify {
+            deviceService wasNot Called
+        }
+    }
+
+    @Test
+    fun `create device with forbidden null id should lead to response 400 bad request`() {
+        // given
+        // deviceService.createDevice(computer) is relaxed
+
+        // when / then
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_JSON
+            // mandatory password value is missing
+            content = """
+                {
+                    "type": "computer",
+                    "id": null,
+                    "name": "${computer.name}",
+                    "username": "${computer.username}",
+                    "password": "${computer.password}",
+                    "ipAddress": "${computer.ipAddress}"
+                }
+            """
+        }
+            .andExpect {
+                status { isBadRequest() }
+            }
+
+        verify {
+            deviceService wasNot Called
+        }
+    }
+
+    @Test
+    fun `create device with forbidden null value should lead to response 400 bad request`() {
+        // given
+        // deviceService.createDevice(computer) is relaxed
+
+        // when / then
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_JSON
+            // mandatory password value is missing
+            content = """
+                {
+                    "type": "computer",
+                    "id": "${computer.id}",
+                    "name": null,
+                    "username": "${computer.username}",
+                    "password": "${computer.password}",
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
