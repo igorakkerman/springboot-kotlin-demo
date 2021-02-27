@@ -11,15 +11,15 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.patch
-import org.springframework.test.web.servlet.put
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
 class StructureControllerTest(
     @Autowired
     private val mockMvc: MockMvc
-){
+) {
     @MockkBean(relaxUnitFun = true)
     @Suppress("unused") // avoid wiring service and repository
     private lateinit var deviceService: DeviceService
@@ -110,4 +110,3 @@ class StructureControllerTest(
         }
     }
 }
-
