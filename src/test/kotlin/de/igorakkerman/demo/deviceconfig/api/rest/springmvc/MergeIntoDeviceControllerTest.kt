@@ -131,7 +131,82 @@ class MergeIntoDeviceControllerTest(
             header { acceptMergePatch() }
         }
 
+        verify { deviceService.findDeviceTypeById(displayId) }
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+    }
+
+    @Test
+    fun `merging forbidden null id into device should lead to response 400 bad request`() {
+        // given
+        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
+
+        // when / then
+        mockMvc.patch("/devices/$displayId") {
+            contentType = APPLICATION_MERGE_PATCH_JSON
+            // 'id' is not a valid updatable field, it is part of the URL
+            content = """
+                {
+                    "id": null,
+                    "name": "${displayUpdate.name}"
+                }
+            """
+        }.andExpect {
+            status { isBadRequest() }
+            header { acceptMergePatch() }
+        }
+
+        verify { deviceService.findDeviceTypeById(displayId) }
+        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+    }
+
+    @Test
+    fun `merging forbidden null value into device should lead to response 400 bad request`() {
+        // in JSON Merge Patch, null has the meaning of deletion, which is not allowed here
+        // application/merge-patch+json (https://tools.ietf.org/html/rfc7396)
+
+        // given
+        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
+
+        // when / then
+        mockMvc.patch("/devices/$displayId") {
+            contentType = APPLICATION_MERGE_PATCH_JSON
+            // 'id' is not a valid updatable field, it is part of the URL
+            content = """
+                {
+                    "name": null
+                }
+            """
+        }.andExpect {
+            status { isBadRequest() }
+            header { acceptMergePatch() }
+        }
+
+        verify { deviceService.findDeviceTypeById(displayId) }
+        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+    }
+
+    @Test
+    // just to be safe that the marker is compared for identity, not equality
+    fun `merging our 'unset' marker value should use the literal string and lead to response 200 ok`() {
+        // given
+        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
+        val displayUpdate = DisplayUpdate(name = UNSET)
+
+        // when / then
+        mockMvc.patch("/devices/$displayId") {
+            contentType = APPLICATION_MERGE_PATCH_JSON
+            // 'id' is not a valid updatable field, it is part of the URL
+            content = """
+                {
+                    "name": "$UNSET"
+                }
+            """
+        }.andExpect {
+            status { isOk() }
+        }
+
+        verify { deviceService.findDeviceTypeById(displayId) }
+        verify { deviceService.mergeIntoDevice(displayId, displayUpdate) }
     }
 
     @Test
