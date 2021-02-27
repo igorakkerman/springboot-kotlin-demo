@@ -72,7 +72,7 @@ class DeviceController(
 
             if (deviceId != deviceDocument.id)
                 throw ResponseStatusException(BAD_REQUEST, "Resource ID in URL doesn't match device ID in document. resourceId: $deviceId, deviceId: ${deviceDocument.id}")
-                    .also { log.info(it) { "" } }
+                    .also { log.info(it) { "Error processing PUT /$deviceId ." } }
 
             val device = deviceDocument.toDevice()
 
@@ -81,7 +81,7 @@ class DeviceController(
 
             if (device::class != deviceType)
                 throw ResponseStatusException(CONFLICT, "Type of resource with specified ID doesn't match device type in document. resourceType: $deviceType, deviceType: ${device::class}")
-                    .also { log.info(it) { "" } }
+                    .also { log.info(it) { "Error processing PUT /$deviceId ." } }
 
             // TODO: return ID of/URL to resource in header/body
             deviceService.replaceDevice(deviceDocument.toDevice())
@@ -89,7 +89,7 @@ class DeviceController(
             log.info("Device replaced. deviceId: $deviceId")
         } catch (exception: JsonProcessingException) {
             throw (ResponseStatusException(BAD_REQUEST, "Error processing replace request document. ${exception.originalMessage}", exception)
-                .also { log.info(it) { "" } })
+                .also { log.info(it) { "Error processing PUT /$deviceId ." } })
         }
     }
 
@@ -114,7 +114,7 @@ class DeviceController(
             log.info("Merged into device. deviceId: $deviceId")
         } catch (exception: JsonProcessingException) {
             throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
-                .also { log.info(it) { "" } })
+                .also { log.info(it) { "Error processing PATCH /$deviceId ." } })
         }
     }
 
