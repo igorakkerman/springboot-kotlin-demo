@@ -103,7 +103,7 @@ class DeviceController(
     @PatchMapping("/{deviceId}", consumes = [APPLICATION_MERGE_PATCH_JSON_VALUE])
     fun mergeIntoDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String, response: HttpServletResponse) {
         try {
-            log.info("Merging into device. deviceId: $deviceId, document: $updateDocument")
+            log.info("Merging into device. deviceId: $deviceId, JSON document: $updateDocument")
 
             response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
 
@@ -116,6 +116,7 @@ class DeviceController(
                 Display::class -> mapper.readValue<DisplayUpdateDocument>(updateDocument)
                 else -> throw IllegalStateException("Unexpected bad type!")
             }
+            log.debug { "DeviceUpdateDocument parsed: $deviceUpdateDocument" }
 
             // TODO: return ID of/URL to resource in header/body
             deviceService.mergeIntoDevice(deviceId, deviceUpdateDocument.toUpdate())
