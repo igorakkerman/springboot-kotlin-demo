@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.post
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
-class InvalidStructureControllerTest(
+class StructureControllerTest(
     @Autowired
     private val mockMvc: MockMvc
 ){
