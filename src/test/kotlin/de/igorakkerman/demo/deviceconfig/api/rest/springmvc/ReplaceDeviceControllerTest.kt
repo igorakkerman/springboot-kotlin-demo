@@ -6,6 +6,7 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution.WQHD
 import com.ninjasquad.springmockk.MockkBean
+import io.mockk.Called
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Test
@@ -102,6 +103,56 @@ class ReplaceDeviceControllerTest(
         }
 
         verify(exactly = 0) { deviceService.replaceDevice(computer) }
+    }
+
+    @Test
+    fun `replace device with forbidden null value should lead to response 400 bad request`() {
+        // given
+        every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
+        // deviceService.replace(device) is relaxed
+
+        // when / then
+        mockMvc.put("/devices/$computerId") {
+            contentType = APPLICATION_JSON
+            // id required
+            content = """
+                {
+                    "id": "${display.id}",
+                    "type": "computer",
+                    "name": null,
+                    "ipAddress": "${computer.ipAddress}"
+                }
+            """
+        }.andExpect {
+            status { isBadRequest() }
+        }
+
+        verify { deviceService wasNot Called }
+    }
+
+    @Test
+    fun `replace device with forbidden null id should lead to response 400 bad request`() {
+        // given
+        every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
+        // deviceService.replace(device) is relaxed
+
+        // when / then
+        mockMvc.put("/devices/$computerId") {
+            contentType = APPLICATION_JSON
+            // id required
+            content = """
+                {
+                    "id": null,
+                    "type": "computer",
+                    "name": "${computer.name}",
+                    "ipAddress": "${computer.ipAddress}"
+                }
+            """
+        }.andExpect {
+            status { isBadRequest() }
+        }
+
+        verify { deviceService wasNot Called }
     }
 
     @Test
