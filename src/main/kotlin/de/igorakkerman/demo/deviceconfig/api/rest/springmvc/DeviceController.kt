@@ -44,7 +44,7 @@ class DeviceController(
 ) {
     private val log = KotlinLogging.logger {}
 
-    @GetMapping("/{deviceId}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/{deviceId}", produces = [APPLICATION_JSON_VALUE])
     @ResponseBody
     fun findDeviceById(@PathVariable deviceId: DeviceId): DeviceDocument {
         return deviceService
@@ -53,7 +53,7 @@ class DeviceController(
             .also { log.info { "Device found. document: $it" } }
     }
 
-    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(produces = [APPLICATION_JSON_VALUE])
     @ResponseBody
     fun findAllDevices(): List<DeviceDocument> {
         return deviceService
@@ -62,7 +62,7 @@ class DeviceController(
             .also { log.info { "Devices found. document: $it" } }
     }
 
-    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping(consumes = [APPLICATION_JSON_VALUE])
     @ResponseStatus(CREATED)
     fun createDevice(@RequestBody deviceDocument: DeviceDocument) {
         log.info("Creating device. document: $deviceDocument")
@@ -72,7 +72,7 @@ class DeviceController(
         // TODO: return ID of/URL to resource in header/body
     }
 
-    @PutMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PutMapping("/{deviceId}", consumes = [APPLICATION_JSON_VALUE])
     fun replaceDevice(@PathVariable deviceId: DeviceId, @RequestBody deviceDocument: DeviceDocument) {
         try {
             log.info("Replacing device. deviceId: $deviceId, document: $deviceDocument")
