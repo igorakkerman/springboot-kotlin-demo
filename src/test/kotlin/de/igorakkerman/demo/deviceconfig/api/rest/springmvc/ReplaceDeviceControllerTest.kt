@@ -81,7 +81,7 @@ class ReplaceDeviceControllerTest(
     }
 
     @Test
-    fun `replace computer with partial data should lead to response 400 bad request`() {
+    fun `replace device with partial data should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
         // deviceService.replace(device) is relaxed
