@@ -36,7 +36,7 @@ class StructureControllerTest(
     }
 
     @Test
-    fun `root endpoint request with PUT method should lead to reponse 405 method not allowed`() {
+    fun `PUT root path request should lead to reponse 405 method not allowed`() {
         mockMvc.put("/devices") {
             accept = APPLICATION_JSON
         }.andExpect {
@@ -45,7 +45,7 @@ class StructureControllerTest(
     }
 
     @Test
-    fun `root endpoint request with PATCH method should lead to reponse 405 method not allowed`() {
+    fun `PATCH root path request method should lead to reponse 405 method not allowed`() {
         mockMvc.patch("/devices") {
             accept = APPLICATION_JSON
         }.andExpect {
