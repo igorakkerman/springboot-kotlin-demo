@@ -2,14 +2,18 @@ package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import com.ninjasquad.springmockk.MockkBean
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.MediaType.APPLICATION_XML
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.options
 import org.springframework.test.web.servlet.patch
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
@@ -25,6 +29,46 @@ class StructureControllerTest(
     private lateinit var deviceService: DeviceService
 
     private val computerId = "macpro-m1-95014"
+
+
+    @Test
+    fun `OPTIONS root path request should return correct Allow methods`() {
+        mockMvc.options("/devices") {
+            accept = APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+            header {
+                string(
+                    HttpHeaders.ALLOW, CoreMatchers.allOf(
+                        containsString("GET"),
+                        containsString("HEAD"),
+                        containsString("POST"),
+                        containsString("OPTIONS"),
+                    )
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `OPTIONS id path request should return correct Allow methods and correct Accept-Patch`() {
+        mockMvc.options("/devices/$computerId") {
+            accept = APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+            header {
+                string(
+                    HttpHeaders.ALLOW, CoreMatchers.allOf(
+                        containsString("GET"),
+                        containsString("HEAD"),
+                        containsString("PUT"),
+                        containsString("PATCH"),
+                        containsString("OPTIONS"),
+                    )
+                )
+            }
+        }
+    }
 
     @Test
     fun `POST id path request should lead to reponse 405 method not allowed`() {
