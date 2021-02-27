@@ -27,7 +27,7 @@ class StructureControllerTest(
     private val computerId = "macpro-m1-95014"
 
     @Test
-    fun `id endpoint request with POST method should lead to reponse 405 method not allowed`() {
+    fun `POST id path request should lead to reponse 405 method not allowed`() {
         mockMvc.post("/devices/$computerId") {
             accept = APPLICATION_JSON
         }.andExpect {
