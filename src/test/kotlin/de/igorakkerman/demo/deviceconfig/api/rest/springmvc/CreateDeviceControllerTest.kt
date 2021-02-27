@@ -113,7 +113,7 @@ class CreateDeviceControllerTest(
     }
 
     @Test
-    fun `update device with unknown fields should lead to response 400 bad request`() {
+    fun `create device with unknown fields should lead to response 400 bad request`() {
         // given
         // deviceService.createDevice(computer) is relaxed
 

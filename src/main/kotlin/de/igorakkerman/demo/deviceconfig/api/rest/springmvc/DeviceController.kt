@@ -66,9 +66,9 @@ class DeviceController(
     }
 
     @PutMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateDeviceFully(@PathVariable deviceId: DeviceId, @RequestBody deviceDocument: DeviceDocument) {
+    fun replaceDevice(@PathVariable deviceId: DeviceId, @RequestBody deviceDocument: DeviceDocument) {
         try {
-            log.info("Updating device fully. deviceId: $deviceId, document: $deviceDocument")
+            log.info("Replacing device. deviceId: $deviceId, document: $deviceDocument")
 
             if (deviceId != deviceDocument.id)
                 throw ResponseStatusException(BAD_REQUEST, "Resource ID in URL doesn't match device ID in document. resourceId: $deviceId, deviceId: ${deviceDocument.id}")
@@ -84,19 +84,19 @@ class DeviceController(
                     .also { log.info(it) { "" } }
 
             // TODO: return ID of/URL to resource in header/body
-            deviceService.updateDevice(deviceDocument.toDevice())
+            deviceService.replaceDevice(deviceDocument.toDevice())
 
-            log.info("Device updated fully. deviceId: $deviceId")
+            log.info("Device replaced. deviceId: $deviceId")
         } catch (exception: JsonProcessingException) {
-            throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
+            throw (ResponseStatusException(BAD_REQUEST, "Error processing replace request document. ${exception.originalMessage}", exception)
                 .also { log.info(it) { "" } })
         }
     }
 
     @PatchMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateDevicePartially(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
+    fun mergeIntoDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
         try {
-            log.info("Updating device partially. deviceId: $deviceId, document: $updateDocument")
+            log.info("Merging into device. deviceId: $deviceId, document: $updateDocument")
 
             val mapper = jacksonObjectMapper()
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
@@ -109,9 +109,9 @@ class DeviceController(
             }
 
             // TODO: return ID of/URL to resource in header/body
-            deviceService.updateDevice(deviceId, deviceUpdateDocument.toUpdate())
+            deviceService.mergeIntoDevice(deviceId, deviceUpdateDocument.toUpdate())
 
-            log.info("Device updated partially. deviceId: $deviceId")
+            log.info("Merged into device. deviceId: $deviceId")
         } catch (exception: JsonProcessingException) {
             throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
                 .also { log.info(it) { "" } })

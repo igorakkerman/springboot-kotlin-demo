@@ -124,7 +124,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `create, then update partially Computer, findDeviceById should return updated values`() {
+    fun `create, then merge data into Computer, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(computer)
@@ -136,7 +136,7 @@ abstract class DeviceRepositoryTestBase(
         )
 
         // when
-        deviceRepository.updateDevice(computer.id, computerUpdate)
+        deviceRepository.mergeIntoDevice(computer.id, computerUpdate)
         flushAndClear()
 
         // then
@@ -148,7 +148,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `create, then update partially Display, findDeviceById should return updated values`() {
+    fun `create, then merge data into Display, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(display)
@@ -160,7 +160,7 @@ abstract class DeviceRepositoryTestBase(
         )
 
         // when
-        deviceRepository.updateDevice(display.id, displayUpdate)
+        deviceRepository.mergeIntoDevice(display.id, displayUpdate)
         flushAndClear()
 
         // then
@@ -172,19 +172,19 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `update partial of unknown device should throw Exception`() {
+    fun `merge data into unknown device should throw Exception`() {
 
         // given
         // empty database
 
         // when/then
         shouldThrow<DeviceNotFoundException> {
-            deviceRepository.updateDevice("unknown-id", DisplayUpdate())
+            deviceRepository.mergeIntoDevice("unknown-id", DisplayUpdate())
         }
     }
 
     @Test
-    fun `create, then update fully Computer, findDeviceById should return updated values`() {
+    fun `create, then replace Computer, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(computer)
@@ -196,7 +196,7 @@ abstract class DeviceRepositoryTestBase(
             ipAddress = "34.245.198.211"
         )
 
-        deviceRepository.updateDevice(updatedComputer)
+        deviceRepository.replaceDevice(updatedComputer)
         flushAndClear()
 
         // then
@@ -205,7 +205,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `create, then update fully Display, findDeviceById should return updated values`() {
+    fun `create, then replace Display, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(display)
@@ -217,7 +217,7 @@ abstract class DeviceRepositoryTestBase(
         )
 
         // when
-        deviceRepository.updateDevice(updatedDisplay)
+        deviceRepository.replaceDevice(updatedDisplay)
         flushAndClear()
 
         // then
@@ -226,14 +226,14 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `update full of unknown device should throw Exception`() {
+    fun `replace unknown device should throw Exception`() {
 
         // given
         // empty database
 
         // when/then
         shouldThrow<DeviceNotFoundException> {
-            deviceRepository.updateDevice(display.copy(id = "unknown-id"))
+            deviceRepository.replaceDevice(display.copy(id = "unknown-id"))
         }
     }
 

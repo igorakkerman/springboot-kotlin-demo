@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.put
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
-class UpdateDeviceFullyControllerTest(
+class ReplaceDeviceControllerTest(
     @Autowired
     private val mockMvc: MockMvc,
 ) {
@@ -31,10 +31,10 @@ class UpdateDeviceFullyControllerTest(
     private val display = Display(id = displayId, name = "second best screen", resolution = WQHD)
 
     @Test
-    fun `update computer with full valid data should lead to response 200 ok`() {
+    fun `replace computer with full valid data should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        // deviceService.replace(device) is relaxed
 
         // when / then
         mockMvc.put("/devices/$computerId") {
@@ -53,14 +53,14 @@ class UpdateDeviceFullyControllerTest(
             status { isOk() }
         }
 
-        verify { deviceService.updateDevice(computer) }
+        verify { deviceService.replaceDevice(computer) }
     }
 
     @Test
-    fun `update display with full valid data should lead to response 200 ok`() {
+    fun `replace display with full valid data should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        // deviceService.replace(device) is relaxed
 
         // when / then
         mockMvc.put("/devices/$displayId") {
@@ -77,14 +77,14 @@ class UpdateDeviceFullyControllerTest(
             status { isOk() }
         }
 
-        verify { deviceService.updateDevice(display) }
+        verify { deviceService.replaceDevice(display) }
     }
 
     @Test
-    fun `update computer with partial data should lead to response 400 bad request`() {
+    fun `replace computer with partial data should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        // deviceService.replace(device) is relaxed
 
         // when / then
         mockMvc.put("/devices/$computerId") {
@@ -101,11 +101,11 @@ class UpdateDeviceFullyControllerTest(
             status { isBadRequest() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(computer) }
+        verify(exactly = 0) { deviceService.replaceDevice(computer) }
     }
 
     @Test
-    fun `update device with different IDs in the URL and the document should lead to response 400 bad request`() {
+    fun `replace device with different IDs in the URL and the document should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
 
@@ -125,11 +125,11 @@ class UpdateDeviceFullyControllerTest(
             status { isBadRequest() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any()) }
+        verify(exactly = 0) { deviceService.replaceDevice(any()) }
     }
 
     @Test
-    fun `update device with the wrong type specified in the document should lead to response 409 conflict`() {
+    fun `replace device with the wrong type specified in the document should lead to response 409 conflict`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Display::class
 
@@ -151,11 +151,11 @@ class UpdateDeviceFullyControllerTest(
             status { isConflict() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any()) }
+        verify(exactly = 0) { deviceService.replaceDevice(any()) }
     }
 
     @Test
-    fun `update device with unknown fields should lead to response 400 bad request`() {
+    fun `replace device with unknown fields should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
 
@@ -176,14 +176,14 @@ class UpdateDeviceFullyControllerTest(
             status { isBadRequest() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any()) }
+        verify(exactly = 0) { deviceService.replaceDevice(any()) }
     }
 
     @Test
-    fun `update display with computer data should lead to response 400 bad request`() {
+    fun `replace display with computer data should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        // deviceService.replace(device) is relaxed
 
         // when / then
         mockMvc.put("/devices/$displayId") {
@@ -202,11 +202,11 @@ class UpdateDeviceFullyControllerTest(
             status { isBadRequest() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
     }
 
     @Test
-    fun `update unknown device should lead to response 404 not found`() {
+    fun `replace unknown device should lead to response 404 not found`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } throws DeviceNotFoundException(computerId)
 
@@ -227,6 +227,6 @@ class UpdateDeviceFullyControllerTest(
             status { isNotFound() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
     }
 }

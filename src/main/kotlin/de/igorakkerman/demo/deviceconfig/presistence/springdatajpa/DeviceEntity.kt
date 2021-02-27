@@ -103,20 +103,20 @@ fun Display.toEntity() = DisplayEntity(
     resolution = this.resolution
 )
 
-fun DeviceUpdate.updateEntity(entity: DeviceEntity) =
+fun DeviceUpdate.mergeIntoEntity(entity: DeviceEntity) =
     when (this) {
-        is ComputerUpdate -> this.updateEntity(entity as ComputerEntity)
-        is DisplayUpdate -> this.updateEntity(entity as DisplayEntity)
+        is ComputerUpdate -> this.mergeIntoEntity(entity as ComputerEntity)
+        is DisplayUpdate -> this.mergeIntoEntity(entity as DisplayEntity)
     }
 
-fun ComputerUpdate.updateEntity(entity: ComputerEntity) {
+fun ComputerUpdate.mergeIntoEntity(entity: ComputerEntity) {
     if (name != null) entity.name = name
     if (username != null) entity.username = username
     if (password != null) entity.password = password
     if (ipAddress != null) entity.ipAddress = ipAddress
 }
 
-fun DisplayUpdate.updateEntity(entity: DisplayEntity) {
+fun DisplayUpdate.mergeIntoEntity(entity: DisplayEntity) {
     if (name != null) entity.name = name
     if (resolution != null) entity.resolution = resolution
 }

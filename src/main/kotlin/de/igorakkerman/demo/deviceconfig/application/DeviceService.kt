@@ -35,18 +35,18 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
             .also { log.info("Device created. device: $it") }
     }
 
-    fun updateDevice(device: Device) = deviceRepository.transactional {
-        log.info("Updating device. deviceId: $device.id, device: $device")
+    fun replaceDevice(device: Device) = deviceRepository.transactional {
+        log.info("Replacing device. deviceId: $device.id, device: $device")
 
-        deviceRepository.updateDevice(device)
-            .also { log.info("Device updated. deviceId: $device.id.") }
+        deviceRepository.replaceDevice(device)
+            .also { log.info("Device replaced. deviceId: $device.id.") }
     }
 
-    fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) = deviceRepository.transactional {
-        log.info("Updating device. deviceId: $deviceId, deviceUpdate: $deviceUpdate")
+    fun mergeIntoDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) = deviceRepository.transactional {
+        log.info("Merging into device. deviceId: $deviceId, deviceUpdate: $deviceUpdate")
 
-        deviceRepository.updateDevice(deviceId, deviceUpdate)
-            .also { log.info("Device updated. deviceId: $deviceId.") }
+        deviceRepository.mergeIntoDevice(deviceId, deviceUpdate)
+            .also { log.info("Device data merged. deviceId: $deviceId.") }
     }
 }
 

@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.patch
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
-class UpdateDevicePartiallyControllerTest(
+class MergeIntoDeviceControllerTest(
     @Autowired
     private val mockMvc: MockMvc,
 ) {
@@ -28,62 +28,62 @@ class UpdateDevicePartiallyControllerTest(
     private lateinit var deviceService: DeviceService
 
     private val computerId = "macpro-m1-95014"
-    private val computerUpdateFull = ComputerUpdate(name = "best mac", username = "timapple", password = "0n3m0r3th1ng", ipAddress = "192.168.178.1")
+    private val computerUpdate = ComputerUpdate(name = "best mac", username = "timapple", password = "0n3m0r3th1ng", ipAddress = "192.168.178.1")
     private val computerUpdatePartial = ComputerUpdate(name = "second best mac", ipAddress = "127.0.0.1")
     private val displayId = "samsung-screen-88276"
-    private val displayUpdateFull = DisplayUpdate("second best screen", resolution = WQHD)
+    private val displayUpdate = DisplayUpdate("second best screen", resolution = WQHD)
 
     @Test
-    fun `update computer with full valid data should lead to response 200 ok`() {
+    fun `merging full valid data into computer should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        // deviceService.merge(deviceId, deviceUpdate) is relaxed
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "name": "${computerUpdateFull.name}",
-                    "username": "${computerUpdateFull.username}",
-                    "password": "${computerUpdateFull.password}",
-                    "ipAddress": "${computerUpdateFull.ipAddress}"
+                    "name": "${computerUpdate.name}",
+                    "username": "${computerUpdate.username}",
+                    "password": "${computerUpdate.password}",
+                    "ipAddress": "${computerUpdate.ipAddress}"
                 }
             """
         }.andExpect {
             status { isOk() }
         }
 
-        verify { deviceService.updateDevice(computerId, computerUpdateFull) }
+        verify { deviceService.mergeIntoDevice(computerId, computerUpdate) }
     }
 
     @Test
-    fun `update display with full valid data should lead to response 200 ok`() {
+    fun `merging full valid data into display should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        // deviceService.merge(deviceId, deviceUpdate) is relaxed
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "name": "${displayUpdateFull.name}",
-                    "resolution": "${displayUpdateFull.resolution}"
+                    "name": "${displayUpdate.name}",
+                    "resolution": "${displayUpdate.resolution}"
                 }
             """
         }.andExpect {
             status { isOk() }
         }
 
-        verify { deviceService.updateDevice(displayId, displayUpdateFull) }
+        verify { deviceService.mergeIntoDevice(displayId, displayUpdate) }
     }
 
     @Test
-    fun `update computer with partial valid data should lead to response 200 ok`() {
+    fun `merging partial valid data into computer should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        // deviceService.merge(deviceId, deviceUpdate) is relaxed
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
@@ -98,11 +98,11 @@ class UpdateDevicePartiallyControllerTest(
             status { isOk() }
         }
 
-        verify { deviceService.updateDevice(computerId, computerUpdatePartial) }
+        verify { deviceService.mergeIntoDevice(computerId, computerUpdatePartial) }
     }
 
     @Test
-    fun `update device with unknown fields should lead to response 400 bad request`() {
+    fun `merging unknown fields into device should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
 
@@ -113,42 +113,42 @@ class UpdateDevicePartiallyControllerTest(
             content = """
                 {
                     "id": "${displayId}",
-                    "name": "${displayUpdateFull.name}"
+                    "name": "${displayUpdate.name}"
                 }
             """
         }.andExpect {
             status { isBadRequest() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
     }
 
     @Test
-    fun `update display with computer data should lead to response 400 bad request`() {
+    fun `merging computer data into display should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        // deviceService.merge(deviceId, deviceUpdate) is relaxed
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "name": "${computerUpdateFull.name}",
-                    "username": "${computerUpdateFull.username}",
-                    "password": "${computerUpdateFull.password}",
-                    "ipAddress": "${computerUpdateFull.ipAddress}"
+                    "name": "${computerUpdate.name}",
+                    "username": "${computerUpdate.username}",
+                    "password": "${computerUpdate.password}",
+                    "ipAddress": "${computerUpdate.ipAddress}"
                 }
             """
         }.andExpect {
             status { isBadRequest() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
     }
 
     @Test
-    fun `update unknown device should lead to response 404 not found`() {
+    fun `merging into unknown device should lead to response 404 not found`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } throws DeviceNotFoundException(computerId)
 
@@ -157,13 +157,13 @@ class UpdateDevicePartiallyControllerTest(
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "name": "${computerUpdateFull.name}",
+                    "name": "${computerUpdate.name}",
                 }
             """
         }.andExpect {
             status { isNotFound() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
     }
 }

@@ -51,16 +51,16 @@ class JpaDeviceRepository(
         repo.findByIdOrNull(deviceId)?.deviceType()
             ?: throw DeviceNotFoundException(deviceId)
 
-    override fun updateDevice(device: Device) {
+    override fun replaceDevice(device: Device) {
         if (!repo.existsById(device.id))
             throw DeviceNotFoundException(device.id)
         repo.save(device.toEntity())
     }
 
-    override fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) {
+    override fun mergeIntoDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) {
         val deviceEntity = repo.findByIdOrNull(deviceId)
             ?: throw DeviceNotFoundException(deviceId)
-        deviceUpdate.updateEntity(deviceEntity)
+        deviceUpdate.mergeIntoEntity(deviceEntity)
     }
 
     override fun findAllDevices(): List<Device> =
