@@ -13,10 +13,17 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.patch
+import org.springframework.test.web.servlet.result.HeaderResultMatchersDsl
+
+private val APPLICATION_MERGE_PATCH_JSON =
+    MediaType.parseMediaType(APPLICATION_MERGE_PATCH_JSON_VALUE)
+
+internal fun HeaderResultMatchersDsl.acceptMergePatch() =
+    string(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
@@ -41,7 +48,7 @@ class MergeIntoDeviceControllerTest(
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
-            contentType = APPLICATION_JSON
+            contentType = APPLICATION_MERGE_PATCH_JSON
             content = """
                 {
                     "name": "${computerUpdate.name}",
@@ -52,6 +59,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            header { acceptMergePatch() }
         }
 
         verify { deviceService.mergeIntoDevice(computerId, computerUpdate) }
@@ -65,7 +73,7 @@ class MergeIntoDeviceControllerTest(
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
-            contentType = APPLICATION_JSON
+            contentType = APPLICATION_MERGE_PATCH_JSON
             content = """
                 {
                     "name": "${displayUpdate.name}",
@@ -74,6 +82,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            header { acceptMergePatch() }
         }
 
         verify { deviceService.mergeIntoDevice(displayId, displayUpdate) }
@@ -87,7 +96,7 @@ class MergeIntoDeviceControllerTest(
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
-            contentType = APPLICATION_JSON
+            contentType = APPLICATION_MERGE_PATCH_JSON
             content = """
                 {
                     "name": "${computerUpdatePartial.name}",
@@ -96,6 +105,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            header { acceptMergePatch() }
         }
 
         verify { deviceService.mergeIntoDevice(computerId, computerUpdatePartial) }
@@ -108,7 +118,7 @@ class MergeIntoDeviceControllerTest(
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
-            contentType = APPLICATION_JSON
+            contentType = APPLICATION_MERGE_PATCH_JSON
             // 'id' is not a valid updatable field, it is part of the URL
             content = """
                 {
@@ -118,6 +128,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            header { acceptMergePatch() }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
@@ -131,7 +142,7 @@ class MergeIntoDeviceControllerTest(
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
-            contentType = APPLICATION_JSON
+            contentType = APPLICATION_MERGE_PATCH_JSON
             content = """
                 {
                     "name": "${computerUpdate.name}",
@@ -142,6 +153,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            header { acceptMergePatch() }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
@@ -154,7 +166,7 @@ class MergeIntoDeviceControllerTest(
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
-            contentType = APPLICATION_JSON
+            contentType = APPLICATION_MERGE_PATCH_JSON
             content = """
                 {
                     "name": "${computerUpdate.name}",
@@ -162,6 +174,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isNotFound() }
+            header { acceptMergePatch() }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }

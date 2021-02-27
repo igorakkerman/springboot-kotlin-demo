@@ -55,7 +55,7 @@ class StructureControllerTest(
         mockMvc.options("/devices/$computerId") {
             accept = APPLICATION_JSON
         }.andExpect {
-            status { isOk() }
+            status { isNoContent() }
             header {
                 string(
                     HttpHeaders.ALLOW, CoreMatchers.allOf(
@@ -66,6 +66,7 @@ class StructureControllerTest(
                         containsString("OPTIONS"),
                     )
                 )
+                header { acceptMergePatch() }
             }
         }
     }
@@ -118,25 +119,27 @@ class StructureControllerTest(
     }
 
     @Test
-    fun `PATCH request with missing body should lead to response 415 unsupported media type`() {
+    fun `PATCH request with empty body should lead to response 400 unsupported media type`() {
         // when / then
-        mockMvc.post("/devices").andExpect {
+        mockMvc.patch("/devices/$computerId").andExpect {
             status { isUnsupportedMediaType() }
+            header { acceptMergePatch() }
         }
     }
 
     @Test
-    fun `PATCH request with non-JSON body should lead to response 415 unsupported media type`() {
+    fun `PATCH request with non-JSON-merge-patch body should lead to response 415 unsupported media type`() {
         mockMvc.patch("/devices/$computerId") {
-            contentType = APPLICATION_XML
-            content = """<computer id="ourgoodold386" />"""
+            contentType = APPLICATION_JSON
+            content = """{"name": "cool name"}"""
         }.andExpect {
             status { isUnsupportedMediaType() }
+            header { acceptMergePatch() }
         }
     }
 
     @Test
-    fun `POST request with missing body should lead to response 415 unsupported media type`() {
+    fun `POST request with empty body should lead to response 415 unsupported media type`() {
         // when / then
         mockMvc.post("/devices").andExpect {
             status { isUnsupportedMediaType() }

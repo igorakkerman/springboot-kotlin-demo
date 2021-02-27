@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.MediaType
+import org.springframework.http.HttpStatus.NO_CONTENT
+import org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE
+import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -24,11 +26,16 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
+import javax.servlet.http.HttpServletResponse
 import kotlin.reflect.KClass
+
+const val ACCEPT_PATCH_HEADER = "Accept-Patch"
+const val APPLICATION_MERGE_PATCH_JSON_VALUE = "application/merge-patch+json"
 
 @RestController
 @RequestMapping("/devices")
@@ -93,10 +100,12 @@ class DeviceController(
         }
     }
 
-    @PatchMapping("/{deviceId}", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun mergeIntoDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
+    @PatchMapping("/{deviceId}", consumes = [APPLICATION_MERGE_PATCH_JSON_VALUE])
+    fun mergeIntoDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String, response: HttpServletResponse) {
         try {
             log.info("Merging into device. deviceId: $deviceId, document: $updateDocument")
+
+            response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
 
             val mapper = jacksonObjectMapper()
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
@@ -116,6 +125,19 @@ class DeviceController(
             throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
                 .also { log.info(it) { "Error processing PATCH /$deviceId ." } })
         }
+    }
+
+    // if used with a wrong media type, provide the Accept-Patch header as additional information
+    @PatchMapping("/{deviceId}")
+    @ResponseStatus(UNSUPPORTED_MEDIA_TYPE)
+    fun mergeIntoDeviceWrongMediaType(@PathVariable deviceId: DeviceId, response: HttpServletResponse) {
+        response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
+    }
+
+    @RequestMapping("/{deviceId}", method = [RequestMethod.OPTIONS])
+    @ResponseStatus(NO_CONTENT)
+    fun options(response: HttpServletResponse) {
+        response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
     }
 
     @ExceptionHandler(DeviceNotFoundException::class)
