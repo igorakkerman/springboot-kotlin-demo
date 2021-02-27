@@ -6,27 +6,27 @@ import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.Resolution
 
 sealed class DeviceUpdateDocument(
-    open var name: String?,
+    open val name: String?,
 ) {
     abstract fun toUpdate(): DeviceUpdate
 }
 
 data class ComputerUpdateDocument(
-    override var name: String? = null,
-    var username: String? = null,
-    var password: String? = null,
-    var ipAddress: String? = null,
+    override val name: String? = null,
+    val username: String? = null,
+    val password: String? = null,
+    val ipAddress: String? = null,
 ) : DeviceUpdateDocument(name) {
     override fun toUpdate() = ComputerUpdate(
         name = name,
         username = username,
         password = password,
-        ipAddress = ipAddress
+        ipAddress = ipAddress,
     )
 }
 
 data class DisplayUpdateDocument(
-    override var name: String? = null,
+    override val name: String? = null,
     val resolution: Resolution? = null,
 ) : DeviceUpdateDocument(name) {
     override fun toUpdate() = DisplayUpdate(
