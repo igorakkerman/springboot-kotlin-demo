@@ -148,7 +148,7 @@ class CreateDeviceControllerTest(
         // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
-            // mandatory password value is missing
+            // mandatory name value is missing
             content = """
                 {
                     "type": "computer",
