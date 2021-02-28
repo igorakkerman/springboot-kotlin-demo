@@ -59,7 +59,6 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
-            header { acceptMergePatch() }
         }
 
         verify { deviceService.mergeIntoDevice(computerId, computerUpdate) }
@@ -82,7 +81,6 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
-            header { acceptMergePatch() }
         }
 
         verify { deviceService.mergeIntoDevice(displayId, displayUpdate) }
@@ -105,7 +103,6 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
-            header { acceptMergePatch() }
         }
 
         verify { deviceService.mergeIntoDevice(computerId, computerUpdatePartial) }
@@ -128,7 +125,6 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
-            header { acceptMergePatch() }
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
@@ -152,7 +148,6 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
-            header { acceptMergePatch() }
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
@@ -178,7 +173,6 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
-            header { acceptMergePatch() }
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
@@ -228,7 +222,6 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
-            header { acceptMergePatch() }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
@@ -249,7 +242,6 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isNotFound() }
-            header { acceptMergePatch() }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }

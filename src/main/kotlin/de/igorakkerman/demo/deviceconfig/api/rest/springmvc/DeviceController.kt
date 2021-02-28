@@ -101,11 +101,9 @@ class DeviceController(
     }
 
     @PatchMapping("/{deviceId}", consumes = [APPLICATION_MERGE_PATCH_JSON_VALUE])
-    fun mergeIntoDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String, response: HttpServletResponse) {
+    fun mergeIntoDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
         try {
             log.info("Merging into device. deviceId: $deviceId, JSON document: $updateDocument")
-
-            response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
 
             val mapper = jacksonObjectMapper()
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
