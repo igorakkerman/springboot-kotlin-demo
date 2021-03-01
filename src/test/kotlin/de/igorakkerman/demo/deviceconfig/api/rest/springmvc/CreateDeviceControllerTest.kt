@@ -101,10 +101,9 @@ class CreateDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
+        }.andExpect {
+            status { isBadRequest() }
         }
-            .andExpect {
-                status { isBadRequest() }
-            }
 
         verify {
             deviceService wasNot Called
@@ -130,10 +129,9 @@ class CreateDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
+        }.andExpect {
+            status { isBadRequest() }
         }
-            .andExpect {
-                status { isBadRequest() }
-            }
 
         verify {
             deviceService wasNot Called
