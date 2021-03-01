@@ -25,6 +25,8 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
 
+    implementation("org.zalando:logbook-spring-boot-starter:2.4.2")
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 

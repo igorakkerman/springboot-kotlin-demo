@@ -20,9 +20,20 @@ spring:
 
 logging:
   level:
+
     de.igorakkerman.demo: DEBUG
+
 #    org.hibernate: DEBUG
     org.hibernate.type: TRACE
+#    org.hibernate.type: TRACE
+#    org.hibernate.internal.util.EntityPrinter: DEBUG
+#    org.hibernate.jpa.internal.util.LogHelper: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.tool.hbm2ddl: DEBUG
+
+#    org.springframework.test.context: INFO
 #    org.springframework.transaction: TRACE
 #    org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor: DEBUG
 #    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+#    org.zalando.logbook: TRACE
