@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
 import org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import javax.servlet.http.HttpServletResponse
+import javax.validation.Valid
 import kotlin.reflect.KClass
 
 const val ACCEPT_PATCH_HEADER = "Accept-Patch"
@@ -64,7 +67,7 @@ class DeviceController(
 
     @PostMapping(consumes = [APPLICATION_JSON_VALUE])
     @ResponseStatus(CREATED)
-    fun createDevice(@RequestBody deviceDocument: DeviceDocument) {
+    fun createDevice(@Valid @RequestBody deviceDocument: DeviceDocument) {
         log.info("Creating device. document: $deviceDocument")
 
         deviceService.createDevice(deviceDocument.toDevice())
@@ -143,6 +146,16 @@ class DeviceController(
     @ResponseStatus(NOT_FOUND)
     fun deviceAlreadyExists(exception: DeviceNotFoundException): ErrorResponseBody =
         ErrorResponseBody("A device with id ${exception.deviceId} was not found.")
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    @ResponseStatus(BAD_REQUEST)
+    fun validationError(exception: MethodArgumentNotValidException): ErrorResponseBody =
+        ErrorResponseBody(
+            exception
+                .allErrors
+                .map { "Invalid value. field: ${(it as FieldError).field}, message: ${it.defaultMessage}" }
+                .toTypedArray()
+        )
 
     @ExceptionHandler(DeviceAreadyExistsException::class)
     @ResponseStatus(CONFLICT)

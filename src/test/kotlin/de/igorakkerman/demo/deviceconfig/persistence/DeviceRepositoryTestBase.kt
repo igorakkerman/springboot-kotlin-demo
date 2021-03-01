@@ -28,7 +28,7 @@ abstract class DeviceRepositoryTestBase(
         id = "pc-win10-0815",
         name = "workpc-0815",
         username = "root",
-        password = "secret",
+        password = "topsecret",
         ipAddress = "127.0.0.1",
     )
 

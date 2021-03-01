@@ -16,9 +16,10 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
+import org.zalando.logbook.autoconfigure.LogbookAutoConfiguration
 
 @WebMvcTest(controllers = [DeviceController::class])
-@ContextConfiguration(classes = [DeviceController::class])
+@ContextConfiguration(classes = [DeviceController::class, LogbookAutoConfiguration::class])
 class CreateDeviceControllerTest(
     @Autowired
     private val mockMvc: MockMvc,
@@ -157,10 +158,46 @@ class CreateDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
+        }.andExpect {
+            status { isBadRequest() }
         }
-            .andExpect {
-                status { isBadRequest() }
-            }
+
+        verify {
+            deviceService wasNot Called
+        }
+    }
+
+    @Test
+    fun `create device with invalid values should lead to response 400 bad request`() {
+        // given
+        // deviceService.createDevice(computer) is relaxed
+
+        // when / then
+        mockMvc.post("/devices") {
+            contentType = APPLICATION_JSON
+            // ipAddress must have IPv4 format
+            content = """
+                {
+                    "type": "computer",
+                    "id": "${computer.id}",
+                    "name": "${computer.name}",
+                    "username": "fartoolongusername",
+                    "password": "abc",
+                    "ipAddress": "::1"
+                }
+            """
+        }.andExpect {
+            status { isBadRequest() }
+            content { json("""
+                {
+                    "messages": [
+                        "Invalid value. field: username, message: length must be between 4 and 12",
+                        "Invalid value. field: password, message: length must be between 8 and 32",
+                        "Invalid value. field: ipAddress, message: IPv4 address has invalid format"
+                    ]
+                }
+            """)}
+        }
 
         verify {
             deviceService wasNot Called
@@ -213,15 +250,13 @@ class CreateDeviceControllerTest(
             """
         }.andExpect {
             status { isConflict() }
-            content {
-                json(
-                    """
-                            {
-                                "message": "A device with id ${computer.id} already exists."
-                            }
-                    """
-                )
-            }
+            content { json("""
+                {
+                    "messages": [
+                        "A device with id ${computer.id} already exists."
+                    ]
+                }
+            """)}
         }
 
         verify {

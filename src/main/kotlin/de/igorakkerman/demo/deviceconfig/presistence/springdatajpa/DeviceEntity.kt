@@ -8,6 +8,9 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceUpdate
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.Resolution
+import de.igorakkerman.demo.deviceconfig.validation.Ipv4Address
+import de.igorakkerman.demo.deviceconfig.validation.Password
+import de.igorakkerman.demo.deviceconfig.validation.Username
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType.STRING
@@ -16,7 +19,6 @@ import javax.persistence.Id
 import javax.persistence.Inheritance
 import javax.persistence.InheritanceType.TABLE_PER_CLASS
 import javax.persistence.Table
-import javax.validation.constraints.Pattern
 import kotlin.reflect.KClass
 
 @Entity
@@ -40,16 +42,15 @@ data class ComputerEntity(
     override var name: String,
 
     @Column(nullable = false)
+    @Username
     var username: String,
 
     @Column(nullable = false)
+    @Password
     var password: String,
 
     @Column(nullable = false)
-    @field:Pattern(
-        regexp = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$",
-        message = "field: IPv4 address has invalid format",
-    )
+    @Ipv4Address
     var ipAddress: String,
 ) : DeviceEntity(id, name) {
     override fun toDevice() = Computer(

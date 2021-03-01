@@ -8,6 +8,9 @@ import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution
+import de.igorakkerman.demo.deviceconfig.validation.Ipv4Address
+import de.igorakkerman.demo.deviceconfig.validation.Password
+import de.igorakkerman.demo.deviceconfig.validation.Username
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -28,8 +31,11 @@ sealed class DeviceDocument(
 data class ComputerDocument(
     override val id: DeviceId,
     override val name: String,
+    @Username
     val username: String,
+    @Password
     val password: String,
+    @Ipv4Address
     val ipAddress: String,
 ) : DeviceDocument(id, name) {
     override fun toDevice() = Computer(
@@ -73,4 +79,7 @@ fun Display.toDocument(): DisplayDocument = DisplayDocument(
     resolution = this.resolution
 )
 
-data class ErrorResponseBody(val message: String)
+    @Suppress("ArrayInDataClass")
+data class ErrorResponseBody(val messages: Array<String>) {
+    constructor(message: String) : this(arrayOf(message))
+}
