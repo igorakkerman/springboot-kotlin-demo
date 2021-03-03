@@ -1,4 +1,4 @@
-package de.igorakkerman.demo.deviceconfig.presistence.springdatajpa
+package de.igorakkerman.demo.deviceconfig.persistence.springdatajpa
 
 import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
