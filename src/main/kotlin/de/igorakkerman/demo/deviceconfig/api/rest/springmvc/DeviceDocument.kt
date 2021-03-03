@@ -79,7 +79,7 @@ fun Display.toDocument(): DisplayDocument = DisplayDocument(
     resolution = this.resolution
 )
 
-    @Suppress("ArrayInDataClass")
+@Suppress("ArrayInDataClass")
 data class ErrorResponseBody(val messages: Array<String>) {
     constructor(message: String) : this(arrayOf(message))
 }

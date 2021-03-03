@@ -188,7 +188,9 @@ class CreateDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
-            content { json("""
+            content {
+                json(
+                    """
                 {
                     "messages": [
                         "Invalid value. field: username, message: length must be between 4 and 12",
@@ -196,7 +198,9 @@ class CreateDeviceControllerTest(
                         "Invalid value. field: ipAddress, message: IPv4 address has invalid format"
                     ]
                 }
-            """)}
+            """
+                )
+            }
         }
 
         verify {
@@ -250,13 +254,17 @@ class CreateDeviceControllerTest(
             """
         }.andExpect {
             status { isConflict() }
-            content { json("""
+            content {
+                json(
+                    """
                 {
                     "messages": [
                         "A device with id ${computer.id} already exists."
                     ]
                 }
-            """)}
+            """
+                )
+            }
         }
 
         verify {
