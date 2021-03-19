@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.30"
+    kotlin("jvm") version "1.4.31"
     kotlin("plugin.spring") version "1.4.21"
-    kotlin("plugin.jpa") version "1.4.30"
-    id("org.springframework.boot") version "2.4.3"
+    kotlin("plugin.jpa") version "1.5.0-M1"
+    id("org.springframework.boot") version "2.4.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
@@ -21,16 +21,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.4")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.6")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
 
-    implementation("org.zalando:logbook-spring-boot-starter:2.4.2")
+    implementation("org.zalando:logbook-spring-boot-starter:2.6.1")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0-M1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
 
-    testImplementation("io.kotest:kotest-assertions-core-jvm:4.4.1")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:4.4.3")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
