@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
     kotlin("jvm") version "1.4.31"
@@ -52,4 +53,8 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.getByName<BootBuildImage>("bootBuildImage") {
+    imageName = "igorakkerman/deviceconfig-demo:latest"
 }
