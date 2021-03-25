@@ -12,11 +12,11 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
-      - name: JDK 15 setup
+      - name: JDK 16 setup
         uses: actions/setup-java@v1
         with:
-          java-version: 15
+          java-version: 16
       - name: Gradle build
         run: |
-          chmod +x gradlew
-          ./gradlew build
+           chmod +x gradlew
+           ./gradlew build
