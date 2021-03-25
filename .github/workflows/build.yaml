@@ -16,6 +16,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 16
+      - name: Gradle wrapper upgrade # temporarily, remove when Gradle 7 is bundled
+        run: |
+          chmod +x gradlew
+          ./gradlew wrapper --gradle-version 7.0-rc-1 --distribution-type all
       - name: Gradle build
         run: |
            chmod +x gradlew
