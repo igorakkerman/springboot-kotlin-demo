@@ -51,6 +51,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            content { empty() }
         }
 
         verify { deviceService.mergeIntoDevice(computerId, computerUpdate) }
@@ -73,6 +74,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            content { empty() }
         }
 
         verify { deviceService.mergeIntoDevice(displayId, displayUpdate) }
@@ -95,6 +97,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            content { empty() }
         }
 
         verify { deviceService.mergeIntoDevice(computerId, computerUpdatePartial) }
@@ -117,6 +120,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
@@ -140,6 +144,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
@@ -165,6 +170,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
@@ -189,6 +195,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            content { empty() }
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
@@ -214,6 +221,7 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
@@ -234,6 +242,17 @@ class MergeIntoDeviceControllerTest(
             """
         }.andExpect {
             status { isNotFound() }
+            content {
+                json(
+                    """
+                        {
+                            "messages": [
+                                "A device with id macpro-m1-95014 was not found."
+                            ]
+                        }
+                    """
+                )
+            }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
