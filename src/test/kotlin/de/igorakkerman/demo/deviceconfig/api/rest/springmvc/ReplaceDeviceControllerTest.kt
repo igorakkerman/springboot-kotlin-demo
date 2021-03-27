@@ -1,11 +1,11 @@
 package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
+import com.ninjasquad.springmockk.MockkBean
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution.WQHD
-import com.ninjasquad.springmockk.MockkBean
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.verify
@@ -52,6 +52,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            content { empty() }
         }
 
         verify { deviceService.replaceDevice(computer) }
@@ -76,6 +77,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isOk() }
+            content { empty() }
         }
 
         verify { deviceService.replaceDevice(display) }
@@ -100,6 +102,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify(exactly = 0) { deviceService.replaceDevice(computer) }
@@ -125,6 +128,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify { deviceService wasNot Called }
@@ -150,6 +154,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify { deviceService wasNot Called }
@@ -174,6 +179,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify(exactly = 0) { deviceService.replaceDevice(any()) }
@@ -200,6 +206,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isConflict() }
+            content { empty() }
         }
 
         verify(exactly = 0) { deviceService.replaceDevice(any()) }
@@ -225,6 +232,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify(exactly = 0) { deviceService.replaceDevice(any()) }
@@ -251,6 +259,7 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            content { empty() }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
@@ -276,6 +285,17 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isNotFound() }
+            content {
+                json(
+                    """
+                        {
+                            "messages": [
+                                "A device with id macpro-m1-95014 was not found."
+                            ]
+                        }
+                    """
+                )
+            }
         }
 
         verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
