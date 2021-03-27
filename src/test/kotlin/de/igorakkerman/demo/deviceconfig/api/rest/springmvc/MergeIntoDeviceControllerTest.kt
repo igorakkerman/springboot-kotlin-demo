@@ -1,5 +1,6 @@
 package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
+import com.ninjasquad.springmockk.MockkBean
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
 import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
@@ -7,23 +8,14 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.Resolution.WQHD
-import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.patch
-import org.springframework.test.web.servlet.result.HeaderResultMatchersDsl
-
-private val APPLICATION_MERGE_PATCH_JSON =
-    MediaType.parseMediaType(APPLICATION_MERGE_PATCH_JSON_VALUE)
-
-internal fun HeaderResultMatchersDsl.acceptMergePatch() =
-    string(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])

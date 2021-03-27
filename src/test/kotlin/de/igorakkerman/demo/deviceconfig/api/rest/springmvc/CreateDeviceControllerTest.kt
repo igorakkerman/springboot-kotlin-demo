@@ -16,7 +16,6 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.result.ContentResultMatchersDsl
 import org.zalando.logbook.autoconfigure.LogbookAutoConfiguration
 
 @WebMvcTest(controllers = [DeviceController::class])
@@ -32,8 +31,6 @@ class CreateDeviceControllerTest(
     private val computer = Computer(computerId, "best mac", "timapple", "0n3m0r3th1ng", "192.168.178.1")
     private val displayId = "samsung-screen-88276"
     private val display = Display(displayId, "favorite screen", Resolution.UHD)
-
-    private fun ContentResultMatchersDsl.empty() = string("")
 
     @Test
     fun `create computer with valid data should lead to response 201 created`() {
