@@ -195,14 +195,14 @@ class CreateDeviceControllerTest(
             content {
                 json(
                     """
-                {
-                    "messages": [
-                        "Invalid value. field: username, message: length must be between 4 and 12",
-                        "Invalid value. field: password, message: length must be between 8 and 32",
-                        "Invalid value. field: ipAddress, message: IPv4 address has invalid format"
-                    ]
-                }
-            """
+                        {
+                            "messages": [
+                                "Invalid value. field: username, message: length must be between 4 and 12",
+                                "Invalid value. field: password, message: length must be between 8 and 32",
+                                "Invalid value. field: ipAddress, message: IPv4 address has invalid format"
+                            ]
+                        }
+                    """
                 )
             }
         }
@@ -262,12 +262,12 @@ class CreateDeviceControllerTest(
             content {
                 json(
                     """
-                {
-                    "messages": [
-                        "A device with id ${computer.id} already exists."
-                    ]
-                }
-            """
+                        {
+                            "messages": [
+                                "A device with id ${computer.id} already exists."
+                            ]
+                        }
+                    """
                 )
             }
         }
