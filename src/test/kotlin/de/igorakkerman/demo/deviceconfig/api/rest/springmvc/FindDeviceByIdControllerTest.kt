@@ -44,14 +44,14 @@ class FindDeviceByIdControllerTest(
             content {
                 json(
                     """
-                            {
-                                "type": "computer",
-                                "id": "${computer.id}",
-                                "name": "${computer.name}",
-                                "username": "${computer.username}",
-                                "password": "${computer.password}",
-                                "ipAddress": "${computer.ipAddress}"
-                            }
+                        {
+                            "type": "computer",
+                            "id": "${computer.id}",
+                            "name": "${computer.name}",
+                            "username": "${computer.username}",
+                            "password": "${computer.password}",
+                            "ipAddress": "${computer.ipAddress}"
+                        }
                     """,
                     strict = true
                 )
