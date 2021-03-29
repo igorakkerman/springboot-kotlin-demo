@@ -93,7 +93,6 @@ class CreateDeviceControllerTest(
         // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
-            // mandatory password value is missing
             content = """
                 {
                     "type": "computer",
@@ -102,7 +101,7 @@ class CreateDeviceControllerTest(
                     "username": "${computer.username}",
                     "ipAddress": "${computer.ipAddress}"
                 }
-            """
+            """ // mandatory password value is missing
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -121,7 +120,6 @@ class CreateDeviceControllerTest(
         // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
-            // mandatory password value is missing
             content = """
                 {
                     "type": "computer",
@@ -131,7 +129,7 @@ class CreateDeviceControllerTest(
                     "password": "${computer.password}",
                     "ipAddress": "${computer.ipAddress}"
                 }
-            """
+            """ // mandatory password value is missing
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -150,7 +148,6 @@ class CreateDeviceControllerTest(
         // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
-            // mandatory name value is missing
             content = """
                 {
                     "type": "computer",
@@ -160,7 +157,7 @@ class CreateDeviceControllerTest(
                     "password": "${computer.password}",
                     "ipAddress": "${computer.ipAddress}"
                 }
-            """
+            """ // mandatory name value is missing
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -179,7 +176,6 @@ class CreateDeviceControllerTest(
         // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
-            // ipAddress must have IPv4 format
             content = """
                 {
                     "type": "computer",
@@ -189,7 +185,7 @@ class CreateDeviceControllerTest(
                     "password": "abc",
                     "ipAddress": "::1"
                 }
-            """
+            """ // ipAddress must have IPv4 format
         }.andExpect {
             status { isBadRequest() }
             content {
@@ -220,7 +216,6 @@ class CreateDeviceControllerTest(
         // when / then
         mockMvc.post("/devices") {
             contentType = APPLICATION_JSON
-            // 'sizeInInch' is not a valid field
             content = """
                 {
                     "id": "${displayId}",
@@ -229,7 +224,7 @@ class CreateDeviceControllerTest(
                     "resolution": "${display.resolution}",
                     "sizeInInch": 19 
                 }
-            """
+            """ // 'sizeInInch' is not a valid field
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
