@@ -87,6 +87,8 @@ The application provides a REST API to its clients with the following endpoints:
 - `GET /devices/<device id>` retrieves a single device configuration
 - `GET /devices` lists the configurations of all devices
 
+Hypermedia (HATEOAS) is not supported.
+
 ## Challenges and proposed solutions
 ### Hexagonal Architecture
 Should Spring Boot annotations be allowed in core application package?
