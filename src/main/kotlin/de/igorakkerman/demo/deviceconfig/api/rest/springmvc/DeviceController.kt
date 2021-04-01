@@ -136,9 +136,16 @@ class DeviceController(
         response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
     }
 
+    @RequestMapping(method = [RequestMethod.OPTIONS])
+    @ResponseStatus(NO_CONTENT)
+    fun optionsRoot(response: HttpServletResponse) {
+        /* nothing to add */
+    }
+
     @RequestMapping("/{deviceId}", method = [RequestMethod.OPTIONS])
     @ResponseStatus(NO_CONTENT)
-    fun options(response: HttpServletResponse) {
+    @Suppress("MVCPathVariableInspection")
+    fun optionsDeviceId(response: HttpServletResponse) {
         response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
     }
 

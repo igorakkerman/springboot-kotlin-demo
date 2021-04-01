@@ -36,7 +36,7 @@ class StructureControllerTest(
         mockMvc.options("/devices") {
             accept = APPLICATION_JSON
         }.andExpect {
-            status { isOk() }
+            status { isNoContent() }
             header {
                 string(
                     HttpHeaders.ALLOW, CoreMatchers.allOf(
