@@ -1,7 +1,7 @@
 package de.igorakkerman.demo.deviceconfig.api.rest.springmvc
 
-import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import com.ninjasquad.springmockk.MockkBean
+import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.jupiter.api.Test
@@ -126,7 +126,7 @@ class StructureControllerTest(
     }
 
     @Test
-        // when / then
+    // when / then
     fun `PATCH request with empty body should lead to response 400 unsupported media type`() {
         mockMvc.patch("/devices/$computerId").andExpect {
             status { isUnsupportedMediaType() }
