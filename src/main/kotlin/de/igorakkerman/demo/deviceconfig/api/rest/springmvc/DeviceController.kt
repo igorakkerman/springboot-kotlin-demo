@@ -76,6 +76,7 @@ class DeviceController(
     }
 
     @PutMapping("/{deviceId}", consumes = [APPLICATION_JSON_VALUE])
+    @ResponseStatus(NO_CONTENT)
     fun replaceDevice(@PathVariable deviceId: DeviceId, @RequestBody deviceDocument: DeviceDocument) {
         try {
             log.info("Replacing device. deviceId: $deviceId, document: $deviceDocument")
@@ -93,7 +94,6 @@ class DeviceController(
                 throw ResponseStatusException(CONFLICT, "Type of resource with specified ID doesn't match device type in document. resourceType: $deviceType, deviceType: ${device::class}")
                     .also { log.info(it.message) }
 
-            // TODO: return ID of/URL to resource in header/body
             deviceService.replaceDevice(deviceDocument.toDevice())
 
             log.info("Device replaced. deviceId: $deviceId")
@@ -104,6 +104,7 @@ class DeviceController(
     }
 
     @PatchMapping("/{deviceId}", consumes = [APPLICATION_MERGE_PATCH_JSON_VALUE])
+    @ResponseStatus(NO_CONTENT)
     fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
         try {
             log.info("Updating device. deviceId: $deviceId, JSON document: $updateDocument")
@@ -119,7 +120,6 @@ class DeviceController(
             }
             log.debug { "DeviceUpdateDocument parsed: $deviceUpdateDocument" }
 
-            // TODO: return ID of/URL to resource in header/body
             deviceService.updateDevice(deviceId, deviceUpdateDocument.toUpdate())
 
             log.info("Device updated. deviceId: $deviceId")

@@ -32,7 +32,7 @@ class ReplaceDeviceControllerTest(
     private val display = Display(id = displayId, name = "second best screen", resolution = WQHD)
 
     @Test
-    fun `replace computer with full valid data should lead to response 200 ok`() {
+    fun `replace computer with full valid data should lead to response 204 no content`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
         // deviceService.replace(device) is relaxed
@@ -51,7 +51,7 @@ class ReplaceDeviceControllerTest(
                 }
             """
         }.andExpect {
-            status { isOk() }
+            status { isNoContent() }
             content { empty() }
         }
 
@@ -59,7 +59,7 @@ class ReplaceDeviceControllerTest(
     }
 
     @Test
-    fun `replace display with full valid data should lead to response 200 ok`() {
+    fun `replace display with full valid data should lead to response 204 no content`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
         // deviceService.replace(device) is relaxed
@@ -76,7 +76,7 @@ class ReplaceDeviceControllerTest(
                 }
             """
         }.andExpect {
-            status { isOk() }
+            status { isNoContent() }
             content { empty() }
         }
 

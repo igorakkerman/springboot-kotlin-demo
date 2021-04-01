@@ -33,7 +33,7 @@ class UpdateDeviceControllerTest(
     private val displayUpdate = DisplayUpdate("second best screen", resolution = WQHD)
 
     @Test
-    fun `updating full valid data of computer should lead to response 200 ok`() {
+    fun `updating full valid data of computer should lead to response 204 no content`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
         // deviceService.update(deviceId, deviceUpdate) is relaxed
@@ -50,7 +50,7 @@ class UpdateDeviceControllerTest(
                 }
             """
         }.andExpect {
-            status { isOk() }
+            status { isNoContent() }
             content { empty() }
         }
 
@@ -58,7 +58,7 @@ class UpdateDeviceControllerTest(
     }
 
     @Test
-    fun `updating full valid data of display should lead to response 200 ok`() {
+    fun `updating full valid data of display should lead to response 204 no content`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
         // deviceService.update(deviceId, deviceUpdate) is relaxed
@@ -73,7 +73,7 @@ class UpdateDeviceControllerTest(
                 }
             """
         }.andExpect {
-            status { isOk() }
+            status { isNoContent() }
             content { empty() }
         }
 
@@ -81,7 +81,7 @@ class UpdateDeviceControllerTest(
     }
 
     @Test
-    fun `updating partial valid data of computer should lead to response 200 ok`() {
+    fun `updating partial valid data of computer should lead to response 204 no content`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
         // deviceService.update(deviceId, deviceUpdate) is relaxed
@@ -96,7 +96,7 @@ class UpdateDeviceControllerTest(
                 }
             """
         }.andExpect {
-            status { isOk() }
+            status { isNoContent() }
             content { empty() }
         }
 
@@ -179,7 +179,7 @@ class UpdateDeviceControllerTest(
 
     @Test
     // just to be safe that the marker is compared for identity, not equality
-    fun `updating value by our 'unset' marker should use the literal string and lead to response 200 ok`() {
+    fun `updating value by our 'unset' marker should use the literal string and lead to response 204 no content`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
         val displayUpdate = DisplayUpdate(name = UNSET)
@@ -194,7 +194,7 @@ class UpdateDeviceControllerTest(
                 }
             """
         }.andExpect {
-            status { isOk() }
+            status { isNoContent() }
             content { empty() }
         }
 
