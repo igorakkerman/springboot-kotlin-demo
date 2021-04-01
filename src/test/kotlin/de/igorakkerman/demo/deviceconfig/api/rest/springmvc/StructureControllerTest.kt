@@ -47,6 +47,7 @@ class StructureControllerTest(
                     )
                 )
             }
+            content { empty() }
         }
     }
 
@@ -67,6 +68,7 @@ class StructureControllerTest(
                     )
                 )
                 header { acceptMergePatch() }
+                content { empty() }
             }
         }
     }
@@ -86,6 +88,7 @@ class StructureControllerTest(
             accept = APPLICATION_JSON
         }.andExpect {
             status { isMethodNotAllowed() }
+            content { empty() }
         }
     }
 
@@ -95,6 +98,7 @@ class StructureControllerTest(
             accept = APPLICATION_JSON
         }.andExpect {
             status { isMethodNotAllowed() }
+            content { empty() }
         }
     }
 
@@ -105,6 +109,7 @@ class StructureControllerTest(
             // when / then
         }.andExpect {
             status { isNotAcceptable() }
+            content { empty() }
         }
     }
 
@@ -115,15 +120,17 @@ class StructureControllerTest(
             // when / then
         }.andExpect {
             status { isNotAcceptable() }
+            content { empty() }
         }
     }
 
     @Test
-    fun `PATCH request with empty body should lead to response 400 unsupported media type`() {
         // when / then
+    fun `PATCH request with empty body should lead to response 400 unsupported media type`() {
         mockMvc.patch("/devices/$computerId").andExpect {
             status { isUnsupportedMediaType() }
             header { acceptMergePatch() }
+            content { empty() }
         }
     }
 
@@ -135,6 +142,7 @@ class StructureControllerTest(
         }.andExpect {
             status { isUnsupportedMediaType() }
             header { acceptMergePatch() }
+            content { empty() }
         }
     }
 
@@ -143,6 +151,7 @@ class StructureControllerTest(
         // when / then
         mockMvc.post("/devices").andExpect {
             status { isUnsupportedMediaType() }
+            content { empty() }
         }
     }
 
@@ -154,6 +163,7 @@ class StructureControllerTest(
             content = """<computer id="ourgoodold386" />"""
         }.andExpect {
             status { isUnsupportedMediaType() }
+            content { empty() }
         }
     }
 }
