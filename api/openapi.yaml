@@ -1,0 +1,257 @@
+openapi: 3.1.0
+info:
+  title: Device Configuration
+  description: Management API for configurations of devices.
+  version: 1.0.0
+paths:
+  /devices:
+    get:
+      summary: Find all device configurations.
+      description: Returns all registered device configurations.
+      operationId: findAllDevices
+      responses:
+        200:
+          description: List of all device configurations retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+              examples:
+                empty:
+                  value:
+                    [ ]
+                multiple:
+                  value:
+                    [
+                      {
+                        "type": "computer",
+                        "id": "macpro-m1-95014",
+                        "name": "best mac",
+                        "username": "timapple",
+                        "password": "0n3m0r3th1ng",
+                        "ipAddress": "192.168.178.1"
+                      },
+                      {
+                        "type": "display",
+                        "id": "samsung-screen-88276",
+                        "name": "favorite screen",
+                        "resolution": "UHD"
+                      }
+                    ]
+
+    post:
+      summary: Create a new device configuration.
+      operationId: createDevice
+      requestBody:
+        description: Device object that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+        required: true
+      responses:
+        400:
+          description: Invalid configuration data supplied.
+        409:
+          description: Device with specified ID already exists.
+
+    put:
+      responses:
+        405:
+          description: Device ID must be specified.
+
+    patch:
+      responses:
+        405:
+          description: Device ID must be specified.
+
+  /devices/{deviceId}:
+    get:
+      summary: Find device by ID.
+      description: Returns a single device configuation.
+      operationId: findDevice
+      parameters:
+        - name: deviceId
+          in: path
+          description: ID of device configuration to return
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Device found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+        404:
+          description: Device not found.
+
+    put:
+      summary: Fully replace configuration of an existing device.
+      operationId: replaceDevice
+      requestBody:
+        description: full device configuration document; must include all configuration values
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Device'
+        required: true
+      responses:
+        400:
+          description: Invalid configuration data supplied.
+        404:
+          description: Device not found.
+        409:
+          description: Configuration for device of wrong type supplied.
+
+    patch:
+      summary: Update configuration values of an existing device.
+      operationId: updateDevice
+      requestBody:
+        description: device configuration values to update; only modified values required
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceUpdate'
+        required: true
+      responses:
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Device not found
+
+    post:
+      responses:
+        405:
+          description: Root path must be used.
+
+components:
+  schemas:
+    Device:
+      type: object
+      required:
+        - type
+        - id
+        - name
+      properties:
+        type:
+          type: string
+          enum:
+            - computer
+            - display
+        id:
+          $ref: '#/components/schemas/DeviceId'
+        name:
+          $ref: '#/components/schemas/DeviceName'
+
+    Computer:
+      allOf:
+        - $ref: '#/components/schemas/Device'
+        - type: object
+          required:
+            - username
+            - password
+            - ipAddress
+          properties:
+            username:
+              $ref: '#/components/schemas/Username'
+            password:
+              $ref: '#/components/schemas/Password'
+            ipAddress:
+              $ref: '#/components/schemas/IpAddress'
+
+    Display:
+      allOf:
+        - $ref: '#/components/schemas/Device'
+        - type: object
+          required:
+            - resolution
+          properties:
+            resolution:
+              $ref: '#/components/schemas/Resolution'
+
+    DeviceUpdate:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/DeviceName'
+
+    ComputerUpdate:
+      anyOf:
+        - $ref: '#/components/schemas/DeviceUpdate'
+        - type: object
+          properties:
+            username:
+              $ref: '#/components/schemas/Username'
+            password:
+              $ref: '#/components/schemas/Password'
+            ipAddress:
+              $ref: '#/components/schemas/IpAddress'
+
+    DisplayUpdate:
+      anyOf:
+        - $ref: '#/components/schemas/DeviceUpdate'
+        - type: object
+          properties:
+            resolution:
+              $ref: '#/components/schemas/Resolution'
+
+    DeviceId:
+      type: string
+      example: macpro-m1-95014
+
+    DeviceName:
+      type: string
+      example: best mac
+
+    Username:
+      type: string
+      example: timapple
+      minLength: 4
+      maxLength: 12
+
+    Password:
+      type: string
+      example: 0n3m0r3th1ng
+      minLength: 8
+      maxLength: 32
+
+    IpAddress:
+      type: string
+      pattern: ^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$
+
+    Resolution:
+      type: string
+      enum: [ HD, WQHD, UHD ]
+
+  requestBodies:
+    deviceDocument:
+      description: device document
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Computer'
+              - $ref: '#/components/schemas/Display'
+
+    deviceUpdateDocument:
+      description: device update document
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/ComputerUpdate'
+              - $ref: '#/components/schemas/DisplayUpdate'
+
+  responses:
+    deviceDocument:
+      description: device document
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/Computer'
+              - $ref: '#/components/schemas/Display'
