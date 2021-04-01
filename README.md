@@ -83,7 +83,7 @@ The device id is used as the primary key.
 The application provides a REST API to its clients with the following endpoints:
 - `POST /devices` creates a new configuration for a device
 - `PUT /devices/<device id>` replaces a device configuration
-- `PATCH /devices/<device id>` merges data into a device configuration
+- `PATCH /devices/<device id>` updates values in a device configuration
 - `GET /devices/<device id>` retrieves a single device configuration
 - `GET /devices` lists the configurations of all devices
 

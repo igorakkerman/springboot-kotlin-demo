@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.patch
 
 @WebMvcTest(controllers = [DeviceController::class])
 @ContextConfiguration(classes = [DeviceController::class])
-class MergeIntoDeviceControllerTest(
+class UpdateDeviceControllerTest(
     @Autowired
     private val mockMvc: MockMvc,
 ) {
@@ -33,10 +33,10 @@ class MergeIntoDeviceControllerTest(
     private val displayUpdate = DisplayUpdate("second best screen", resolution = WQHD)
 
     @Test
-    fun `merging full valid data into computer should lead to response 200 ok`() {
+    fun `updating full valid data of computer should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.merge(deviceId, deviceUpdate) is relaxed
+        // deviceService.update(deviceId, deviceUpdate) is relaxed
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
@@ -54,14 +54,14 @@ class MergeIntoDeviceControllerTest(
             content { empty() }
         }
 
-        verify { deviceService.mergeIntoDevice(computerId, computerUpdate) }
+        verify { deviceService.updateDevice(computerId, computerUpdate) }
     }
 
     @Test
-    fun `merging full valid data into display should lead to response 200 ok`() {
+    fun `updating full valid data of display should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.merge(deviceId, deviceUpdate) is relaxed
+        // deviceService.update(deviceId, deviceUpdate) is relaxed
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
@@ -77,14 +77,14 @@ class MergeIntoDeviceControllerTest(
             content { empty() }
         }
 
-        verify { deviceService.mergeIntoDevice(displayId, displayUpdate) }
+        verify { deviceService.updateDevice(displayId, displayUpdate) }
     }
 
     @Test
-    fun `merging partial valid data into computer should lead to response 200 ok`() {
+    fun `updating partial valid data of computer should lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.merge(deviceId, deviceUpdate) is relaxed
+        // deviceService.update(deviceId, deviceUpdate) is relaxed
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
@@ -100,11 +100,11 @@ class MergeIntoDeviceControllerTest(
             content { empty() }
         }
 
-        verify { deviceService.mergeIntoDevice(computerId, computerUpdatePartial) }
+        verify { deviceService.updateDevice(computerId, computerUpdatePartial) }
     }
 
     @Test
-    fun `merging unknown fields into device should lead to response 400 bad request`() {
+    fun `updating unknown fields of device should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
 
@@ -124,11 +124,11 @@ class MergeIntoDeviceControllerTest(
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
-        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 
     @Test
-    fun `merging forbidden null id into device should lead to response 400 bad request`() {
+    fun `updating id of device by forbidden null should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
 
@@ -148,11 +148,11 @@ class MergeIntoDeviceControllerTest(
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
-        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 
     @Test
-    fun `merging forbidden null value into device should lead to response 400 bad request`() {
+    fun `updating value of device by forbidden null should lead to response 400 bad request`() {
         // in JSON Merge Patch, null has the meaning of deletion, which is not allowed here
         // application/merge-patch+json (https://tools.ietf.org/html/rfc7396)
 
@@ -174,12 +174,12 @@ class MergeIntoDeviceControllerTest(
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
-        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 
     @Test
     // just to be safe that the marker is compared for identity, not equality
-    fun `merging our 'unset' marker value should use the literal string and lead to response 200 ok`() {
+    fun `updating value by our 'unset' marker should use the literal string and lead to response 200 ok`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
         val displayUpdate = DisplayUpdate(name = UNSET)
@@ -199,14 +199,14 @@ class MergeIntoDeviceControllerTest(
         }
 
         verify { deviceService.findDeviceTypeById(displayId) }
-        verify { deviceService.mergeIntoDevice(displayId, displayUpdate) }
+        verify { deviceService.updateDevice(displayId, displayUpdate) }
     }
 
     @Test
-    fun `merging computer data into display should lead to response 400 bad request`() {
+    fun `updating computer data in display should lead to response 400 bad request`() {
         // given
         every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.merge(deviceId, deviceUpdate) is relaxed
+        // deviceService.update(deviceId, deviceUpdate) is relaxed
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
@@ -224,11 +224,11 @@ class MergeIntoDeviceControllerTest(
             content { empty() }
         }
 
-        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 
     @Test
-    fun `merging into unknown device should lead to response 404 not found`() {
+    fun `updating unknown device should lead to response 404 not found`() {
         // given
         every { deviceService.findDeviceTypeById(computerId) } throws DeviceNotFoundException(computerId)
 
@@ -255,6 +255,6 @@ class MergeIntoDeviceControllerTest(
             }
         }
 
-        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 }

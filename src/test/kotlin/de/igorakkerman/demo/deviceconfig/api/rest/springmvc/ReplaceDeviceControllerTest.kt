@@ -262,7 +262,7 @@ class ReplaceDeviceControllerTest(
             content { empty() }
         }
 
-        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 
     @Test
@@ -298,6 +298,6 @@ class ReplaceDeviceControllerTest(
             }
         }
 
-        verify(exactly = 0) { deviceService.mergeIntoDevice(any(), any()) }
+        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 }

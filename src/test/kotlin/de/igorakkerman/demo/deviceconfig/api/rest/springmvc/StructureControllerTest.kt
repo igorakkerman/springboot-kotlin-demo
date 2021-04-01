@@ -79,6 +79,7 @@ class StructureControllerTest(
             accept = APPLICATION_JSON
         }.andExpect {
             status { isMethodNotAllowed() }
+            content { empty() }
         }
     }
 

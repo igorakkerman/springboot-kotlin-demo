@@ -124,7 +124,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `create, then merge data into Computer, findDeviceById should return updated values`() {
+    fun `create, then update data of Computer, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(computer)
@@ -136,7 +136,7 @@ abstract class DeviceRepositoryTestBase(
         )
 
         // when
-        deviceRepository.mergeIntoDevice(computer.id, computerUpdate)
+        deviceRepository.updateDevice(computer.id, computerUpdate)
         flushAndClear()
 
         // then
@@ -148,7 +148,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `create, then merge data into Display, findDeviceById should return updated values`() {
+    fun `create, then update data of Display, findDeviceById should return updated values`() {
 
         // given
         deviceRepository.createDevice(display)
@@ -160,7 +160,7 @@ abstract class DeviceRepositoryTestBase(
         )
 
         // when
-        deviceRepository.mergeIntoDevice(display.id, displayUpdate)
+        deviceRepository.updateDevice(display.id, displayUpdate)
         flushAndClear()
 
         // then
@@ -172,14 +172,14 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    fun `merge data into unknown device should throw Exception`() {
+    fun `update data in unknown device should throw Exception`() {
 
         // given
         // empty database
 
         // when/then
         shouldThrow<DeviceNotFoundException> {
-            deviceRepository.mergeIntoDevice("unknown-id", DisplayUpdate())
+            deviceRepository.updateDevice("unknown-id", DisplayUpdate())
         }
     }
 

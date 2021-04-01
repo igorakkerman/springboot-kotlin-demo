@@ -104,9 +104,9 @@ class DeviceController(
     }
 
     @PatchMapping("/{deviceId}", consumes = [APPLICATION_MERGE_PATCH_JSON_VALUE])
-    fun mergeIntoDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
+    fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
         try {
-            log.info("Merging into device. deviceId: $deviceId, JSON document: $updateDocument")
+            log.info("Updating device. deviceId: $deviceId, JSON document: $updateDocument")
 
             val mapper = jacksonObjectMapper()
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
@@ -120,9 +120,9 @@ class DeviceController(
             log.debug { "DeviceUpdateDocument parsed: $deviceUpdateDocument" }
 
             // TODO: return ID of/URL to resource in header/body
-            deviceService.mergeIntoDevice(deviceId, deviceUpdateDocument.toUpdate())
+            deviceService.updateDevice(deviceId, deviceUpdateDocument.toUpdate())
 
-            log.info("Merged into device. deviceId: $deviceId")
+            log.info("Device updated. deviceId: $deviceId")
         } catch (exception: JsonProcessingException) {
             throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
                 .also { log.info { it.message } })
@@ -132,7 +132,7 @@ class DeviceController(
     // if used with a wrong media type, provide the Accept-Patch header as additional information
     @PatchMapping("/{deviceId}")
     @ResponseStatus(UNSUPPORTED_MEDIA_TYPE)
-    fun mergeIntoDeviceWrongMediaType(@PathVariable deviceId: DeviceId, response: HttpServletResponse) {
+    fun updateDeviceWrongMediaType(@PathVariable deviceId: DeviceId, response: HttpServletResponse) {
         response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
     }
 

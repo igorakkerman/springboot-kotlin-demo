@@ -9,6 +9,6 @@ interface DeviceRepository {
     fun findDeviceTypeById(deviceId: DeviceId): KClass<out Device>
     fun findDeviceById(deviceId: DeviceId): Device
     fun replaceDevice(device: Device)
-    fun mergeIntoDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate)
+    fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate)
     fun findAllDevices(): List<Device>
 }

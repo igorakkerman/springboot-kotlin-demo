@@ -57,10 +57,10 @@ class JpaDeviceRepository(
         repo.save(device.toEntity())
     }
 
-    override fun mergeIntoDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) {
+    override fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) {
         val deviceEntity = repo.findByIdOrNull(deviceId)
             ?: throw DeviceNotFoundException(deviceId)
-        deviceUpdate.mergeIntoEntity(deviceEntity)
+        deviceUpdate.updateEntity(deviceEntity)
     }
 
     override fun findAllDevices(): List<Device> =
