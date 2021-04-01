@@ -71,8 +71,6 @@ class DeviceController(
         log.info("Creating device. document: $deviceDocument")
 
         deviceService.createDevice(deviceDocument.toDevice())
-
-        // TODO: return ID of/URL to resource in header/body
     }
 
     @PutMapping("/{deviceId}", consumes = [APPLICATION_JSON_VALUE])
