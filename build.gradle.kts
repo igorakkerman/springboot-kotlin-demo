@@ -41,9 +41,11 @@ dependencies {
     testRuntimeOnly("com.h2database:h2:1.4.200")
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_15
-
 tasks.withType<KotlinCompile> {
+    java {
+        sourceCompatibility = JavaVersion.VERSION_15
+    }
+
     kotlinOptions {
         languageVersion = "1.5"
         apiVersion = "1.5"
