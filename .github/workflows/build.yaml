@@ -16,13 +16,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 16
-      - name: Gradle wrapper preparation # temporarily, remove when Gradle 7 is bundled
+      - name: Gradle wrapper preparation
         run: |
           chmod +x gradlew
-#          ./gradlew wrapper --gradle-version 7.0-rc-2 --distribution-type all
       - name: Gradle Kotlin build
         run: |
            ./gradlew build
-      - name: Gradle Container Image build
+      - name: Gradle container image build
         run: |
            ./gradlew jibDockerBuild
