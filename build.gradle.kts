@@ -2,9 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
-    kotlin("jvm") version "1.5.0-M1"
-    kotlin("plugin.spring") version "1.5.0-M1"
-    kotlin("plugin.jpa") version "1.5.0-M1"
+    kotlin("jvm") version "1.5.0-M2"
+    kotlin("plugin.spring") version "1.5.0-M2"
+    kotlin("plugin.jpa") version "1.5.0-M2"
     id("org.springframework.boot") version "2.4.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
@@ -45,6 +45,7 @@ java.sourceCompatibility = JavaVersion.VERSION_15
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
+        useIR = true
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "15"
     }
