@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
     kotlin("jvm") version "1.5.0-M2"
@@ -7,6 +6,7 @@ plugins {
     kotlin("plugin.jpa") version "1.5.0-M2"
     id("org.springframework.boot") version "2.4.4"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("com.google.cloud.tools.jib") version "2.8.0"
 }
 
 repositories {
@@ -43,7 +43,7 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     java {
-        sourceCompatibility = JavaVersion.VERSION_15
+        sourceCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
@@ -51,7 +51,7 @@ tasks.withType<KotlinCompile> {
         apiVersion = "1.5"
         useIR = true
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "15"
+        jvmTarget = "11"
     }
 }
 
@@ -59,6 +59,8 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.getByName<BootBuildImage>("bootBuildImage") {
-    imageName = "igorakkerman/deviceconfig-demo:latest"
+jib {
+    to {
+        image = "igorakkerman/deviceconfig-demo:latest"
+    }
 }

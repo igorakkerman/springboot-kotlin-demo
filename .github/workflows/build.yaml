@@ -20,7 +20,9 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew wrapper --gradle-version 7.0-rc-1 --distribution-type all
-      - name: Gradle build
+      - name: Gradle Kotlin build
         run: |
-           chmod +x gradlew
            ./gradlew build
+      - name: Gradle Container Image build
+        run: |
+           ./gradlew jibDockerBuild
