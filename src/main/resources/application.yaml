@@ -1,25 +1,29 @@
 server:
   port: 8080
-#  ssl:
-#    enabled: true
-#    key-store-type: PKCS12
-#    key-store: path/to.p12
-#    key-store-password:
 
 spring:
-#  datasource:
-#    url: jdbc:h2:mem:test
+  datasource:
+    url: jdbc:postgresql://${DB_HOSTNAME}:${DB_PORT:5432}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    initialization-mode: always
+    hikari:
+#      jdbc-url: jdbc:postgresql://postgres:5432/deviceconfig
+      connectionTimeout: 3000
+      maximumPoolSize: 5
   jpa:
     properties:
       hibernate:
-#        dialect: org.hibernate.dialect.H2Dialect
         show_sql: false        # SQL to console, bypassing logger
         format_sql: true       # SQL to log AND console
+    hibernate:
+      ddl-auto: create # TODO: change to validate
+
 
   jackson:
     deserialization:
       fail_on_unknown_properties: true
-
 logging:
   level:
     de.igorakkerman.demo: INFO
+

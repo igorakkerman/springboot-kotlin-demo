@@ -1,0 +1,32 @@
+version: "3.9"
+
+networks:
+  deviceconfig:
+    driver: bridge
+
+services:
+  deviceconfig:
+    image: igorakkerman/deviceconfig-demo:latest
+    ports:
+      - 8080:8080
+    networks:
+      - deviceconfig
+    environment:
+      DB_HOSTNAME: postgres
+      DB_NAME: deviceconfig
+      DB_USERNAME: deviceconfiguser
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:alpine
+    expose:
+      - 5432
+    networks:
+      - deviceconfig
+    environment:
+      POSTGRES_DB: deviceconfig
+      POSTGRES_USER: deviceconfiguser
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    restart: unless-stopped
