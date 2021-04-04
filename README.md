@@ -198,5 +198,9 @@ or should the client send only the values to be updated?
 
 In order to allow single values to be updated without the need to send the full resource data,
 an incremental update has been allowed through the _PATCH_ method.
-A full update using the _PUT_ method is also possible.
 
+#### _PATCH_ and _PUT_
+A full update to a device using the _PUT_ method is also possible.
+Having the _PUT_ endpoint alongside _PATCH_
+allows a client to send equal structured device representations for both creation (_POST_) and modification (_PUT_),
+whereas a document update sent as _PATCH_ cannot include non-modifiable fields, such as the ID.
