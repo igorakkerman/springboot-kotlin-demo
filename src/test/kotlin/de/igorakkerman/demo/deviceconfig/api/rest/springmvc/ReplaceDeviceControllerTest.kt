@@ -4,6 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
+import de.igorakkerman.demo.deviceconfig.application.DeviceTypeConflictException
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.Resolution.WQHD
 import io.mockk.Called
@@ -34,7 +35,6 @@ class ReplaceDeviceControllerTest(
     @Test
     fun `replace computer with full valid data should lead to response 204 no content`() {
         // given
-        every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
         // deviceService.replace(device) is relaxed
 
         // when / then
@@ -61,7 +61,6 @@ class ReplaceDeviceControllerTest(
     @Test
     fun `replace display with full valid data should lead to response 204 no content`() {
         // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
         // deviceService.replace(device) is relaxed
 
         // when / then
@@ -85,10 +84,6 @@ class ReplaceDeviceControllerTest(
 
     @Test
     fun `replace device with partial data should lead to response 400 bad request`() {
-        // given
-        every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.replace(device) is relaxed
-
         // when / then
         mockMvc.put("/devices/$computerId") {
             contentType = APPLICATION_JSON
@@ -105,15 +100,11 @@ class ReplaceDeviceControllerTest(
             content { empty() }
         }
 
-        verify(exactly = 0) { deviceService.replaceDevice(computer) }
+        verify { deviceService wasNot Called }
     }
 
     @Test
     fun `replace device with forbidden null value should lead to response 400 bad request`() {
-        // given
-        every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.replace(device) is relaxed
-
         // when / then
         mockMvc.put("/devices/$computerId") {
             contentType = APPLICATION_JSON
@@ -136,10 +127,6 @@ class ReplaceDeviceControllerTest(
 
     @Test
     fun `replace device with forbidden null id should lead to response 400 bad request`() {
-        // given
-        every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.replace(device) is relaxed
-
         // when / then
         mockMvc.put("/devices/$computerId") {
             contentType = APPLICATION_JSON
@@ -162,9 +149,6 @@ class ReplaceDeviceControllerTest(
 
     @Test
     fun `replace device with different IDs in the URL and the document should lead to response 400 bad request`() {
-        // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-
         // when / then
         mockMvc.put("/devices/$displayId") {
             contentType = APPLICATION_JSON
@@ -182,18 +166,17 @@ class ReplaceDeviceControllerTest(
             content { empty() }
         }
 
-        verify(exactly = 0) { deviceService.replaceDevice(any()) }
+        verify { deviceService wasNot Called }
     }
 
     @Test
     fun `replace device with the wrong type specified in the document should lead to response 409 conflict`() {
         // given
-        every { deviceService.findDeviceTypeById(computerId) } returns Display::class
+        every { deviceService.replaceDevice(computer) } throws DeviceTypeConflictException(deviceId = computerId, existingDeviceType = Display::class, invalidDeviceType = Computer::class)
 
         // when / then
         mockMvc.put("/devices/$computerId") {
             contentType = APPLICATION_JSON
-            // 'sizeInInch' is not a valid field
             content = """
                 {
                     "id": "${computerId}",
@@ -204,19 +187,25 @@ class ReplaceDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
+            // 'sizeInInch' is not a valid field
         }.andExpect {
             status { isConflict() }
-            content { empty() }
+            content {
+                json(
+                    """
+                        {
+                            "messages": [
+                                "Type of resource with id macpro-m1-95014 doesn't match device type in document. resourceType: display, invalidDeviceType: computer"
+                            ]
+                        }
+                    """
+                )
+            }
         }
-
-        verify(exactly = 0) { deviceService.replaceDevice(any()) }
     }
 
     @Test
     fun `replace device with unknown fields should lead to response 400 bad request`() {
-        // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-
         // when / then
         mockMvc.put("/devices/$displayId") {
             contentType = APPLICATION_JSON
@@ -235,15 +224,11 @@ class ReplaceDeviceControllerTest(
             content { empty() }
         }
 
-        verify(exactly = 0) { deviceService.replaceDevice(any()) }
+        verify { deviceService wasNot Called }
     }
 
     @Test
     fun `replace display with computer data should lead to response 400 bad request`() {
-        // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.replace(device) is relaxed
-
         // when / then
         mockMvc.put("/devices/$displayId") {
             contentType = APPLICATION_JSON
@@ -262,13 +247,13 @@ class ReplaceDeviceControllerTest(
             content { empty() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify { deviceService wasNot Called }
     }
 
     @Test
     fun `replace unknown device should lead to response 404 not found`() {
         // given
-        every { deviceService.findDeviceTypeById(computerId) } throws DeviceNotFoundException(computerId)
+        every { deviceService.replaceDevice(computer) } throws DeviceNotFoundException(computerId)
 
         // when / then
         mockMvc.put("/devices/$computerId") {
@@ -297,7 +282,5 @@ class ReplaceDeviceControllerTest(
                 )
             }
         }
-
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
     }
 }

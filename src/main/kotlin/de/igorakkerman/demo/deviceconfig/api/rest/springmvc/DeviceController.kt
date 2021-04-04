@@ -9,6 +9,7 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
+import de.igorakkerman.demo.deviceconfig.application.DeviceTypeConflictException
 import de.igorakkerman.demo.deviceconfig.application.Display
 import mu.KotlinLogging
 import org.apache.http.HttpHeaders.ALLOW
@@ -80,30 +81,15 @@ class DeviceController(
     @PutMapping("/{deviceId}", consumes = [APPLICATION_JSON_VALUE])
     @ResponseStatus(NO_CONTENT)
     fun replaceDevice(@PathVariable deviceId: DeviceId, @RequestBody deviceDocument: DeviceDocument) {
-        try {
-            log.info("Replacing device. deviceId: $deviceId, document: $deviceDocument")
+        log.info("Replacing device. deviceId: $deviceId, document: $deviceDocument")
 
-            if (deviceId != deviceDocument.id)
-                throw ResponseStatusException(BAD_REQUEST, "Resource ID in URL doesn't match device ID in document. resourceId: $deviceId, deviceId: ${deviceDocument.id}")
-                    .also { log.info { it.message } }
-
-            val device = deviceDocument.toDevice()
-
-            // FIXME: has to be transactional
-            val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
-            log.debug("Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}")
-
-            if (device::class != deviceType)
-                throw ResponseStatusException(CONFLICT, "Type of resource with specified ID doesn't match device type in document. resourceType: $deviceType, deviceType: ${device::class}")
-                    .also { log.info(it.message) }
-
-            deviceService.replaceDevice(deviceDocument.toDevice())
-
-            log.info("Device replaced. deviceId: $deviceId")
-        } catch (exception: JsonProcessingException) {
-            throw (ResponseStatusException(BAD_REQUEST, "Error processing replace request document. ${exception.originalMessage}", exception))
+        if (deviceId != deviceDocument.id)
+            throw ResponseStatusException(BAD_REQUEST, "Resource ID in URL doesn't match device ID in document. resourceId: $deviceId, deviceId: ${deviceDocument.id}")
                 .also { log.info { it.message } }
-        }
+
+        deviceService.replaceDevice(deviceDocument.toDevice())
+
+        log.info("Device replaced. deviceId: $deviceId")
     }
 
     @PatchMapping("/{deviceId}", consumes = [APPLICATION_MERGE_PATCH_JSON_VALUE])
@@ -170,4 +156,12 @@ class DeviceController(
     @ResponseStatus(CONFLICT)
     fun deviceAlreadyExists(exception: DeviceAreadyExistsException): ErrorResponseBody =
         ErrorResponseBody("A device with id ${exception.deviceId} already exists.")
+
+    @ExceptionHandler(DeviceTypeConflictException::class)
+    @ResponseStatus(CONFLICT)
+    fun deviceTypeConflict(exception: DeviceTypeConflictException): ErrorResponseBody =
+        ErrorResponseBody(
+            "Type of resource with id ${exception.deviceId} doesn't match device type in document. " +
+                    "resourceType: ${exception.existingDeviceType.resourceType()}, invalidDeviceType: ${exception.invalidDeviceType.resourceType()}"
+        )
 }

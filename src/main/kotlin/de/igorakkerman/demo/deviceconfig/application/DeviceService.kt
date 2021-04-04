@@ -38,6 +38,13 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
     fun replaceDevice(device: Device) = deviceRepository.transactional {
         log.info("Replacing device. deviceId: $device.id, device: $device")
 
+        val existingDeviceType: KClass<out Device> = deviceRepository.findDeviceTypeById(device.id)
+
+        log.debug("Device exists. deviceId: ${device.id}, deviceType: ${existingDeviceType.simpleName}")
+
+        if (device::class != existingDeviceType)
+            throw DeviceTypeConflictException(deviceId = device.id, existingDeviceType, device::class)
+
         deviceRepository.replaceDevice(device)
             .also { log.info("Device replaced. deviceId: $device.id.") }
     }
@@ -52,3 +59,5 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
 
 class DeviceNotFoundException(val deviceId: DeviceId) : RuntimeException("No such device. deviceId=$deviceId")
 class DeviceAreadyExistsException(val deviceId: DeviceId) : RuntimeException("Device already exists. deviceId=$deviceId")
+class DeviceTypeConflictException(val deviceId: DeviceId, val existingDeviceType: KClass<out Device>, val invalidDeviceType: KClass<out Device>) :
+    RuntimeException("Types of existing and specified device don't match. deviceId: $deviceId, existingDeviceType: $existingDeviceType, invalidDeviceType: $invalidDeviceType")

@@ -11,6 +11,10 @@ import de.igorakkerman.demo.deviceconfig.application.Resolution
 import de.igorakkerman.demo.deviceconfig.validation.Ipv4Address
 import de.igorakkerman.demo.deviceconfig.validation.Password
 import de.igorakkerman.demo.deviceconfig.validation.Username
+import kotlin.reflect.KClass
+
+const val RESOURCE_TYPE_COMPUTER = "computer"
+const val RESOURCE_TYPE_DISPLAY = "display"
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -18,8 +22,8 @@ import de.igorakkerman.demo.deviceconfig.validation.Username
     property = "type",
 )
 @JsonSubTypes(
-    Type(value = ComputerDocument::class, name = "computer"),
-    Type(value = DisplayDocument::class, name = "display"),
+    Type(value = ComputerDocument::class, name = RESOURCE_TYPE_COMPUTER),
+    Type(value = DisplayDocument::class, name = RESOURCE_TYPE_DISPLAY),
 )
 sealed class DeviceDocument(
     open val id: DeviceId,
@@ -82,4 +86,10 @@ fun Display.toDocument(): DisplayDocument = DisplayDocument(
 @Suppress("ArrayInDataClass")
 data class ErrorResponseBody(val messages: Array<String>) {
     constructor(message: String) : this(arrayOf(message))
+}
+
+fun KClass<out Device>.resourceType(): String = when(this) {
+    Computer::class -> RESOURCE_TYPE_COMPUTER
+    Display::class -> RESOURCE_TYPE_DISPLAY
+    else -> throw IllegalStateException("Unexpected device type: $this")
 }
