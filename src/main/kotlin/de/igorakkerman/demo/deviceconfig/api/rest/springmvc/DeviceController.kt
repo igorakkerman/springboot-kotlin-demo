@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestMethod.OPTIONS
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
@@ -132,14 +133,18 @@ class DeviceController(
         }
     }
 
-    // if used with a wrong media type, provide the Accept-Patch header as additional information
+    // if used with a wrong media type, provide the Accept-Patch header with the error response
+    // as suggested by RFC 5789 "PATCH Method for HTTP" https://tools.ietf.org/html/rfc5789#section-2.2
     @PatchMapping("/{deviceId}")
     @ResponseStatus(UNSUPPORTED_MEDIA_TYPE)
-    fun updateDeviceWrongMediaType(@PathVariable deviceId: DeviceId, response: HttpServletResponse) {
+    @Suppress("MVCPathVariableInspection")
+    fun updateDeviceBadMediaType(response: HttpServletResponse) {
         response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
     }
 
-    @RequestMapping("/{deviceId}", method = [RequestMethod.OPTIONS])
+    // advertise the Accept-Patch header as additional information
+    // as suggested by RFC 5789 "PATCH Method for HTTP" https://tools.ietf.org/html/rfc5789#section-3
+    @RequestMapping("/{deviceId}", method = [OPTIONS])
     @Suppress("MVCPathVariableInspection")
     fun optionsDeviceId(response: HttpServletResponse) {
         response.setHeader(ALLOW, "GET, HEAD, POST, PUT, OPTIONS, PATCH")
