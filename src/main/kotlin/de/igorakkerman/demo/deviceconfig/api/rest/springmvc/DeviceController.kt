@@ -87,6 +87,7 @@ class DeviceController(
 
             val device = deviceDocument.toDevice()
 
+            // FIXME: has to be transactional
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
             log.debug("Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}")
 
@@ -110,6 +111,7 @@ class DeviceController(
             log.info("Updating device. deviceId: $deviceId, JSON document: $updateDocument")
 
             val mapper = jacksonObjectMapper()
+            // FIXME: has to be transactional
             val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
             log.debug("Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}")
 
