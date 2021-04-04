@@ -92,7 +92,6 @@ class ReplaceDeviceControllerTest(
         // when / then
         mockMvc.put("/devices/$computerId") {
             contentType = APPLICATION_JSON
-            // id required
             content = """
                 {
                     "type": "computer",
@@ -100,6 +99,7 @@ class ReplaceDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
+            // id required
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -117,7 +117,6 @@ class ReplaceDeviceControllerTest(
         // when / then
         mockMvc.put("/devices/$computerId") {
             contentType = APPLICATION_JSON
-            // id required
             content = """
                 {
                     "id": "${display.id}",
@@ -126,6 +125,7 @@ class ReplaceDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
+            // id required
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -143,7 +143,6 @@ class ReplaceDeviceControllerTest(
         // when / then
         mockMvc.put("/devices/$computerId") {
             contentType = APPLICATION_JSON
-            // id required
             content = """
                 {
                     "id": null,
@@ -152,6 +151,7 @@ class ReplaceDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
+            // id required
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -168,7 +168,6 @@ class ReplaceDeviceControllerTest(
         // when / then
         mockMvc.put("/devices/$displayId") {
             contentType = APPLICATION_JSON
-            // 'sizeInInch' is not a valid field
             content = """
                 {
                     "id": "${computerId}",
@@ -177,6 +176,7 @@ class ReplaceDeviceControllerTest(
                     "resolution": "${display.resolution}"
                 }
             """
+            // 'sizeInInch' is not a valid field
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -220,7 +220,6 @@ class ReplaceDeviceControllerTest(
         // when / then
         mockMvc.put("/devices/$displayId") {
             contentType = APPLICATION_JSON
-            // 'sizeInInch' is not a valid field
             content = """
                 {
                     "id": "${displayId}",
@@ -230,6 +229,7 @@ class ReplaceDeviceControllerTest(
                     "sizeInInch": 19 
                 }
             """
+            // 'sizeInInch' is not a valid field
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
