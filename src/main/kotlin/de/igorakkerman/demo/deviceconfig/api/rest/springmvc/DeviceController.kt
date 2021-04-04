@@ -11,6 +11,7 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.Display
 import mu.KotlinLogging
+import org.apache.http.HttpHeaders.ALLOW
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
@@ -138,16 +139,10 @@ class DeviceController(
         response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
     }
 
-    @RequestMapping(method = [RequestMethod.OPTIONS])
-    @ResponseStatus(NO_CONTENT)
-    fun optionsRoot(response: HttpServletResponse) {
-        /* nothing to add */
-    }
-
     @RequestMapping("/{deviceId}", method = [RequestMethod.OPTIONS])
-    @ResponseStatus(NO_CONTENT)
     @Suppress("MVCPathVariableInspection")
     fun optionsDeviceId(response: HttpServletResponse) {
+        response.setHeader(ALLOW, "GET, HEAD, POST, PUT, OPTIONS, PATCH")
         response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
     }
 

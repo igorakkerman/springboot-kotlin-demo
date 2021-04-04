@@ -4,6 +4,7 @@ import com.ninjasquad.springmockk.MockkBean
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.not
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -36,7 +37,7 @@ class StructureControllerTest(
         mockMvc.options("/devices") {
             accept = APPLICATION_JSON
         }.andExpect {
-            status { isNoContent() }
+            status { isOk() }
             header {
                 string(
                     HttpHeaders.ALLOW, CoreMatchers.allOf(
@@ -44,6 +45,9 @@ class StructureControllerTest(
                         containsString("HEAD"),
                         containsString("POST"),
                         containsString("OPTIONS"),
+                        not(containsString("DELETE")),
+                        not(containsString("TRACE")),
+                        not(containsString("PATCH")),
                     )
                 )
             }
@@ -56,7 +60,7 @@ class StructureControllerTest(
         mockMvc.options("/devices/$computerId") {
             accept = APPLICATION_JSON
         }.andExpect {
-            status { isNoContent() }
+            status { isOk() }
             header {
                 string(
                     HttpHeaders.ALLOW, CoreMatchers.allOf(
@@ -65,6 +69,8 @@ class StructureControllerTest(
                         containsString("PUT"),
                         containsString("PATCH"),
                         containsString("OPTIONS"),
+                        not(containsString("DELETE")),
+                        not(containsString("TRACE")),
                     )
                 )
                 header { acceptMergePatch() }
