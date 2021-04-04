@@ -71,6 +71,8 @@ class DeviceController(
         log.info("Creating device. document: $deviceDocument")
 
         deviceService.createDevice(deviceDocument.toDevice())
+
+        log.info("Device created. deviceId: ${deviceDocument.id}")
     }
 
     @PutMapping("/{deviceId}", consumes = [APPLICATION_JSON_VALUE])
