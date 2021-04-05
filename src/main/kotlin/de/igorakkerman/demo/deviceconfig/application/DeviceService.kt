@@ -57,7 +57,6 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
     }
 }
 
-class DeviceNotFoundException(val deviceId: DeviceId) : RuntimeException("No such device. deviceId=$deviceId")
-class DeviceAreadyExistsException(val deviceId: DeviceId) : RuntimeException("Device already exists. deviceId=$deviceId")
-class DeviceTypeConflictException(val deviceId: DeviceId, val existingDeviceType: KClass<out Device>, val invalidDeviceType: KClass<out Device>) :
-    RuntimeException("Types of existing and specified device don't match. deviceId: $deviceId, existingDeviceType: $existingDeviceType, invalidDeviceType: $invalidDeviceType")
+class DeviceNotFoundException(val deviceId: DeviceId) : RuntimeException()
+class DeviceAreadyExistsException(val deviceId: DeviceId) : RuntimeException()
+class DeviceTypeConflictException(val deviceId: DeviceId, val existingDeviceType: KClass<out Device>, val invalidDeviceType: KClass<out Device>) : RuntimeException()
