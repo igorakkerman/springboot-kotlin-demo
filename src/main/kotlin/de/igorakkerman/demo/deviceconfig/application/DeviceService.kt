@@ -1,7 +1,6 @@
 package de.igorakkerman.demo.deviceconfig.application
 
 import mu.KotlinLogging
-import kotlin.reflect.KClass
 
 class DeviceService(private val deviceRepository: DeviceRepository) {
 
@@ -12,13 +11,6 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
 
         deviceRepository.findDeviceById(deviceId)
             .also { log.info("Device found. deviceId: $deviceId, device: $it") }
-    }
-
-    fun findDeviceTypeById(deviceId: DeviceId): KClass<out Device> = deviceRepository.transactional {
-        log.info("Finding device type. deviceId: $deviceId")
-
-        deviceRepository.findDeviceTypeById(deviceId)
-            .also { log.info("Device type found. deviceId: $deviceId, deviceType: ${it.simpleName}") }
     }
 
     fun findAllDevices(): List<Device> = deviceRepository.transactional {
@@ -38,7 +30,7 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
     fun replaceDevice(device: Device) = deviceRepository.transactional {
         log.info("Replacing device. deviceId: ${device.id}, device: $device")
 
-        val existingDeviceType: KClass<out Device> = deviceRepository.findDeviceTypeById(device.id)
+        val existingDeviceType: DeviceType = deviceRepository.findDeviceTypeById(device.id)
 
         log.debug("Device exists. deviceId: ${device.id}, deviceType: ${existingDeviceType.simpleName}")
 
@@ -49,14 +41,18 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
             .also { log.info("Device replaced. deviceId: ${device.id}.") }
     }
 
-    fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) = deviceRepository.transactional {
-        log.info("Updating device. deviceId: $deviceId, deviceUpdate: $deviceUpdate")
+    fun updateDevice(deviceId: DeviceId, deviceUpdateFor: (DeviceType) -> DeviceUpdate) = deviceRepository.transactional {
+        log.info("Updating device. deviceId: $deviceId")
 
-        deviceRepository.updateDevice(deviceId, deviceUpdate)
+        val deviceType: DeviceType = deviceRepository.findDeviceTypeById(deviceId)
+
+        log.debug("Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}")
+
+        deviceRepository.updateDevice(deviceId, deviceUpdateFor(deviceType))
             .also { log.info("Device updated. deviceId: $deviceId.") }
     }
 }
 
 class DeviceNotFoundException(val deviceId: DeviceId) : RuntimeException()
 class DeviceAreadyExistsException(val deviceId: DeviceId) : RuntimeException()
-class DeviceTypeConflictException(val deviceId: DeviceId, val existingDeviceType: KClass<out Device>, val invalidDeviceType: KClass<out Device>) : RuntimeException()
+class DeviceTypeConflictException(val deviceId: DeviceId, val existingDeviceType: DeviceType, val invalidDeviceType: DeviceType) : RuntimeException()

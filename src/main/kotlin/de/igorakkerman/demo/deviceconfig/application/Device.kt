@@ -1,6 +1,9 @@
 package de.igorakkerman.demo.deviceconfig.application
 
+import kotlin.reflect.KClass
+
 typealias DeviceId = String
+typealias DeviceType = KClass<out Device>
 
 sealed class Device {
     abstract val id: DeviceId

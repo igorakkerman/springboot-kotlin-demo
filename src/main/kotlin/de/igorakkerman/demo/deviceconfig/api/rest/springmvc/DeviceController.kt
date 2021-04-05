@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.igorakkerman.demo.deviceconfig.application.Computer
-import de.igorakkerman.demo.deviceconfig.application.Device
 import de.igorakkerman.demo.deviceconfig.application.DeviceAreadyExistsException
 import de.igorakkerman.demo.deviceconfig.application.DeviceId
 import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestMethod.OPTIONS
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -38,7 +36,6 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
-import kotlin.reflect.KClass
 
 const val ACCEPT_PATCH_HEADER = "Accept-Patch"
 const val APPLICATION_MERGE_PATCH_JSON_VALUE = "application/merge-patch+json"
@@ -94,29 +91,25 @@ class DeviceController(
 
     @PatchMapping("/{deviceId}", consumes = [APPLICATION_MERGE_PATCH_JSON_VALUE])
     @ResponseStatus(NO_CONTENT)
-    fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocument: String) {
-        try {
-            log.info("Updating device. deviceId: $deviceId, JSON document: $updateDocument")
+    fun updateDevice(@PathVariable deviceId: DeviceId, @RequestBody updateDocumentContent: String) {
+        log.info("Updating device. deviceId: $deviceId, JSON document: $updateDocumentContent")
 
-            val mapper = jacksonObjectMapper()
-            // FIXME: has to be transactional
-            val deviceType: KClass<out Device> = deviceService.findDeviceTypeById(deviceId)
-            log.debug("Device exists. deviceId: $deviceId, deviceType: ${deviceType.simpleName}")
-
-            val deviceUpdateDocument = when (deviceType) {
-                Computer::class -> mapper.readValue<ComputerUpdateDocument>(updateDocument)
-                Display::class -> mapper.readValue<DisplayUpdateDocument>(updateDocument)
-                else -> throw IllegalStateException("Unexpected bad type!")
+        deviceService.updateDevice(deviceId) { deviceType ->
+            try {
+                val mapper = jacksonObjectMapper()
+                val updateDocument = when (deviceType) {
+                    Computer::class -> mapper.readValue<ComputerUpdateDocument>(updateDocumentContent)
+                    Display::class -> mapper.readValue<DisplayUpdateDocument>(updateDocumentContent)
+                    else -> throw IllegalStateException("Unexpected bad type!")
+                }
+                updateDocument.toUpdate()
+                    .also { log.info("deviceUpdate: $it") }
+            } catch (exception: JsonProcessingException) {
+                throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
+                    .also { log.info { it.message } })
             }
-            log.debug { "DeviceUpdateDocument parsed: $deviceUpdateDocument" }
-
-            deviceService.updateDevice(deviceId, deviceUpdateDocument.toUpdate())
-
-            log.info("Device updated. deviceId: $deviceId")
-        } catch (exception: JsonProcessingException) {
-            throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
-                .also { log.info { it.message } })
         }
+        log.info("Device updated. deviceId: $deviceId")
     }
 
     // if used with a wrong media type, provide the Accept-Patch header with the error response

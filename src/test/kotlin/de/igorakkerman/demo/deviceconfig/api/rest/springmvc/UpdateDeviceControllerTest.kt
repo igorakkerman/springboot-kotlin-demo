@@ -5,10 +5,14 @@ import de.igorakkerman.demo.deviceconfig.application.Computer
 import de.igorakkerman.demo.deviceconfig.application.ComputerUpdate
 import de.igorakkerman.demo.deviceconfig.application.DeviceNotFoundException
 import de.igorakkerman.demo.deviceconfig.application.DeviceService
+import de.igorakkerman.demo.deviceconfig.application.DeviceType
+import de.igorakkerman.demo.deviceconfig.application.DeviceUpdate
 import de.igorakkerman.demo.deviceconfig.application.Display
 import de.igorakkerman.demo.deviceconfig.application.DisplayUpdate
 import de.igorakkerman.demo.deviceconfig.application.Resolution.WQHD
 import io.mockk.every
+import io.mockk.invoke
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,8 +39,11 @@ class UpdateDeviceControllerTest(
     @Test
     fun `updating full valid data of computer should lead to response 204 no content`() {
         // given
-        every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(computerId, capture(deviceUpdateFor)) } answers {
+            // only if we invoke the callback with the correct type, the update JSON document will be parsed correctly
+            deviceUpdateFor.invoke(Computer::class)
+        }
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
@@ -54,14 +61,17 @@ class UpdateDeviceControllerTest(
             content { empty() }
         }
 
-        verify { deviceService.updateDevice(computerId, computerUpdate) }
+        verify { deviceService.updateDevice(computerId, deviceUpdateFor.captured) }
     }
 
     @Test
     fun `updating full valid data of display should lead to response 204 no content`() {
         // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(displayId, capture(deviceUpdateFor)) } answers {
+            // only if we invoke the callback with the correct type, the update JSON document will be parsed correctly
+            deviceUpdateFor.invoke(Display::class)
+        }
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
@@ -77,14 +87,17 @@ class UpdateDeviceControllerTest(
             content { empty() }
         }
 
-        verify { deviceService.updateDevice(displayId, displayUpdate) }
+        verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
     }
+
 
     @Test
     fun `updating partial valid data of computer should lead to response 204 no content`() {
         // given
-        every { deviceService.findDeviceTypeById(computerId) } returns Computer::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(computerId, capture(deviceUpdateFor)) } answers {
+            deviceUpdateFor.invoke(Computer::class)
+        }
 
         // when / then
         mockMvc.patch("/devices/$computerId") {
@@ -100,55 +113,62 @@ class UpdateDeviceControllerTest(
             content { empty() }
         }
 
-        verify { deviceService.updateDevice(computerId, computerUpdatePartial) }
+        verify { deviceService.updateDevice(computerId, deviceUpdateFor.captured) }
     }
 
     @Test
     fun `updating unknown fields of device should lead to response 400 bad request`() {
         // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(displayId, capture(deviceUpdateFor)) } answers {
+            deviceUpdateFor.invoke(Display::class)
+        }
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_MERGE_PATCH_JSON
-            // 'id' is not a valid updatable field, it is part of the URL
             content = """
                 {
                     "id": "${displayId}",
                     "name": "${displayUpdate.name}"
                 }
             """
+            // 'id' is not a valid updatable field, it is part of the URL
         }.andExpect {
             status { isBadRequest() }
+            // TODO: should provide error message to client
             content { empty() }
         }
 
-        verify { deviceService.findDeviceTypeById(displayId) }
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
     }
 
+
     @Test
-    fun `updating id of device by forbidden null should lead to response 400 bad request`() {
+    fun `updating unknown fields of device evan by null should lead to response 400 bad request`() {
         // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(displayId, capture(deviceUpdateFor)) } answers {
+            deviceUpdateFor.invoke(Display::class)
+        }
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_MERGE_PATCH_JSON
-            // 'id' is not a valid updatable field, it is part of the URL
             content = """
                 {
                     "id": null,
                     "name": "${displayUpdate.name}"
                 }
             """
+            // 'id' is not a valid updatable field, it is part of the URL, even updating it with 'null' is not allowed
         }.andExpect {
             status { isBadRequest() }
+            // TODO: should provide error message to client
             content { empty() }
         }
 
-        verify { deviceService.findDeviceTypeById(displayId) }
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
     }
 
     @Test
@@ -157,56 +177,64 @@ class UpdateDeviceControllerTest(
         // application/merge-patch+json (https://tools.ietf.org/html/rfc7396)
 
         // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(displayId, capture(deviceUpdateFor)) } answers {
+            deviceUpdateFor.invoke(Display::class)
+        }
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_MERGE_PATCH_JSON
-            // 'id' is not a valid updatable field, it is part of the URL
             content = """
                 {
                     "name": null
                 }
             """
+            // a field cannot be updated by 'null'
         }.andExpect {
             status { isBadRequest() }
+            // TODO: should provide error message to client
             content { empty() }
         }
 
-        verify { deviceService.findDeviceTypeById(displayId) }
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
     }
 
     @Test
-    // just to be safe that the marker is compared for identity, not equality
+    // just to be safe that the UNSET marker in DeviceDocumentUpdate is compared for identity, not equality
     fun `updating value by our 'unset' marker should use the literal string and lead to response 204 no content`() {
         // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        val displayUpdate = DisplayUpdate(name = UNSET)
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(displayId, capture(deviceUpdateFor)) } answers {
+            deviceUpdateFor.invoke(Display::class)
+        }
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_MERGE_PATCH_JSON
-            // 'id' is not a valid updatable field, it is part of the URL
             content = """
                 {
                     "name": "$UNSET"
                 }
             """
+            // see DeviceUpdateDocument for the meaning of UNSET
         }.andExpect {
             status { isNoContent() }
+            // TODO: should provide error message to client
             content { empty() }
         }
 
-        verify { deviceService.findDeviceTypeById(displayId) }
-        verify { deviceService.updateDevice(displayId, displayUpdate) }
+        verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
     }
+
 
     @Test
     fun `updating computer data in display should lead to response 400 bad request`() {
         // given
-        every { deviceService.findDeviceTypeById(displayId) } returns Display::class
-        // deviceService.update(deviceId, deviceUpdate) is relaxed
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(displayId, capture(deviceUpdateFor)) } answers {
+            deviceUpdateFor.invoke(Display::class)
+        }
 
         // when / then
         mockMvc.patch("/devices/$displayId") {
@@ -221,23 +249,25 @@ class UpdateDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
+            // TODO: should provide error message to client
             content { empty() }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
     }
 
     @Test
     fun `updating unknown device should lead to response 404 not found`() {
         // given
-        every { deviceService.findDeviceTypeById(computerId) } throws DeviceNotFoundException(computerId)
+        val deviceUpdateFor = slot<(DeviceType) -> DeviceUpdate>()
+        every { deviceService.updateDevice(displayId, capture(deviceUpdateFor)) } throws DeviceNotFoundException(displayId)
 
         // when / then
-        mockMvc.patch("/devices/$computerId") {
+        mockMvc.patch("/devices/$displayId") {
             contentType = APPLICATION_MERGE_PATCH_JSON
             content = """
                 {
-                    "name": "${computerUpdate.name}",
+                    "name": "${displayUpdate.name}",
                 }
             """
         }.andExpect {
@@ -247,7 +277,7 @@ class UpdateDeviceControllerTest(
                     """
                         {
                             "messages": [
-                                "A device with id macpro-m1-95014 was not found."
+                                "A device with id samsung-screen-88276 was not found."
                             ]
                         }
                     """
@@ -255,6 +285,6 @@ class UpdateDeviceControllerTest(
             }
         }
 
-        verify(exactly = 0) { deviceService.updateDevice(any(), any()) }
+        verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
     }
 }
