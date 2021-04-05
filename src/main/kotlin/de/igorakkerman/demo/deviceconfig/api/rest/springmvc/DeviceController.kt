@@ -81,8 +81,7 @@ class DeviceController(
         log.info("Replacing device. deviceId: $deviceId, document: $deviceDocument")
 
         if (deviceId != deviceDocument.id)
-            throw ResponseStatusException(BAD_REQUEST, "Resource ID in URL doesn't match device ID in document. resourceId: $deviceId, deviceId: ${deviceDocument.id}")
-                .also { log.info { it.message } }
+            throw DeviceIdConflictException(resourceId = deviceId, documentDeviceId = deviceDocument.id)
 
         deviceService.replaceDevice(deviceDocument.toDevice())
 
@@ -157,4 +156,13 @@ class DeviceController(
             "Type of resource with id ${exception.deviceId} doesn't match device type in document. " +
                     "resourceType: ${exception.existingDeviceType.resourceType()}, invalidDeviceType: ${exception.invalidDeviceType.resourceType()}"
         )
+
+    @ExceptionHandler(DeviceIdConflictException::class)
+    @ResponseStatus(BAD_REQUEST)
+    internal fun deviceIdConflict(exception: DeviceIdConflictException): ErrorResponseBody =
+        ErrorResponseBody(
+            "Resource ID in URL doesn't match device ID in document. resourceId: ${exception.resourceId}, deviceId: ${exception.documentDeviceId}"
+        )
+
+    internal class DeviceIdConflictException(val resourceId: DeviceId, val documentDeviceId: DeviceId): RuntimeException()
 }

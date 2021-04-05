@@ -163,7 +163,17 @@ class ReplaceDeviceControllerTest(
             // 'sizeInInch' is not a valid field
         }.andExpect {
             status { isBadRequest() }
-            content { empty() }
+            content {
+                json(
+                    """
+                        {
+                            "messages": [
+                                "Resource ID in URL doesn't match device ID in document. resourceId: samsung-screen-88276, deviceId: macpro-m1-95014"
+                            ]
+                        }
+                    """
+                )
+            }
         }
 
         verify { deviceService wasNot Called }
