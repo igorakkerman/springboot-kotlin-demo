@@ -36,7 +36,7 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
     }
 
     fun replaceDevice(device: Device) = deviceRepository.transactional {
-        log.info("Replacing device. deviceId: $device.id, device: $device")
+        log.info("Replacing device. deviceId: ${device.id}, device: $device")
 
         val existingDeviceType: KClass<out Device> = deviceRepository.findDeviceTypeById(device.id)
 
@@ -46,7 +46,7 @@ class DeviceService(private val deviceRepository: DeviceRepository) {
             throw DeviceTypeConflictException(deviceId = device.id, existingDeviceType, device::class)
 
         deviceRepository.replaceDevice(device)
-            .also { log.info("Device replaced. deviceId: $device.id.") }
+            .also { log.info("Device replaced. deviceId: ${device.id}.") }
     }
 
     fun updateDevice(deviceId: DeviceId, deviceUpdate: DeviceUpdate) = deviceRepository.transactional {
