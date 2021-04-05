@@ -94,7 +94,7 @@ class ReplaceDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
-            // id required
+            // id missing
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -116,7 +116,7 @@ class ReplaceDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
-            // id required
+            // name required to be non-null
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -138,7 +138,7 @@ class ReplaceDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
-            // id required
+            // id required to be non-null
         }.andExpect {
             status { isBadRequest() }
             content { empty() }
@@ -160,7 +160,6 @@ class ReplaceDeviceControllerTest(
                     "resolution": "${display.resolution}"
                 }
             """
-            // 'sizeInInch' is not a valid field
         }.andExpect {
             status { isBadRequest() }
             content {
@@ -182,14 +181,14 @@ class ReplaceDeviceControllerTest(
     @Test
     fun `replace device with the wrong type specified in the document should lead to response 409 conflict`() {
         // given
-        every { deviceService.replaceDevice(computer) } throws DeviceTypeConflictException(deviceId = computerId, existingDeviceType = Display::class, invalidDeviceType = Computer::class)
+        every { deviceService.replaceDevice(computer.copy(id = displayId)) } throws DeviceTypeConflictException(deviceId = displayId, existingDeviceType = Display::class, invalidDeviceType = Computer::class)
 
         // when / then
-        mockMvc.put("/devices/$computerId") {
+        mockMvc.put("/devices/$displayId") {
             contentType = APPLICATION_JSON
             content = """
                 {
-                    "id": "${computerId}",
+                    "id": "${displayId}",
                     "type": "computer",
                     "name": "${computer.name}",
                     "username": "${computer.username}",
@@ -197,7 +196,6 @@ class ReplaceDeviceControllerTest(
                     "ipAddress": "${computer.ipAddress}"
                 }
             """
-            // 'sizeInInch' is not a valid field
         }.andExpect {
             status { isConflict() }
             content {
@@ -205,7 +203,7 @@ class ReplaceDeviceControllerTest(
                     """
                         {
                             "messages": [
-                                "Type of resource with id macpro-m1-95014 doesn't match device type in document. resourceType: display, invalidDeviceType: computer"
+                                "Type of resource with id samsung-screen-88276 doesn't match device type in document. resourceType: display, invalidDeviceType: computer"
                             ]
                         }
                     """
