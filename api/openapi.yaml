@@ -19,9 +19,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/Device'
               examples:
-                empty:
-                  value:
-                    [ ]
                 multiple:
                   value:
                     [
@@ -40,6 +37,9 @@ paths:
                         "resolution": "UHD"
                       }
                     ]
+                empty:
+                  value:
+                    [ ]
 
     post:
       summary: creates a new device configuration
