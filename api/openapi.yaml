@@ -133,29 +133,27 @@ components:
   schemas:
     Device:
       type: object
-      required:
-        - type
-        - id
-        - name
+      discriminator:
+        propertyName: type
+        mapping:
+          computer: '#/components/schemas/Computer'
+          display: '#/components/schemas/Display'
       properties:
         type:
           type: string
-          enum:
-            - computer
-            - display
         id:
           $ref: '#/components/schemas/DeviceId'
         name:
           $ref: '#/components/schemas/DeviceName'
+      required:
+        - type
+        - id
+        - name
 
     Computer:
       allOf:
         - $ref: '#/components/schemas/Device'
         - type: object
-          required:
-            - username
-            - password
-            - ipAddress
           properties:
             username:
               $ref: '#/components/schemas/Username'
@@ -163,19 +161,44 @@ components:
               $ref: '#/components/schemas/Password'
             ipAddress:
               $ref: '#/components/schemas/IpAddress'
+          required:
+            - username
+            - password
+            - ipAddress
+      example: {
+        "type": "computer",
+        "id": "macpro-m1-95014",
+        "name": "best mac",
+        "username": "timapple",
+        "password": "0n3m0r3th1ng",
+        "ipAddress": "192.168.178.1"
+      }
+
 
     Display:
       allOf:
         - $ref: '#/components/schemas/Device'
         - type: object
-          required:
-            - resolution
           properties:
             resolution:
               $ref: '#/components/schemas/Resolution'
+          required:
+            - resolution
+      example: {
+        "type": "display",
+        "id": "samsung-screen-88276",
+        "name": "favorite screen",
+        "resolution": "UHD"
+      }
+
 
     DeviceUpdate:
       type: object
+      discriminator:
+        propertyName: type
+        mapping:
+          computer: '#/components/schemas/ComputerUpdate'
+          display: '#/components/schemas/DisplayUpdate'
       properties:
         name:
           $ref: '#/components/schemas/DeviceName'
