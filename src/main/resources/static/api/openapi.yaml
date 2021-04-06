@@ -55,7 +55,7 @@ paths:
         400:
           description: invalid configuration data supplied
         409:
-          description: Device with specified ID already exists.
+          description: device with specified ID already exists
 
   /devices/{deviceId}:
     get:
@@ -112,12 +112,12 @@ paths:
       parameters:
         - name: deviceId
           in: path
-          description: ID of device
+          description: ID of the device
           required: true
           schema:
             $ref: '#/components/schemas/DeviceId'
       requestBody:
-        description: device configuration values to update; only modified values required
+        description: device configuration values to update; only modified values are required
         content:
           application/json+patch:
             schema:
