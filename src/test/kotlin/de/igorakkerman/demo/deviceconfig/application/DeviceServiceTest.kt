@@ -11,8 +11,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-internal class DeviceServiceTest(
-) {
+internal class DeviceServiceTest {
     private val computerId = "macpro-m1-95014"
     private val computer = Computer(id = computerId, name = "best mac", username = "timapple", password = "0n3m0r3th1ng", ipAddress = "192.168.178.1")
     private val displayId = "samsung-screen-88276"
