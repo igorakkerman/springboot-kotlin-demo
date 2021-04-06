@@ -14,6 +14,10 @@ import io.mockk.every
 import io.mockk.invoke
 import io.mockk.slot
 import io.mockk.verify
+import org.hamcrest.Matchers
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -136,8 +140,11 @@ class UpdateDeviceControllerTest(
             // 'id' is not a valid updatable field, it is part of the URL
         }.andExpect {
             status { isBadRequest() }
-            // TODO: should provide error message to client
-            content { empty() }
+            content {
+                jsonPath("$.messages.length()", equalTo(1))
+                jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                jsonPath("$.messages[0]", not(Matchers.contains(DeviceDocument::class.java.packageName)))
+            }
         }
 
         verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
@@ -164,8 +171,11 @@ class UpdateDeviceControllerTest(
             // 'id' is not a valid updatable field, it is part of the URL, even updating it with 'null' is not allowed
         }.andExpect {
             status { isBadRequest() }
-            // TODO: should provide error message to client
-            content { empty() }
+            content {
+                jsonPath("$.messages.length()", equalTo(1))
+                jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                jsonPath("$.messages[0]", not(Matchers.contains(DeviceDocument::class.java.packageName)))
+            }
         }
 
         verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
@@ -193,8 +203,11 @@ class UpdateDeviceControllerTest(
             // a field cannot be updated by 'null'
         }.andExpect {
             status { isBadRequest() }
-            // TODO: should provide error message to client
-            content { empty() }
+            content {
+                jsonPath("$.messages.length()", equalTo(1))
+                jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                jsonPath("$.messages[0]", not(Matchers.contains(DeviceDocument::class.java.packageName)))
+            }
         }
 
         verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }
@@ -220,7 +233,6 @@ class UpdateDeviceControllerTest(
             // see DeviceUpdateDocument for the meaning of UNSET
         }.andExpect {
             status { isNoContent() }
-            // TODO: should provide error message to client
             content { empty() }
         }
 
@@ -249,8 +261,11 @@ class UpdateDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
-            // TODO: should provide error message to client
-            content { empty() }
+            content {
+                jsonPath("$.messages.length()", equalTo(1))
+                jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                jsonPath("$.messages[0]", not(Matchers.contains(DeviceDocument::class.java.packageName)))
+            }
         }
 
         verify { deviceService.updateDevice(displayId, deviceUpdateFor.captured) }

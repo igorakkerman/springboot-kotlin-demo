@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMethod.OPTIONS
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.server.ResponseStatusException
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
@@ -94,19 +93,14 @@ class DeviceController(
         log.info("Updating device. deviceId: $deviceId, JSON document: $updateDocumentContent")
 
         deviceService.updateDevice(deviceId) { deviceType ->
-            try {
-                val mapper = jacksonObjectMapper()
-                val updateDocument = when (deviceType) {
-                    Computer::class -> mapper.readValue<ComputerUpdateDocument>(updateDocumentContent)
-                    Display::class -> mapper.readValue<DisplayUpdateDocument>(updateDocumentContent)
-                    else -> throw IllegalStateException("Unexpected bad type!")
-                }
-                updateDocument.toUpdate()
-                    .also { log.info("deviceUpdate: $it") }
-            } catch (exception: JsonProcessingException) {
-                throw (ResponseStatusException(BAD_REQUEST, "Error processing update request document. ${exception.originalMessage}", exception)
-                    .also { log.info { it.message } })
+            val mapper = jacksonObjectMapper()
+            val updateDocument = when (deviceType) {
+                Computer::class -> mapper.readValue<ComputerUpdateDocument>(updateDocumentContent)
+                Display::class -> mapper.readValue<DisplayUpdateDocument>(updateDocumentContent)
+                else -> throw IllegalStateException("Unexpected bad type!")
             }
+            updateDocument.toUpdate()
+                .also { log.info("deviceUpdate: $it") }
         }
         log.info("Device updated. deviceId: $deviceId")
     }
@@ -164,5 +158,18 @@ class DeviceController(
             "Resource ID in URL doesn't match device ID in document. resourceId: ${exception.resourceId}, deviceId: ${exception.documentDeviceId}"
         )
 
-    internal class DeviceIdConflictException(val resourceId: DeviceId, val documentDeviceId: DeviceId): RuntimeException()
+    @ExceptionHandler(JsonProcessingException::class)
+    @ResponseStatus(BAD_REQUEST)
+    internal fun deviceIdConflict(exception: JsonProcessingException): ErrorResponseBody =
+        ErrorResponseBody(
+            "Error processing update request document. ${
+                exception.originalMessage
+                    // clean up message from internal details, such as class names
+                    // won't break if Jackson changes their strings    
+                    .replace(Regex("Instantiation of \\[.+] value f"), "F")
+                    .replace(Regex(" \\(class.+\\)"), "")
+            }"
+        )
+
+    internal class DeviceIdConflictException(val resourceId: DeviceId, val documentDeviceId: DeviceId) : RuntimeException()
 }

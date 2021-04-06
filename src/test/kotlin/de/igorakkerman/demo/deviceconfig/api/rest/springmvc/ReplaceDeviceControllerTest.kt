@@ -10,6 +10,10 @@ import de.igorakkerman.demo.deviceconfig.application.Resolution.WQHD
 import io.mockk.Called
 import io.mockk.every
 import io.mockk.verify
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.startsWith
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -97,7 +101,11 @@ class ReplaceDeviceControllerTest(
             // id missing
         }.andExpect {
             status { isBadRequest() }
-            content { empty() }
+            content {
+                jsonPath("$.messages.length()", equalTo(1))
+                jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                jsonPath("$.messages[0]", not(contains(DeviceDocument::class.java.packageName)))
+            }
         }
 
         verify { deviceService wasNot Called }
@@ -119,7 +127,11 @@ class ReplaceDeviceControllerTest(
             // name required to be non-null
         }.andExpect {
             status { isBadRequest() }
-            content { empty() }
+            content {
+                jsonPath("$.messages.length()", equalTo(1))
+                jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                jsonPath("$.messages[0]", not(contains(DeviceDocument::class.java.packageName)))
+            }
         }
 
         verify { deviceService wasNot Called }
@@ -141,7 +153,11 @@ class ReplaceDeviceControllerTest(
             // id required to be non-null
         }.andExpect {
             status { isBadRequest() }
-            content { empty() }
+            content {
+                jsonPath("$.messages.length()", equalTo(1))
+                jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                jsonPath("$.messages[0]", not(contains(DeviceDocument::class.java.packageName)))
+            }
         }
 
         verify { deviceService wasNot Called }
@@ -229,8 +245,12 @@ class ReplaceDeviceControllerTest(
             // 'sizeInInch' is not a valid field
         }.andExpect {
             status { isBadRequest() }
-            content { empty() }
-        }
+                content {
+                    jsonPath("$.messages.length()", equalTo(1))
+                    jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                    jsonPath("$.messages[0]", not(contains(DeviceDocument::class.java.packageName)))
+                }
+            }
 
         verify { deviceService wasNot Called }
     }
@@ -252,8 +272,12 @@ class ReplaceDeviceControllerTest(
             """
         }.andExpect {
             status { isBadRequest() }
-            content { empty() }
-        }
+                content {
+                    jsonPath("$.messages.length()", equalTo(1))
+                    jsonPath("$.messages[0]", startsWith("Error processing update request document."))
+                    jsonPath("$.messages[0]", not(contains(DeviceDocument::class.java.packageName)))
+                }
+            }
 
         verify { deviceService wasNot Called }
     }
