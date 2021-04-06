@@ -68,7 +68,7 @@ paths:
           description: ID of the device
           required: true
           schema:
-            type: string
+            $ref: '#/components/schemas/DeviceId'
       responses:
         200:
           description: device found
