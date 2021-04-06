@@ -6,7 +6,7 @@ info:
 paths:
   /devices:
     get:
-      summary: finds all device configurations
+      summary: lists all device configurations
       description: lists all registered device configurations
       operationId: findAllDevices
       responses:
@@ -59,8 +59,8 @@ paths:
 
   /devices/{deviceId}:
     get:
-      summary: finds device configuration by device ID
-      description: returns a single device configuation
+      summary: provides the specified device configuation
+      description: provides the device configuration for the specified device ID
       operationId: findDevice
       parameters:
         - name: deviceId
