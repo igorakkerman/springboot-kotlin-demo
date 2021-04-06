@@ -1,17 +1,17 @@
 openapi: 3.1.0
 info:
   title: Device Configuration
-  description: Management API for configurations of devices.
+  description: management API for configurations of devices
   version: 1.0.0
 paths:
   /devices:
     get:
-      summary: Find all device configurations.
-      description: Returns all registered device configurations.
+      summary: finds all device configurations
+      description: lists all registered device configurations
       operationId: findAllDevices
       responses:
         200:
-          description: List of all device configurations retrieved.
+          description: list of all device configurations retrieved
           content:
             application/json:
               schema:
@@ -42,10 +42,10 @@ paths:
                     ]
 
     post:
-      summary: Create a new device configuration.
+      summary: creates a new device configuration
       operationId: createDevice
       requestBody:
-        description: Device object that needs to be added to the store
+        description: configuration of the device
         content:
           application/json:
             schema:
@@ -53,7 +53,7 @@ paths:
         required: true
       responses:
         400:
-          description: Invalid configuration data supplied.
+          description: invalid configuration data supplied
         409:
           description: Device with specified ID already exists.
 
@@ -69,28 +69,29 @@ paths:
 
   /devices/{deviceId}:
     get:
-      summary: Find device by ID.
-      description: Returns a single device configuation.
+      summary: finds device configuration by device ID
+      description: returns a single device configuation
       operationId: findDevice
       parameters:
         - name: deviceId
           in: path
-          description: ID of device configuration to return
+          description: ID of the device
           required: true
           schema:
             type: string
       responses:
         200:
-          description: Device found.
+          description: device found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Device'
         404:
-          description: Device not found.
+          description: device not found
 
     put:
-      summary: Fully replace configuration of an existing device.
+      summary: replaces device configuration
+      description: fully replaces configuration of an existing device
       operationId: replaceDevice
       requestBody:
         description: full device configuration document; must include all configuration values
@@ -101,14 +102,15 @@ paths:
         required: true
       responses:
         400:
-          description: Invalid configuration data supplied.
+          description: invalid configuration data supplied
         404:
-          description: Device not found.
+          description: device not found
         409:
-          description: Configuration for device of wrong type supplied.
+          description: configuration for device of wrong type supplied
 
     patch:
-      summary: Update configuration values of an existing device.
+      summary: updates device configuration values
+      description: modifies configuration values of an existing device
       operationId: updateDevice
       requestBody:
         description: device configuration values to update; only modified values required
@@ -119,14 +121,9 @@ paths:
         required: true
       responses:
         400:
-          description: Invalid ID supplied
+          description: invalid ID supplied
         404:
-          description: Device not found
-
-    post:
-      responses:
-        405:
-          description: Root path must be used.
+          description: device not found
 
 components:
   schemas:
