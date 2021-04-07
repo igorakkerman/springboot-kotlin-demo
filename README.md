@@ -125,26 +125,49 @@ the service beans are created through a `@Configuration` in the boot package.
 The annotation `@Transaction` would make sense on the service classes as well.
 However, it is put on the method ´transactional` in the JPA implementation
 of the `DeviceRepository` interface.
-### JPA mapping strategy for polymorphic types
-### REST PATCH: polymorphic types
-Goal: Allowing to update devices through a REST PATCH query, such as:
-`PATCH /devices/lenovo-XR1823`
-with a body as follows:
+
+### Updating resources using _HTTP PATCH_
+The API allows updates to device configurations through an _HTTP PATCH_ query to
+the URL path `/devices/{device id}`.
+
+#### _JSON Merge Patch_ and nullable fields
+The simplest format for a _PATCH_ request body is _JSON Merge Patch_,
+specified by [RFC7386](https://tools.ietf.org/html/rfc7386).
+It allows the client to send only the values to modify.
+The goal here is to avoid unnecessary payload.
+
+An example is a _PATCH_ query to `/devices/lenovo-XR1823` with a body as follows:
 ```json 
 {
     "name": "pc-123",
     "ipAddress": "1.1.1.1",
 }
 ```
-ideas:
-- required `type` argument, either in payload or in URL
-- working with key/value maps
-questions:
-- whose responsibility is it to know how to update?
-  - should the REST controller request the original data for the item
+
+A field with a `null` value would mean that not only the value should be removed,
+but even the field should structurally disappear.
+
+This application enforces a structure on the objects.
+The restriction in the specification would mean that
+either the content type cannot be used or, at least,
+deleted fields should not re-appear when requested by a subsequent _GET_.
+
+In the current model, all fields are mandatory,
+so specifying a `null` value is forbidden to begin with.
+Should the model change, however,
+then this API would not be fully compliant with the specification of the content type.
+After all, a pragmatic interpretation should not be an impediment in practice.
+
+#### Dealing with polymorphic types
+Since the type of the device with the specified ID is already known to the system,
+it doesn't need to be specified by the client.
+This also means that the backend needs to look up the type _before_ parsing the request.
+
+Whose responsibility is it to know how to perform the update?
+  - Should the REST controller request the original data for the item
     and replace the specified items?
-  - should the application logic be responsible for doing this?
-  - should this be left to the persistence layer that might perform 
+  - Should the application layer be responsible for performing these two operations?
+  - Should all be left to the persistence layer that might perform 
     an optimized database update?
 
 The decision was taken to move those operations that might yield technical optimizations
@@ -163,7 +186,6 @@ In order to preserve the separation of responsibilities between the controller a
 the controller sends a closure to the service. That function knows how to parse either type of document.
 The service executes the closure with the device type that it retrieves from the database before the execution.
 
-### REST PATCH: nullable fields 
 ### Creating and updating device resources
 #### _POST_ vs. _PUT_
 Creating new devices and updating existing ones could have been designed in two different ways:
@@ -189,7 +211,7 @@ or should the client send only the values to be updated?
 In order to allow single values to be updated without the need to send the full resource data,
 an incremental update has been allowed through the _PATCH_ method.
 
-#### _PATCH_ and _PUT_
+#### _PATCH_ and also _PUT_
 A full update to a device using the _PUT_ method is also possible.
 Having the _PUT_ endpoint alongside _PATCH_
 allows a client to send equal structured device representations for both creation (_POST_) and modification (_PUT_),
