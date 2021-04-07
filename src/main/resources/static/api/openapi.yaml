@@ -18,6 +18,8 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/DeviceDocument'
       responses:
+        201:
+          description: device configuration created
         400:
           description: invalid configuration data supplied
         409:
@@ -54,6 +56,8 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/DeviceDocument'
       responses:
+        204:
+          description: device configuration replaced
         400:
           description: invalid configuration data supplied
         404:
@@ -75,6 +79,8 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/DeviceUpdateDocument'
       responses:
+        204:
+          description: device configuration updated
         400:
           description: invalid ID supplied
         404:
