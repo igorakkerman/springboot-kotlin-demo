@@ -11,7 +11,7 @@ paths:
       operationId: findAllDevices
       responses:
         200:
-          $ref: '#/components/responses/DeviceListDocument'
+          $ref: '#/components/responses/DeviceListDocumentRetrieved'
     post:
       summary: creates a new device configuration
       operationId: createDevice
@@ -36,7 +36,7 @@ paths:
             $ref: '#/components/schemas/DeviceId'
       responses:
         200:
-          $ref: '#/components/responses/DeviceDocument'
+          $ref: '#/components/responses/DeviceDocumentRetrieved'
         404:
           description: device not found
 
@@ -207,16 +207,16 @@ components:
               - $ref: '#/components/schemas/DisplayUpdate'
       required: true
   responses:
-    DeviceDocument:
-      description: device configuration
+    DeviceDocumentRetrieved:
+      description: device configuration retrieved
       content:
         application/json:
           schema:
             oneOf:
               - $ref: '#/components/schemas/Computer'
               - $ref: '#/components/schemas/Display'
-    DeviceListDocument:
-      description: device configurations list
+    DeviceListDocumentRetrieved:
+      description: device configurations list retrieved
       content:
         application/json:
           schema:
