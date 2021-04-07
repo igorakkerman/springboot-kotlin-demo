@@ -124,14 +124,6 @@ components:
             - username
             - password
             - ipAddress
-      example: {
-        "type": "computer",
-        "id": "macpro-m1-95014",
-        "name": "best mac",
-        "username": "timapple",
-        "password": "0n3m0r3th1ng",
-        "ipAddress": "192.168.178.1"
-      }
 
     Display:
       allOf:
@@ -144,12 +136,6 @@ components:
               $ref: '#/components/schemas/Resolution'
           required:
             - resolution
-      example: {
-        "type": "display",
-        "id": "samsung-screen-88276",
-        "name": "favorite screen",
-        "resolution": "UHD"
-      }
 
     ComputerUpdate:
       type: object
@@ -188,6 +174,7 @@ components:
     IpAddress:
       type: string
       pattern: ^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$
+      example: 8.8.8.8
 
     Resolution:
       type: string
