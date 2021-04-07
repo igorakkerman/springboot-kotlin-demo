@@ -31,6 +31,12 @@ logbook:
   format:
     style: http
 
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 logging:
   register-shutdown-hook: true
   level:
