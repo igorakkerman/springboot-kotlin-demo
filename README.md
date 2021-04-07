@@ -6,8 +6,8 @@
 - **JDK 11** or higher must be installed.
 - **Docker 19.03.0** or higher must be installed and Docker daemon must be running locally.
 
-### Build the application
-Build the application as an OCI container to the local Docker daemon:
+### Build the application 
+Build the application as an OCI container to the local Docker registry:
 ```shell
 ./gradlew build jibDockerBuild
 ```
@@ -18,39 +18,11 @@ cd local
 docker-compose up -d
 ```
 
-### Make some API requests
-Use *curl* to make requests to the API
-```shell
-curl -i  http://localhost:8080/devices -H "Content-Type: application/json" -d '{
-    "type": "computer",
-    "id": "pc-123",
-    "name": "My fovorite Mac",
-    "username": "timapple",
-    "password": "0n3m0r3th1ng",
-    "ipAddress": "10.0.0.1"
-}' 
-```
+### Make requests to the API
+Use `curl` or the integrated Swagger UI to make requests to the API:
+http://localhost:8080/swagger-ui.html
 
-Expected response:
-```http request
-HTTP/1.1 201
-Transfer-Encoding: chunked
-Date: Sat, 03 Apr 2021 22:28:43 GMT
-```
-
-```shell
-curl -i http://localhost:8080/devices
-```
-
-Expected response:
-```http request
-HTTP/1.1 200
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Sat, 03 Apr 2021 22:33:31 GMT
-
-[{"type":"{"type":"computer","id":"pc-123","name":"My fovorite Mac","username":"timapple","password":"0n3m0r3th1ng","ipAddress":"10.0.0.1"}]
-```
+---
 
 ## Domain
 An office rental company owns multiple coworking spaces 
