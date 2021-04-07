@@ -11,52 +11,17 @@ paths:
       operationId: findAllDevices
       responses:
         200:
-          description: list of all device configurations retrieved
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Device'
-              examples:
-                multiple:
-                  value:
-                    [
-                      {
-                        "type": "computer",
-                        "id": "macpro-m1-95014",
-                        "name": "best mac",
-                        "username": "timapple",
-                        "password": "0n3m0r3th1ng",
-                        "ipAddress": "192.168.178.1"
-                      },
-                      {
-                        "type": "display",
-                        "id": "samsung-screen-88276",
-                        "name": "favorite screen",
-                        "resolution": "UHD"
-                      }
-                    ]
-                empty:
-                  value:
-                    [ ]
-
+          $ref: "#/components/responses/DeviceListDocument"
     post:
       summary: creates a new device configuration
       operationId: createDevice
       requestBody:
-        description: configuration of the device
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Device'
-        required: true
+        $ref: "#/components/requestBodies/DeviceDocument"
       responses:
         400:
           description: invalid configuration data supplied
         409:
           description: device with specified ID already exists
-
   /devices/{deviceId}:
     get:
       summary: provides the specified device configuation
@@ -71,11 +36,7 @@ paths:
             $ref: '#/components/schemas/DeviceId'
       responses:
         200:
-          description: device found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Device'
+          $ref: "#/components/responses/DeviceDocument"
         404:
           description: device not found
 
@@ -91,12 +52,7 @@ paths:
           schema:
             $ref: '#/components/schemas/DeviceId'
       requestBody:
-        description: full device configuration document; must include all configuration values
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Device'
-        required: true
+        $ref: "#/components/requestBodies/DeviceDocument"
       responses:
         400:
           description: invalid configuration data supplied
@@ -117,12 +73,7 @@ paths:
           schema:
             $ref: '#/components/schemas/DeviceId'
       requestBody:
-        description: device configuration values to update; only modified values are required
-        content:
-          application/json+patch:
-            schema:
-              $ref: '#/components/schemas/DeviceUpdate'
-        required: true
+        $ref: "#/components/requestBodies/DeviceUpdateDocument"
       responses:
         400:
           description: invalid ID supplied
@@ -176,7 +127,6 @@ components:
         "ipAddress": "192.168.178.1"
       }
 
-
     Display:
       allOf:
         - $ref: '#/components/schemas/Device'
@@ -195,8 +145,7 @@ components:
         "resolution": "UHD"
       }
 
-
-    DeviceUpdate:
+    ComputerUpdate:
       type: object
       properties:
         username:
@@ -239,30 +188,40 @@ components:
       enum: [ HD, WQHD, UHD ]
 
   requestBodies:
-    deviceDocument:
-      description: device document
+    DeviceDocument:
+      description: full device configuration; must include all required configuration values
       content:
         application/json:
           schema:
             oneOf:
               - $ref: '#/components/schemas/Computer'
               - $ref: '#/components/schemas/Display'
-
-    deviceUpdateDocument:
-      description: device update document
+      required: true
+    DeviceUpdateDocument:
+      description: device configuration values to update; only modified values are required
       content:
-        application/json:
+        application/json+patch:
           schema:
             oneOf:
               - $ref: '#/components/schemas/ComputerUpdate'
               - $ref: '#/components/schemas/DisplayUpdate'
-
+      required: true
   responses:
-    deviceDocument:
-      description: device document
+    DeviceDocument:
+      description: device configuration
       content:
         application/json:
           schema:
             oneOf:
               - $ref: '#/components/schemas/Computer'
               - $ref: '#/components/schemas/Display'
+    DeviceListDocument:
+      description: device configurations list
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              oneOf:
+                - $ref: '#/components/schemas/Computer'
+                - $ref: '#/components/schemas/Display'
