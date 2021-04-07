@@ -1,35 +1,14 @@
-server:
-  port: 8080
-
 spring:
-  profiles:
-    active: test
-
   jackson:
     deserialization:
       fail_on_unknown_properties: true
 
-  #  datasource:
-  #    url: jdbc:h2:mem:test
   jpa:
     properties:
       hibernate:
         ddl-auto: validate
-  #        dialect: org.hibernate.dialect.H2Dialect
         show_sql: false        # SQL to console, bypassing logger
         format_sql: true       # SQL to log AND console
-
-  datasource:
-    hikari:
-      minimumIdle: 5
-      maximumPoolSize: 15
-      idleTimeout: 300000
-      maxLifetime: 360000
-#      connectionTestQuery: SELECT 1 FROM DUAL
-
-logbook:
-  format:
-    style: http
 
 springdoc:
   api-docs:
@@ -37,19 +16,15 @@ springdoc:
   swagger-ui:
     enabled: false
 
+logbook:
+  format:
+    style: http
+
 logging:
   register-shutdown-hook: true
   level:
     de.igorakkerman.demo: DEBUG
     org.zalando.logbook: TRACE
-#    org.springframework.test.context: INFO
     org.springframework.transaction: TRACE
-#    org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor: DEBUG
-#    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
-#    org.hibernate: DEBUG
-#    org.hibernate.type: TRACE
-#    org.hibernate.internal.util.EntityPrinter: DEBUG
-#    org.hibernate.jpa.internal.util.LogHelper: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.tool.hbm2ddl: DEBUG
-
