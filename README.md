@@ -172,8 +172,25 @@ questions:
   - should the REST controller request the original data for the item
     and replace the specified items?
   - should the application logic be responsible for doing this?
-  - should this be left to the persistence layer that might perform an optimized database update?
-  The decision went for the latter option, so depending on the underlying 
+  - should this be left to the persistence layer that might perform 
+    an optimized database update?
+
+The decision was taken to move those operations that might yield technical optimizations
+in the future to the persistence layer, even though they might be composed of two
+operations at the moment.
+This includes all operations that verify the existence of an entity before updating it.
+
+On the other hand, operations for which the backend requires the knowledge of the persisted device type,
+are making two calls to the persistence layer.
+To ensure their atomicity, however, they need to be performed within the boundaries of a transaction.
+For that reason, the application layer, which is responsible for defining those boundaries,
+has control over these operations.
+
+For the _update_ operation, the REST controller needs to know the type to be able to parse the received update document.
+In order to preserve the separation of responsibilities between the controller and the service, 
+the controller sends a closure to the service. That function knows how to parse either type of document.
+The service executes the closure with the device type that it retrieves from the database before the execution.
+
 ### REST PATCH: nullable fields 
 ### Creating and updating device resources
 #### _POST_ vs. _PUT_
