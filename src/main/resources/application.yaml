@@ -23,7 +23,17 @@ spring:
   jackson:
     deserialization:
       fail_on_unknown_properties: true
+
+springdoc:
+  api-docs:
+    enabled: false
+
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /api/openapi.yaml
+    default-model-expand-depth: 10
+    default-models-expand-depth: -1
+
 logging:
   level:
     de.igorakkerman.demo: INFO
-
