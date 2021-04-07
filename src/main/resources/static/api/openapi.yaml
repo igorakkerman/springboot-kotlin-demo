@@ -200,7 +200,7 @@ components:
     DeviceUpdateDocument:
       description: device configuration values to update; only modified values are required
       content:
-        application/json+patch:
+        application/merge-patch+json:
           schema:
             oneOf:
               - $ref: '#/components/schemas/ComputerUpdate'
