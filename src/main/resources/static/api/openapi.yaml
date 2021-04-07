@@ -194,35 +194,18 @@ components:
 
     DeviceUpdate:
       type: object
-      discriminator:
-        propertyName: type
-        mapping:
-          computer: '#/components/schemas/ComputerUpdate'
-          display: '#/components/schemas/DisplayUpdate'
       properties:
-        name:
-          $ref: '#/components/schemas/DeviceName'
-
-    ComputerUpdate:
-      anyOf:
-        - $ref: '#/components/schemas/DeviceUpdate'
-        - type: object
-          properties:
-            username:
-              $ref: '#/components/schemas/Username'
-            password:
-              $ref: '#/components/schemas/Password'
-            ipAddress:
-              $ref: '#/components/schemas/IpAddress'
-
+        username:
+          $ref: '#/components/schemas/Username'
+        password:
+          $ref: '#/components/schemas/Password'
+        ipAddress:
+          $ref: '#/components/schemas/IpAddress'
     DisplayUpdate:
-      anyOf:
-        - $ref: '#/components/schemas/DeviceUpdate'
-        - type: object
-          properties:
-            resolution:
-              $ref: '#/components/schemas/Resolution'
-
+      type: object
+      properties:
+        resolution:
+          $ref: '#/components/schemas/Resolution'
     DeviceId:
       type: string
       example: macpro-m1-95014
