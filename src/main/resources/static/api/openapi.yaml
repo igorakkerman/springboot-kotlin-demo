@@ -11,12 +11,12 @@ paths:
       operationId: findAllDevices
       responses:
         200:
-          $ref: "#/components/responses/DeviceListDocument"
+          $ref: '#/components/responses/DeviceListDocument'
     post:
       summary: creates a new device configuration
       operationId: createDevice
       requestBody:
-        $ref: "#/components/requestBodies/DeviceDocument"
+        $ref: '#/components/requestBodies/DeviceDocument'
       responses:
         400:
           description: invalid configuration data supplied
@@ -36,7 +36,7 @@ paths:
             $ref: '#/components/schemas/DeviceId'
       responses:
         200:
-          $ref: "#/components/responses/DeviceDocument"
+          $ref: '#/components/responses/DeviceDocument'
         404:
           description: device not found
 
@@ -52,7 +52,7 @@ paths:
           schema:
             $ref: '#/components/schemas/DeviceId'
       requestBody:
-        $ref: "#/components/requestBodies/DeviceDocument"
+        $ref: '#/components/requestBodies/DeviceDocument'
       responses:
         400:
           description: invalid configuration data supplied
@@ -73,7 +73,7 @@ paths:
           schema:
             $ref: '#/components/schemas/DeviceId'
       requestBody:
-        $ref: "#/components/requestBodies/DeviceUpdateDocument"
+        $ref: '#/components/requestBodies/DeviceUpdateDocument'
       responses:
         400:
           description: invalid ID supplied
