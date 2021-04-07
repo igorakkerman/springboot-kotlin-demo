@@ -155,6 +155,8 @@ components:
         - $ref: '#/components/schemas/Device'
         - type: object
           properties:
+            type:
+              enum: ['computer']
             username:
               $ref: '#/components/schemas/Username'
             password:
@@ -180,6 +182,8 @@ components:
         - $ref: '#/components/schemas/Device'
         - type: object
           properties:
+            type:
+              enum: ['display']
             resolution:
               $ref: '#/components/schemas/Resolution'
           required:
