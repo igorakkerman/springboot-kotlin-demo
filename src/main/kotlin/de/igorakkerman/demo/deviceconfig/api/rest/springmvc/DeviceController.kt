@@ -11,13 +11,11 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceService
 import de.igorakkerman.demo.deviceconfig.application.DeviceTypeConflictException
 import de.igorakkerman.demo.deviceconfig.application.Display
 import mu.KotlinLogging
-import org.apache.http.HttpHeaders.ALLOW
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
-import org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -29,14 +27,11 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod.OPTIONS
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
-const val ACCEPT_PATCH_HEADER = "Accept-Patch"
 const val APPLICATION_MERGE_PATCH_JSON_VALUE = "application/merge-patch+json"
 
 @RestController
@@ -103,24 +98,6 @@ class DeviceController(
                 .also { log.info("deviceUpdate: $it") }
         }
         log.info("Device updated. deviceId: $deviceId")
-    }
-
-    // if used with a wrong media type, provide the Accept-Patch header with the error response
-    // as suggested by RFC 5789 "PATCH Method for HTTP" https://tools.ietf.org/html/rfc5789#section-2.2
-    @PatchMapping("/{deviceId}")
-    @ResponseStatus(UNSUPPORTED_MEDIA_TYPE)
-    @Suppress("MVCPathVariableInspection")
-    fun updateDeviceBadMediaType(response: HttpServletResponse) {
-        response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
-    }
-
-    // advertise the Accept-Patch header as additional information
-    // as suggested by RFC 5789 "PATCH Method for HTTP" https://tools.ietf.org/html/rfc5789#section-3
-    @RequestMapping("/{deviceId}", method = [OPTIONS])
-    @Suppress("MVCPathVariableInspection")
-    fun optionsDeviceId(response: HttpServletResponse) {
-        response.setHeader(ALLOW, "GET, HEAD, POST, PUT, OPTIONS, PATCH")
-        response.addHeader(ACCEPT_PATCH_HEADER, APPLICATION_MERGE_PATCH_JSON_VALUE)
     }
 
     @ExceptionHandler(DeviceNotFoundException::class)
