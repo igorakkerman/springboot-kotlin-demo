@@ -88,7 +88,7 @@ data class ErrorResponseBody(val messages: Array<String>) {
     constructor(message: String) : this(arrayOf(message))
 }
 
-fun KClass<out Device>.resourceType(): String = when(this) {
+fun KClass<out Device>.resourceType(): String = when (this) {
     Computer::class -> RESOURCE_TYPE_COMPUTER
     Display::class -> RESOURCE_TYPE_DISPLAY
     else -> throw IllegalStateException("Unexpected device type: $this")
