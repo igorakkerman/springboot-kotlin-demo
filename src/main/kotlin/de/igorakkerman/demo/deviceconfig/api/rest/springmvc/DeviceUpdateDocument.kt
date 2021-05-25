@@ -38,7 +38,7 @@ data class DisplayUpdateDocument(
 // marker for unset values, to be differentiated from null
 // in JSON Merge Patch, null has the meaning of deletion, which is not allowed here
 // application/merge-patch+json (https://tools.ietf.org/html/rfc7396)
-internal const val UNSET = "_UNSET_"
+internal val UNSET = StringBuilder("_UNSET_").toString()
 
 @Suppress("unused") // required by Jackson's JSON deserialization
 enum class DocumentResolution { FHD, WQHD, UHD, UNSET }
