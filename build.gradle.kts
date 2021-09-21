@@ -24,8 +24,8 @@ dependencies {
 
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
-
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.5")
+    
     implementation("org.springframework:spring-web:5.3.10")
     implementation("org.springframework:spring-webmvc:5.3.10")
     implementation("org.zalando:logbook-spring-boot-starter:2.13.0")
