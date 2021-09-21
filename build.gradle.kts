@@ -30,7 +30,7 @@ dependencies {
     implementation("org.springframework:spring-webmvc:5.3.10")
     implementation("org.zalando:logbook-spring-boot-starter:2.13.0")
 
-    implementation("org.springdoc:springdoc-openapi-ui:1.5.4")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0-M1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
