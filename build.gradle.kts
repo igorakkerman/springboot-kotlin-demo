@@ -28,7 +28,7 @@ dependencies {
 
     implementation("org.springframework:spring-web:5.3.10")
     implementation("org.springframework:spring-webmvc:5.3.10")
-    implementation("org.zalando:logbook-spring-boot-starter:2.6.1")
+    implementation("org.zalando:logbook-spring-boot-starter:2.13.0")
 
     implementation("org.springdoc:springdoc-openapi-ui:1.5.4")
 
