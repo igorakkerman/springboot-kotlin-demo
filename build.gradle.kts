@@ -25,15 +25,17 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.5")
-    
+
     implementation("org.springframework:spring-web:5.3.10")
     implementation("org.springframework:spring-webmvc:5.3.10")
     implementation("org.zalando:logbook-spring-boot-starter:2.13.0")
 
     implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0-M1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.0")
+    // override incompatible version 1.7.2 in spring-boot-starter-test
+    testRuntimeOnly("org.junit.platform:junit-platform-commons:1.8.0")
 
     testImplementation("io.kotest:kotest-assertions-core-jvm:4.6.3")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
