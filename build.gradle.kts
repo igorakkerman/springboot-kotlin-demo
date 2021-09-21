@@ -23,7 +23,7 @@ dependencies {
 
     runtimeOnly("org.postgresql:postgresql:42.2.23")
 
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.6")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
 
