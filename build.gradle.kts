@@ -11,7 +11,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://repo.spring.io/snapshot")
 }
 
 dependencies {
@@ -27,8 +26,8 @@ dependencies {
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.4")
 
-    implementation("org.springframework:spring-web:5.3.6-SNAPSHOT")
-    implementation("org.springframework:spring-webmvc:5.3.6-SNAPSHOT")
+    implementation("org.springframework:spring-web:5.3.10")
+    implementation("org.springframework:spring-webmvc:5.3.10")
     implementation("org.zalando:logbook-spring-boot-starter:2.6.1")
 
     implementation("org.springdoc:springdoc-openapi-ui:1.5.4")
