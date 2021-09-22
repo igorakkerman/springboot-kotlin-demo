@@ -21,7 +21,6 @@ logbook:
     style: http
 
 logging:
-  register-shutdown-hook: true
   level:
     de.igorakkerman.demo: DEBUG
     org.zalando.logbook: TRACE
