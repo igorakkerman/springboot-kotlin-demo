@@ -3,7 +3,6 @@ spring:
     url: jdbc:postgresql://${DB_HOSTNAME}:${DB_PORT:5432}/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    initialization-mode: always
     hikari:
 #      jdbc-url: jdbc:postgresql://postgres:5432/deviceconfig
       connectionTimeout: 3000

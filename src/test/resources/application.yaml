@@ -6,7 +6,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        ddl-auto: validate
+        ddl-auto: update
         show_sql: false        # SQL to console, bypassing logger
         format_sql: true       # SQL to log AND console
 
