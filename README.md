@@ -15,12 +15,20 @@ Build the application as an OCI container to the local Docker registry:
 Run the application locally along with the database using Docker Compose:
 ```shell
 cd local
+cp sample.env .env
 docker-compose up -d
 ```
+You may edit the file _.env_ to change the following runtime environment variable:
+
+`REST_API_PORT`- 
+HTTP port of the application's REST API; default: 8080
 
 ### Make requests to the API
 Use `curl` or the integrated Swagger UI to make requests to the API:
+
 http://localhost:8080/swagger-ui.html
+
+Use the REST API HTTP port configured above.
 
 ---
 

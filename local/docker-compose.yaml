@@ -8,14 +8,14 @@ services:
   deviceconfig:
     image: igorakkerman/deviceconfig-demo:latest
     ports:
-      - 8080:8080
+      - ${REST_API_PORT:-8080}:8080
     networks:
       - deviceconfig
     environment:
       DB_HOSTNAME: postgres
       DB_NAME: deviceconfig
       DB_USERNAME: deviceconfiguser
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PASSWORD: notsosecret
     depends_on:
       - postgres
 
@@ -28,5 +28,5 @@ services:
     environment:
       POSTGRES_DB: deviceconfig
       POSTGRES_USER: deviceconfiguser
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: notsosecret
     restart: unless-stopped
