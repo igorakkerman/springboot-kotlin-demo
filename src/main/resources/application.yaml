@@ -7,11 +7,8 @@ spring:
 #      jdbc-url: jdbc:postgresql://postgres:5432/deviceconfig
       connectionTimeout: 3000
       maximumPoolSize: 5
+
   jpa:
-    properties:
-      hibernate:
-        show_sql: false        # SQL to console, bypassing logger
-        format_sql: true       # SQL to log AND console
     hibernate:
       ddl-auto: update
 
