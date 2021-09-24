@@ -65,8 +65,23 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+val copyOpenApiSpec = tasks.register<Copy>("copyOpenApiSpec") {
+    val resourcesOutput = sourceSets.main.get().output.resourcesDir
+
+    from(layout.projectDirectory.dir("api"))
+    into(layout.buildDirectory.dir("${resourcesOutput}/static/api"))
+}
+
+tasks.processResources {
+    dependsOn(copyOpenApiSpec)
+}
+
 jib {
     to {
         image = "igorakkerman/deviceconfig-demo:latest"
     }
+}
+
+tasks.jibDockerBuild {
+    dependsOn(tasks.build)
 }
