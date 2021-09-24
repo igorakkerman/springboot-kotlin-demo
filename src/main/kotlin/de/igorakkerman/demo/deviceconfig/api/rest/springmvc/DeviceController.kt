@@ -12,7 +12,6 @@ import de.igorakkerman.demo.deviceconfig.application.DeviceTypeConflictException
 import de.igorakkerman.demo.deviceconfig.application.Display
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus.BAD_REQUEST
-import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.NO_CONTENT
@@ -116,12 +115,12 @@ class DeviceController(
         )
 
     @ExceptionHandler(DeviceAreadyExistsException::class)
-    @ResponseStatus(CONFLICT)
+    @ResponseStatus(BAD_REQUEST)
     fun deviceAlreadyExists(exception: DeviceAreadyExistsException): ErrorResponseBody =
         ErrorResponseBody("A device with id ${exception.deviceId} already exists.")
 
     @ExceptionHandler(DeviceTypeConflictException::class)
-    @ResponseStatus(CONFLICT)
+    @ResponseStatus(BAD_REQUEST)
     fun deviceTypeConflict(exception: DeviceTypeConflictException): ErrorResponseBody =
         ErrorResponseBody(
             "Type of resource with id ${exception.deviceId} doesn't match device type in document. " +

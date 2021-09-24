@@ -255,7 +255,7 @@ class CreateDeviceControllerTest(
 
 
     @Test
-    fun `create computer with existing id should lead to response 409 conflict`() {
+    fun `create computer with existing id should lead to response 400 bad request`() {
         // given
         every { deviceService.createDevice(computer) } throws DeviceAreadyExistsException(computer.id)
 
@@ -273,7 +273,7 @@ class CreateDeviceControllerTest(
                 }
             """
         }.andExpect {
-            status { isConflict() }
+            status { isBadRequest() }
             content {
                 json(
                     """

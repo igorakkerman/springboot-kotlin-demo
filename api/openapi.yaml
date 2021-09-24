@@ -22,8 +22,6 @@ paths:
           description: device configuration created
         400:
           description: invalid configuration data supplied
-        409:
-          description: device with specified ID already exists
   /devices/{deviceId}:
     get:
       summary: provides the specified device configuation
@@ -62,8 +60,6 @@ paths:
           description: invalid configuration data supplied
         404:
           description: device not found
-        409:
-          description: configuration for device of wrong type supplied
 
     patch:
       summary: updates device configuration values

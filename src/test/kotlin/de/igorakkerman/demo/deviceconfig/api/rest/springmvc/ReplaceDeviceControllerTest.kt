@@ -195,7 +195,7 @@ class ReplaceDeviceControllerTest(
     }
 
     @Test
-    fun `replace device with the wrong type specified in the document should lead to response 409 conflict`() {
+    fun `replace device with the wrong type specified in the document should lead to response 400 bad request`() {
         // given
         every { deviceService.replaceDevice(computer.copy(id = displayId)) } throws DeviceTypeConflictException(deviceId = displayId, existingDeviceType = Display::class, invalidDeviceType = Computer::class)
 
@@ -213,7 +213,7 @@ class ReplaceDeviceControllerTest(
                 }
             """
         }.andExpect {
-            status { isConflict() }
+            status { isBadRequest() }
             content {
                 json(
                     """
