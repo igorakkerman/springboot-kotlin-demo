@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.31"
-    kotlin("plugin.spring") version "1.5.31"
-    kotlin("plugin.jpa") version "1.5.31"
-    id("org.springframework.boot") version "2.5.4"
+    kotlin("jvm") version "1.6.0"
+    kotlin("plugin.spring") version "1.6.0"
+    kotlin("plugin.jpa") version "1.6.0"
+    id("org.springframework.boot") version "2.5.7"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("com.google.cloud.tools.jib") version "3.1.4"
 }
@@ -20,22 +20,22 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    runtimeOnly("org.postgresql:postgresql:42.2.23")
+    runtimeOnly("org.postgresql:postgresql:42.3.1")
 
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.5")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
 
-    implementation("org.springframework:spring-web:5.3.10")
-    implementation("org.springframework:spring-webmvc:5.3.10")
-    implementation("org.zalando:logbook-spring-boot-starter:2.13.0")
+    implementation("org.springframework:spring-web:5.3.13")
+    implementation("org.springframework:spring-webmvc:5.3.13")
+    implementation("org.zalando:logbook-spring-boot-starter:2.14.0")
 
-    implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     // override incompatible version 1.7.2 in spring-boot-starter-test
-    testRuntimeOnly("org.junit.platform:junit-platform-commons:1.8.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-commons:1.8.1")
 
     testImplementation("io.kotest:kotest-assertions-core-jvm:4.6.3")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
