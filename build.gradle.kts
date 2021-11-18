@@ -50,14 +50,14 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
     java {
-        sourceCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
         languageVersion = "1.5"
         apiVersion = "1.5"
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
@@ -77,6 +77,9 @@ tasks.processResources {
 }
 
 jib {
+    from {
+        image = "eclipse-temurin:17.0.1_12-jdk-alpine@sha256:b30fa3ce4323ce037cb95fd2729dd4662d86f0ee2986452527cc645eaf258a1d"
+    }
     to {
         image = "igorakkerman/deviceconfig-demo:latest"
     }

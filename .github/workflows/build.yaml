@@ -12,10 +12,11 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
-      - name: JDK 16 setup
+      - name: JDK 17 (Eclipse Temurin) setup
         uses: actions/setup-java@v1
         with:
-          java-version: 16
+          distribution: 'temurin'
+          java-version: 17
       - name: Gradle wrapper preparation
         run: |
           chmod +x gradlew

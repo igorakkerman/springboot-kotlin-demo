@@ -3,7 +3,7 @@
 ## Getting started
 
 ### Prerequisites
-- **JDK 11** or higher must be installed.
+- **JDK 17** or higher must be installed.
 - **Docker 19.03.0** or higher must be installed and Docker daemon must be running locally.
 
 ### Build the application 
