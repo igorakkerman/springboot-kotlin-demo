@@ -54,8 +54,8 @@ tasks.withType<KotlinCompile> {
     }
 
     kotlinOptions {
-        languageVersion = "1.5"
-        apiVersion = "1.5"
+        languageVersion = "1.6"
+        apiVersion = "1.6"
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "17"
     }
