@@ -266,7 +266,7 @@ abstract class DeviceRepositoryTestBase(
     }
 
     @Test
-    // allow to catch TransactionException from repository transaction
+    // allow catching TransactionException from repository transaction
     // alternative: run non-transactional, that is, outside a @DataJpaTest or @Transactional-annotated class
     @Transactional(propagation = Propagation.SUPPORTS)
     fun `ip address should have IPv4 format`() {
